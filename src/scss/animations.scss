@@ -1,0 +1,30 @@
+@keyframes bounceDown {
+    0% { transform: scaleY(0.5); }
+    33% { transform: scaleY(1.1); }
+    66% { transform: scaleY(0.9); }
+    100% { transform: scaleY(1); }
+}
+
+@keyframes fadeDown {
+    0% { transform: translateY(-1rem); opacity: 0; }
+    100% { transform: translateY(0rem); opacity: 1; }
+}
+
+@keyframes scaleDown {
+    0% { transform: scaleY(0.75); opacity: 0; }
+    100% { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes wiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(12deg); }
+    50% { transform: rotate(-8deg); }
+    75% { transform: rotate(4deg); }
+    100% { transform: rotate(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+}

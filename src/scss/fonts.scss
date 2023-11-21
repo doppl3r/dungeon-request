@@ -1,0 +1,8 @@
+/* Font Families */
+@font-face {
+	font-family: 'goblin';
+	src: url('/fonts/goblin.woff2') format('woff2'),
+		 url('/fonts/goblin.woff') format('woff');
+	font-weight: 400;
+	font-style: normal;
+}
