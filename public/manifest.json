@@ -1,11 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Speed Looters",
+  "name": "Speed Looter",
   "description": "Get your loot and get out!",
   "version": "0.0.1",
   "action": {
-    "default_popup": "index.html",
-    "default_title": "Speed Looters"
+    "default_popup": "index.html"
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval';"

@@ -1,4 +1,4 @@
-# Speed Looters
+# Speed Looter
 Get your loot and get out!
 
 ## Local Development
