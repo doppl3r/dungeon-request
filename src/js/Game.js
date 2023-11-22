@@ -1,18 +1,25 @@
 import { BoxGeometry, Mesh, MeshStandardMaterial, OrthographicCamera, Scene, Vector3 } from 'three';
 import { ColliderDesc, RigidBodyDesc, World } from '@dimforge/rapier3d';
+import { Assets } from './Assets.js';
 import { Loop } from './Loop';
 import { Graphics } from './Graphics';
 import { Sun } from './Sun.js';
 
 class Game {
   constructor() {
+    this.assets = new Assets();
     this.loop = new Loop();
   }
 
   init(canvas) {
     this.graphics = new Graphics(canvas);
     this.graphics.camera.position.set(0, 1, 5);
+    this.assets.load(function() {
+      this.load();
+    }.bind(this));
+  }
 
+  load() {
     import('@dimforge/rapier3d').then(function() {
       // Use the RAPIER module here.
       var gravity = { x: 0.0, y: -9.81, z: 0.0 };

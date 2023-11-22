@@ -1,0 +1,9 @@
+{
+    "click": {
+        "url": "./ogg/click.ogg",
+        "userData": {
+            "loop": false,
+            "volume": 0.1
+        }
+    }
+}
