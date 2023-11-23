@@ -1,4 +1,12 @@
-// Add single or multiple synchronous loop intervals
+/*
+  Add functions to a recurring frequency (fps). The first loop
+  interval determines the shared alpha value (0.0-to-1.0) for sibling
+  intervals.
+
+  Recommended: Add your physics engine first (ex: 30hz), then add the
+  rendering engine at a higher frequency (ex: -1 = unlimited). Use the
+  alpha value to interpolate rendered objects between engine steps.
+*/
 
 class Loop {
     constructor() {
@@ -8,11 +16,11 @@ class Loop {
         this.elapsedTime = 0;
         this.scale = 1;
         this.running = false;
-        this.intervals = [];
+        this.functions = [];
     }
 
     add(fps = 60, callback = function(){}) {
-        this.intervals.push({ tick: 1 / fps, sum: 0, alpha: 0, callback: callback });
+        this.functions.push({ tick: 1 / fps, sum: 0, alpha: 0, callback: callback });
     }
 
     start() {
@@ -34,20 +42,20 @@ class Loop {
             // Request visual update function before next repaint
             requestAnimationFrame(function(){ loop.update(loop); });
     
-            // Loop through array of loops
-            if (this.intervals.length > 1) {
+            // Check if functions exist
+            if (this.functions.length > 1) {
                 var delta = this.getDelta();
-                var alpha = this.intervals[0].sum / this.intervals[0].tick; // Set alpha to first interval
+                var alpha = this.functions[0].sum / this.functions[0].tick; // Set alpha to first interval
 
-                // Loop through loops (descending order)
-                for (var i = this.intervals.length - 1; i >= 0; i--) {
-                    var child = this.intervals[i];
-                    child.sum += delta;
+                // Loop through array of functions (descending order)
+                for (var i = this.functions.length - 1; i >= 0; i--) {
+                    var fn = this.functions[i];
+                    fn.sum += delta;
         
-                    // Trigger loop callback
-                    if (child.sum > child.tick || child.tick == -1) {
-                        child.sum %= child.tick;
-                        child.callback({ delta: delta, alpha: alpha });
+                    // Trigger fn callback
+                    if (fn.sum > fn.tick || fn.tick == -1) {
+                        fn.sum %= fn.tick;
+                        fn.callback({ delta: delta, alpha: alpha });
                     }
                 }
             }
