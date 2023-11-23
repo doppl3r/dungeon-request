@@ -1,16 +1,14 @@
 /*
-  Add functions to a recurring frequency (fps). The first loop
-  interval determines the shared alpha value (0.0-to-1.0) for sibling
-  intervals.
+  Executes single or multiple functions at a recurring frequency. The first
+  function loop determines the shared alpha value for all sibling functions.
 
-  Recommended: Add your physics engine first (ex: 30hz), then add the
-  rendering engine at a higher frequency (ex: -1 = unlimited). Use the
-  alpha value to interpolate rendered objects between engine steps.
+  Tip: Add your physics function first (ex: 30hz), then add the rendering
+  function at a higher frequency (ex: -1 = unlimited). Use the alpha value
+  to interpolate rendered objects between engine steps.
 */
 
 class Loop {
     constructor() {
-        this.autoStart = true;
         this.startTime = 0;
         this.oldTime = 0;
         this.elapsedTime = 0;
@@ -20,21 +18,13 @@ class Loop {
     }
 
     add(fps = 60, callback = function(){}) {
-        this.functions.push({ tick: 1 / fps, sum: 0, alpha: 0, callback: callback });
-    }
-
-    start() {
-        this.startTime = this.now();
-        this.oldTime = this.startTime;
-        this.elapsedTime = 0;
-        this.running = true;
-        this.update(this);
-    }
-
-    stop() {
-        this.getElapsedTime();
-        this.running = false;
-        this.autoStart = false;
+        // Add callback function to array of functions
+        this.functions.push({
+            tick: 1 / fps,
+            sum: 0,
+            alpha: 0,
+            callback: callback // Execute function after each interval
+        });
     }
 
     update(loop) {
@@ -55,11 +45,25 @@ class Loop {
                     // Trigger fn callback
                     if (fn.sum > fn.tick || fn.tick == -1) {
                         fn.sum %= fn.tick;
+                        if (fn.tick != -1) delta = fn.tick; // Set delta to target tick rate
                         fn.callback({ delta: delta, alpha: alpha });
                     }
                 }
             }
         }
+    }
+
+    start() {
+        this.startTime = this.now();
+        this.oldTime = this.startTime;
+        this.elapsedTime = 0;
+        this.running = true;
+        this.update(this);
+    }
+
+    stop() {
+        this.getElapsedTime();
+        this.running = false;
     }
 
     getElapsedTime() {
@@ -69,10 +73,8 @@ class Loop {
 
     getDelta() {
         let diff = 0;
-        if (this.autoStart && !this.running) {
-            this.start();
-            return 0;
-        }
+
+        // Update the elapsed time if the clock is running
         if (this.running) {
             const newTime = this.now();
             diff = (newTime - this.oldTime) / 1000;
