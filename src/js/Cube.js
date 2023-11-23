@@ -14,10 +14,10 @@ class Cube extends Body {
         super(options);
 
         // Initialize default cube mesh
-        this.geometry = new BoxGeometry(options.size.x, options.size.y, options.size.z);
-        this.material = new MeshStandardMaterial({ color: options.color });
-        this.receiveShadow = true;
-        this.castShadow = true;
+        this.mesh.geometry = new BoxGeometry(options.size.x, options.size.y, options.size.z);
+        this.mesh.material = new MeshStandardMaterial({ color: options.color });
+        this.mesh.receiveShadow = true;
+        this.mesh.castShadow = true;
     }
 }
 

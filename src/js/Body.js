@@ -1,11 +1,9 @@
 import { Euler, Mesh, Quaternion, Vector3 } from 'three';
-import { ColliderDesc, Cuboid, RigidBodyDesc, RigidBodyType, Shape } from '@dimforge/rapier3d';
+import { ColliderDesc, RigidBodyDesc, RigidBodyType } from '@dimforge/rapier3d';
 
-// A body contains a single 3D mesh and a single physical body object
-class Body extends Mesh {
+// A body contains a single 3D mesh and a single rigid body object
+class Body {
     constructor(options) {
-        super();
-
         // Set options with default values
         options = Object.assign({
             mass: 1,
@@ -19,36 +17,35 @@ class Body extends Mesh {
             world: null
         }, options);
 
-        // Configure physical body
-        this.bodyDesc = new RigidBodyDesc(RigidBodyType[options.type]);
-        this.setPosition(options.position);
-        this.setRotation(options.rotation);
-        this.body = options.world.createRigidBody(this.bodyDesc);
+        // Create an empty mesh
+        this.mesh = new Mesh();
+
+        // Initialize rigid body description
+        this.rigidBodyDesc = new RigidBodyDesc(RigidBodyType[options.type]);
+        this.rigidBodyDesc.setTranslation(options.position.x, options.position.y, options.position.z);
+        this.rigidBodyDesc.setRotation(new Quaternion().setFromEuler(new Euler().setFromVector3(options.rotation)));
         
-        // Create collider within the world using the body
+        // Initialize collider description
         this.colliderDesc = new ColliderDesc(options.shape);
-        try { options.world.createCollider(this.colliderDesc, this.body); }
-        catch { console.error('Error: Shape must be defined.'); }
+    }
+
+    addToWorld(world) {
+        // Create rigid body in the world
+        this.rigidBody = world.createRigidBody(this.rigidBodyDesc);
+        this.collider = world.createCollider(this.colliderDesc, this.rigidBody); // Parent collision to rigid body
 
         // Update mesh position and rotation (1 = current body position/rotation)
         this.lerp(1);
-
-        // Add self to scene
-        options.scene.add(this);
     }
 
-    setPosition(position) {
-        this.bodyDesc.setTranslation(position.x, position.y, position.z)
-    }
-
-    setRotation(rotation) {
-        this.bodyDesc.setRotation(new Quaternion().setFromEuler(new Euler().setFromVector3(rotation)));
+    addToScene(scene) {
+        scene.add(this.mesh);
     }
 
     takeSnapshot() {
         // Store previous position for lerp
-        this.snapshot.position_1.copy(this.body.translation())
-        this.snapshot.quaternion_1.copy(this.body.rotation())
+        this.snapshot.position_1.copy(this.rigidBody.translation())
+        this.snapshot.quaternion_1.copy(this.rigidBody.rotation())
     }
 
     lerp(alpha = 0) {
@@ -63,12 +60,12 @@ class Body extends Mesh {
         }
 
         // Update target position/quaternion to body values
-        this.snapshot.position_2.copy(this.body.translation());
-        this.snapshot.quaternion_2.copy(this.body.rotation());
+        this.snapshot.position_2.copy(this.rigidBody.translation());
+        this.snapshot.quaternion_2.copy(this.rigidBody.rotation());
 
         // Linear interpolation using alpha value
-        this.position.lerpVectors(this.snapshot.position_1, this.snapshot.position_2, alpha);
-        this.quaternion.slerpQuaternions(this.snapshot.quaternion_1, this.snapshot.quaternion_2, alpha);
+        this.mesh.position.lerpVectors(this.snapshot.position_1, this.snapshot.position_2, alpha);
+        this.mesh.quaternion.slerpQuaternions(this.snapshot.quaternion_1, this.snapshot.quaternion_2, alpha);
     }
 }
 

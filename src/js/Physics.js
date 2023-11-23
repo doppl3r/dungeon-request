@@ -13,6 +13,10 @@ class Physics {
     setTimestep(timestep = 1 / 60) {
         this.world.timestep = timestep;
     }
+
+    step() {
+        this.world.step();
+    }
 }
 
 export { Physics };
