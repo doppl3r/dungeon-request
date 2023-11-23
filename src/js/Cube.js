@@ -1,4 +1,4 @@
-import { BoxGeometry, Mesh, MeshStandardMaterial, Vector3 } from 'three';
+import { BoxGeometry, Euler, Mesh, MeshStandardMaterial, Quaternion, Vector3 } from 'three';
 import { ColliderDesc, RigidBodyDesc, RigidBodyType } from '@dimforge/rapier3d';
 
 class Cube extends Mesh {
@@ -25,15 +25,41 @@ class Cube extends Mesh {
         this.castShadow = true;
 
         // Configure physical body
-        this.bodyDesc = new RigidBodyDesc(RigidBodyType[options.type]).setTranslation(options.position.x, options.position.y, options.position.z);
+        this.bodyDesc = new RigidBodyDesc(RigidBodyType[options.type]);
+        this.bodyDesc.setTranslation(options.position.x, options.position.y, options.position.z);
+        this.bodyDesc.setRotation(new Quaternion().setFromEuler(new Euler().setFromVector3(options.rotation)));
         this.body = options.world.createRigidBody(this.bodyDesc);
         this.colliderDesc = ColliderDesc.cuboid(options.size.x / 2, options.size.y / 2, options.size.z / 2);
         this.collider = options.world.createCollider(this.colliderDesc, this.body);
 
-        // Add to scene
-        this.position.copy(this.body.translation())
+        // Update mesh position and rotation
+        this.position.copy(this.body.translation());
         this.quaternion.copy(this.body.rotation());
+        this.snapshot = {
+            position: new Vector3(),
+            previousPosition: new Vector3(),
+            quaternion: new Quaternion(),
+            previousQuaternion: new Quaternion()
+        }
+
+        // Add self to scene
         options.scene.add(this);
+    }
+
+    takeSnapshot() {
+        // Store previous position for lerp
+        this.snapshot.previousPosition.copy(this.body.translation())
+        this.snapshot.previousQuaternion.copy(this.body.rotation())
+    }
+
+    lerp(alpha = 0) {
+        // Update target position/quaternion to body values
+        this.snapshot.position.copy(this.body.translation());
+        this.snapshot.quaternion.copy(this.body.rotation());
+
+        // Linear interpolation using alpha value
+        this.position.lerpVectors(this.snapshot.previousPosition, this.snapshot.position, alpha);
+        this.quaternion.slerpQuaternions(this.snapshot.previousQuaternion, this.snapshot.quaternion, alpha);
     }
 }
 

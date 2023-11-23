@@ -14,7 +14,7 @@ class Game {
 
   init(canvas) {
     this.graphics = new Graphics(canvas);
-    this.graphics.camera.position.set(0, 1, 5);
+    this.graphics.camera.position.set(0, 0, 8);
     this.assets.load(function() {
       this.load();
     }.bind(this));
@@ -25,6 +25,7 @@ class Game {
     var ground = new Cube({
       type: 'Fixed',
       position: { x: 0, y: -1, z: 0 },
+      rotation: { x: 0.3, y: 0, z: -0.3 },
       size: { x: 10, y: 0.2, z: 10 },
       color: '#dc265a',
       scene: this.graphics.scene,
@@ -32,37 +33,42 @@ class Game {
     });
 
     // Cube 1
-    var cube_2 = new Cube({
-      position: { x: 0, y: 1, z: 0 },
+    var cube_1 = new Cube({
+      position: { x: -0.5, y: 5, z: 0.5 },
+      rotation: { x: -0.5, y: 0, z: -0.5 },
       size: { x: 1, y: 1, z: 1 },
       scene: this.graphics.scene,
       world: this.physics.world
     });
-
+    
     // Cube 2
-    var cube_1 = new Cube({
-      position: { x: -0.5, y: 5, z: 0.5 },
-      size: { x: 1, y: 1, z: 1 },
+    var cube_2 = new Cube({
+      position: { x: 0, y: 2, z: 0 },
+      rotation: { x: 0.5, y: 0, z: 0.5 },
+      size: { x: 3, y: 3, z: 3 },
       scene: this.graphics.scene,
       world: this.physics.world
     });
 
     // Add sun to scene
     this.sun = new Sun();
+    this.sun.update(10);
     this.graphics.scene.add(this.sun);
 
     // Add physics loop
-    this.loop.add(20, function(data) {
+    this.physics.setFPS(30);
+    this.loop.add(30, function(data) {
+      cube_1.takeSnapshot();
+      cube_2.takeSnapshot();
       this.physics.world.step();
-      cube_1.position.copy(cube_1.body.translation());
-      cube_1.quaternion.copy(cube_1.body.rotation());
-      cube_2.position.copy(cube_2.body.translation());
-      cube_2.quaternion.copy(cube_2.body.rotation());
     }.bind(this));
 
     // Add render loop
     this.loop.add(-1, function(data) {
       this.sun.update(data.delta);
+      cube_1.lerp(data.alpha);
+      cube_2.lerp(data.alpha);
+
       this.graphics.render();
     }.bind(this));
 
