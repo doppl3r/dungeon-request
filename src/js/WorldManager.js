@@ -5,7 +5,6 @@ class WorldManager {
     constructor(scene, world) {
         this.scene = scene;
         this.world = world;
-        this.bodies = [];
         this.runDemo();
     }
 

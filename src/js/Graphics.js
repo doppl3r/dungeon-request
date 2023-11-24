@@ -11,7 +11,6 @@ class Graphics {
 
     // Initialize renderer components
     this.renderer = new WebGLRenderer({ alpha: true, canvas: canvas });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = PCFSoftShadowMap;
 
@@ -23,13 +22,25 @@ class Graphics {
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(this.renderPass); // Renderer
     this.composer.addPass(this.outputPass); // Gamma correction
+
+    // Add window resize logic
+    window.addEventListener('resize', function(e) { this.resize(e); }.bind(this));
+    this.resize(); // Run resize immediately
   }
 
   render() {
     this.composer.render();
   }
 
+  resize() {
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    this.setSize(width, height);
+  }
+
   setSize(width, height) {
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
     this.composer.setSize(width, height);
 	}
