@@ -4,9 +4,11 @@ class Physics {
     constructor() {
         this.gravity = { x: 0.0, y: -9.81, z: 0.0 };
         this.world = new World(this.gravity);
+        this.fps = 60;
     }
 
     setFPS(fps = 60) {
+        this.fps = fps;
         this.setTimestep(1 / fps);
     }
 

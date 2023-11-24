@@ -23,7 +23,7 @@ class Game {
 
   load() {
     // Add physics loop
-    this.loop.add(30, function(data) {
+    this.loop.add(this.physics.fps, function(data) {
       this.worldManager.updatePhysics(data);
       this.physics.step();
     }.bind(this));

@@ -59,6 +59,9 @@ class Body {
             }
         }
 
+        // Skip lerp if body type == 1 "Fixed"
+        if (this.rigidBodyDesc.status == 1) alpha = 1;
+
         // Update target position/quaternion to body values
         this.snapshot.position_2.copy(this.rigidBody.translation());
         this.snapshot.quaternion_2.copy(this.rigidBody.rotation());

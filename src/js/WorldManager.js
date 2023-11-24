@@ -1,3 +1,4 @@
+import { Body } from './Body';
 import { Cube } from './Cube';
 import { Sun } from './Sun';
 
@@ -5,21 +6,13 @@ class WorldManager {
     constructor(scene, world) {
         this.scene = scene;
         this.world = world;
+        this.bodies = [];
         this.runDemo();
     }
 
     runDemo() {
         // Ground
-        this.ground = new Cube({
-            type: 'Fixed',
-            position: { x: 0, y: -1, z: 0 },
-            rotation: { x: 0.3, y: 0, z: -0.3 },
-            size: { x: 10, y: 0.2, z: 10 },
-            color: '#dc265a',
-            scene: this.scene,
-            world: this.world
-        });
-        this.add(this.ground);
+        this.dungeon = new Body();
     
         // Cube 1
         this.cube_1 = new Cube({
@@ -48,17 +41,23 @@ class WorldManager {
     }
 
     updatePhysics(data) {
-        this.cube_1.takeSnapshot();
-        this.cube_2.takeSnapshot();
+        // Snapshot previous position/rotation for lerp
+        this.bodies.forEach(function(child) {
+            if (child.rigidBody) child.takeSnapshot();
+        });
     }
 
     updateGraphics(data) {
         this.sun.update(data.delta);
-        this.cube_1.lerp(data.alpha);
-        this.cube_2.lerp(data.alpha);
+
+        // Lerp each body model position/rotation
+        this.bodies.forEach(function(child) {
+            if (child.rigidBody) child.lerp(data.alpha);
+        });
     }
 
     add(body) {
+        this.bodies.push(body);
         body.addToWorld(this.world);
         body.addToScene(this.scene);
     }
