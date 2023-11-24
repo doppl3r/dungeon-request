@@ -15,10 +15,8 @@ class TriMesh extends Body {
         // Inherit Body class
         super(options);
 
-        // Initialize default cube mesh
-        this.mesh = options.mesh;
-        this.mesh.receiveShadow = true;
-        this.mesh.castShadow = true;
+        // Add 3D object
+        this.object.add(options.mesh);
     }
 }
 

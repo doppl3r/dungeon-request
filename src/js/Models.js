@@ -97,14 +97,6 @@ class Models {
 			if (loopType == LoopRepeat) model.animation.play();
 		}
 	}
-
-	getTriMesh(model) {
-		model.traverse(function (child) {
-			if (child.isMesh) {
-				console.log(child);
-			}
-		})
-	}
 }
 
 export { Models };

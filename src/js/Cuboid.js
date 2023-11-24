@@ -1,4 +1,4 @@
-import { BoxGeometry, MeshStandardMaterial } from 'three';
+import { BoxGeometry, Mesh, MeshStandardMaterial } from 'three';
 import { Cuboid as CuboidShape } from '@dimforge/rapier3d';
 import { Body } from './Body.js';
 
@@ -14,10 +14,12 @@ class Cuboid extends Body {
         super(options);
 
         // Initialize default cube mesh
-        this.mesh.geometry = new BoxGeometry(options.size.x, options.size.y, options.size.z);
-        this.mesh.material = new MeshStandardMaterial({ color: options.color });
-        this.mesh.receiveShadow = true;
-        this.mesh.castShadow = true;
+        var geometry = new BoxGeometry(options.size.x, options.size.y, options.size.z);
+        var material = new MeshStandardMaterial({ color: options.color });
+        var mesh = new Mesh(geometry, material);
+        mesh.receiveShadow = true;
+        mesh.castShadow = true;
+        this.object.add(mesh);
     }
 }
 
