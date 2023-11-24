@@ -14,7 +14,10 @@ class Game {
     this.physics = new Physics();
     this.physics.setFPS(30);
     this.graphics = new Graphics(canvas);
-    this.graphics.camera.position.set(0, 0, 8);
+    this.graphics.camera.position.set(0, 10, 8);
+    this.graphics.camera.lookAt(0, 0, 2);
+    //this.graphics.camera.rotation.set(-Math.PI / 4, 0, 0);
+
     this.worldManager = new WorldManager(this.graphics.scene, this.physics.world);
     this.assets.load(function() {
       this.load();
@@ -22,6 +25,9 @@ class Game {
   }
 
   load() {
+    // Start demo world
+    this.worldManager.runDemo();
+
     // Add physics loop
     this.loop.add(this.physics.fps, function(data) {
       this.worldManager.updatePhysics(data);

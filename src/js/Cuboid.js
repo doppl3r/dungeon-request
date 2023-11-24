@@ -1,13 +1,13 @@
 import { BoxGeometry, MeshStandardMaterial } from 'three';
-import { Cuboid } from '@dimforge/rapier3d';
+import { Cuboid as CuboidShape } from '@dimforge/rapier3d';
 import { Body } from './Body.js';
 
-class Cube extends Body {
+class Cuboid extends Body {
     constructor(options) {
         // Assign body shape
         options = Object.assign({
             color: '#ffffff',
-            shape: new Cuboid(options.size.x / 2, options.size.y / 2, options.size.z / 2)
+            shape: new CuboidShape(options.size.x / 2, options.size.y / 2, options.size.z / 2)
         }, options);
 
         // Inherit Body class
@@ -21,4 +21,4 @@ class Cube extends Body {
     }
 }
 
-export { Cube };
+export { Cuboid };

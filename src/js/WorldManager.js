@@ -1,5 +1,6 @@
 import { Body } from './Body';
-import { Cube } from './Cube';
+import { Cuboid } from './Cuboid';
+import { TriMesh } from './TriMesh';
 import { Sun } from './Sun';
 
 class WorldManager {
@@ -7,32 +8,32 @@ class WorldManager {
         this.scene = scene;
         this.world = world;
         this.bodies = [];
-        this.runDemo();
     }
 
     runDemo() {
-        // Ground
-        this.dungeon = new Body();
+        // Dungeon trimesh
+        var dungeon = new TriMesh({ mesh: game.assets.models.cache['dungeon-6'].children[1] });
+        this.add(dungeon);
     
-        // Cube 1
-        this.cube_1 = new Cube({
-            position: { x: -0.5, y: 5, z: 0.5 },
+        // Cuboid 1
+        var cuboid_1 = new Cuboid({
+            position: { x: -4, y: 5, z: 4 },
             rotation: { x: -0.5, y: 0, z: -0.5 },
             size: { x: 1, y: 1, z: 1 },
             scene: this.scene,
             world: this.world
         });
-        this.add(this.cube_1);
+        this.add(cuboid_1);
         
-        // Cube 2
-        this.cube_2 = new Cube({
-            position: { x: 0, y: 2, z: 0 },
+        // Cuboid 2
+        var cuboid_2 = new Cuboid({
+            position: { x: 4, y: 5, z: 2 },
             rotation: { x: 0.5, y: 0, z: 0.5 },
             size: { x: 3, y: 3, z: 3 },
             scene: this.scene,
             world: this.world
         });
-        this.add(this.cube_2);
+        this.add(cuboid_2);
     
         // Add sun to scene
         this.sun = new Sun();

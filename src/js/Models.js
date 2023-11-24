@@ -10,7 +10,6 @@ class Models {
 	}
 
 	load() {
-		var _this = this;
 		for (const [key, value] of Object.entries(json)) {
 			this.loader.load(value.url, function(gltf) {
 				// Load model from gltf.scene Object3D (includes SkinnedMesh)
@@ -18,11 +17,15 @@ class Models {
 				model.name = key;
 				model.animations = gltf.animations;
 				model.userData = { ...value.userData };
-				_this.setShadows(model);
-				_this.applyUserData(model);
-				_this.cache[key] = model;
-			});
+				this.setShadows(model);
+				this.applyUserData(model);
+				this.cache[key] = model;
+			}.bind(this));
 		}
+	}
+	
+	get(name) {
+		return this.cache[name];
 	}
 
 	clone(object) {
@@ -59,7 +62,7 @@ class Models {
 				child.castShadow = true
 				//child.receiveShadow = true
 			}
-		})
+		});
 	}
 
 	applyUserData(model) {
@@ -93,6 +96,14 @@ class Models {
 			// Start animation if looping
 			if (loopType == LoopRepeat) model.animation.play();
 		}
+	}
+
+	getTriMesh(model) {
+		model.traverse(function (child) {
+			if (child.isMesh) {
+				console.log(child);
+			}
+		})
 	}
 }
 
