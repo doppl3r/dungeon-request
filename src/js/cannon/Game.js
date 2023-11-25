@@ -17,7 +17,7 @@ class Game {
   init(canvas) {
     this.graphics = new Graphics(canvas);
     this.graphics.camera.position.set(0, 10, 8);
-    this.graphics.camera.lookAt(0, 0, 2);
+    this.graphics.addOrbitControls({ x: 0, y: 0, z: 2 });
     this.physics = new Physics();
     this.physics.setFPS(30);
 

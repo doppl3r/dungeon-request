@@ -2,12 +2,14 @@ import { PCFSoftShadowMap, PerspectiveCamera, Scene, WebGLRenderer } from 'three
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 class Graphics {
   constructor(canvas) {
     // Initialize camera and scene
     this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
     this.scene = new Scene();
+    this.canvas = canvas;
 
     // Initialize renderer components
     this.renderer = new WebGLRenderer({ alpha: true, canvas: canvas });
@@ -44,6 +46,13 @@ class Graphics {
     this.renderer.setSize(width, height);
     this.composer.setSize(width, height);
 	}
+
+  addOrbitControls(position = { x: 0, y: 0, z: 0 }) {
+    // Add orbit controls
+    this.controls = new OrbitControls(this.camera, this.canvas);
+    this.controls.target.copy(position);
+    this.controls.update();
+  }
 }
 
 export { Graphics };

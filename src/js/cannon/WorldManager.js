@@ -32,9 +32,9 @@ class WorldManager {
 
     // Add random spheres
     for (var i = 0; i < 200; i++) {
-      var x = (Math.random() * 20) - 10;
+      var x = (Math.random() * 16) - 8;
       var y = 4;
-      var z = (Math.random() * 20) - 10;
+      var z = (Math.random() * 16) - 8;
       var radius = (Math.random() * 0.25) + 0.25;
       var sphere = new Sphere({
         color: '#67d017',
