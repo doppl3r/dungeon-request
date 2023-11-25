@@ -8,84 +8,84 @@
 */
 
 class Loop {
-    constructor() {
-        this.startTime = 0;
-        this.oldTime = 0;
-        this.elapsedTime = 0;
-        this.scale = 1;
-        this.running = false;
-        this.functions = [];
-    }
+  constructor() {
+    this.startTime = 0;
+    this.oldTime = 0;
+    this.elapsedTime = 0;
+    this.scale = 1;
+    this.running = false;
+    this.functions = [];
+  }
 
-    add(fps = 60, callback = function(){}) {
-        // Add callback function to array of functions
-        this.functions.push({
-            tick: 1 / fps,
-            sum: 0,
-            alpha: 0,
-            callback: callback // Execute function after each interval
-        });
-    }
+  add(fps = 60, callback = function(){}) {
+    // Add callback function to array of functions
+    this.functions.push({
+      tick: 1 / fps,
+      sum: 0,
+      alpha: 0,
+      callback: callback // Execute function after each interval
+    });
+  }
 
-    update(loop) {
-        if (this.running == true) {
-            // Request visual update function before next repaint
-            requestAnimationFrame(function(){ loop.update(loop); });
-    
-            // Check if functions exist
-            if (this.functions.length > 1) {
-                var delta = this.getDelta();
-                var alpha = this.functions[0].sum / this.functions[0].tick; // Set alpha to first interval
+  update(loop) {
+    if (this.running == true) {
+      // Request visual update function before next repaint
+      requestAnimationFrame(function(){ loop.update(loop); });
 
-                // Loop through array of functions (descending order)
-                for (var i = this.functions.length - 1; i >= 0; i--) {
-                    var fn = this.functions[i];
-                    fn.sum += delta;
-        
-                    // Trigger fn callback
-                    if (fn.sum > fn.tick || fn.tick == -1) {
-                        fn.sum %= fn.tick;
-                        if (fn.tick != -1) delta = fn.tick; // Set delta to target tick rate
-                        fn.callback({ delta: delta, alpha: alpha });
-                    }
-                }
-            }
+      // Check if functions exist
+      if (this.functions.length > 1) {
+        var delta = this.getDelta();
+        var alpha = this.functions[0].sum / this.functions[0].tick; // Set alpha to first interval
+
+        // Loop through array of functions (descending order)
+        for (var i = this.functions.length - 1; i >= 0; i--) {
+          var fn = this.functions[i];
+          fn.sum += delta;
+
+          // Trigger fn callback
+          if (fn.sum > fn.tick || fn.tick == -1) {
+            fn.sum %= fn.tick;
+            if (fn.tick != -1) delta = fn.tick; // Set delta to target tick rate
+            fn.callback({ delta: delta, alpha: alpha });
+          }
         }
+      }
     }
+  }
 
-    start() {
-        this.startTime = this.now();
-        this.oldTime = this.startTime;
-        this.elapsedTime = 0;
-        this.running = true;
-        this.update(this);
+  start() {
+    this.startTime = this.now();
+    this.oldTime = this.startTime;
+    this.elapsedTime = 0;
+    this.running = true;
+    this.update(this);
+  }
+
+  stop() {
+    this.getElapsedTime();
+    this.running = false;
+  }
+
+  getElapsedTime() {
+    this.getDelta();
+    return this.elapsedTime;
+  }
+
+  getDelta() {
+    let diff = 0;
+
+    // Update the elapsed time if the clock is running
+    if (this.running) {
+      const newTime = this.now();
+      diff = (newTime - this.oldTime) / 1000;
+      this.oldTime = newTime;
+      this.elapsedTime += diff;
     }
+    return diff * this.scale;
+  }
 
-    stop() {
-        this.getElapsedTime();
-        this.running = false;
-    }
-
-    getElapsedTime() {
-        this.getDelta();
-        return this.elapsedTime;
-    }
-
-    getDelta() {
-        let diff = 0;
-
-        // Update the elapsed time if the clock is running
-        if (this.running) {
-            const newTime = this.now();
-            diff = (newTime - this.oldTime) / 1000;
-            this.oldTime = newTime;
-            this.elapsedTime += diff;
-        }
-        return diff * this.scale;
-    }
-
-    now() {
-		return ( typeof performance === 'undefined' ? Date : performance ).now(); // see #10732
+  now() {
+    return ( typeof performance === 'undefined' ? Date : performance ).now(); // see #10732
 	}
 }
 

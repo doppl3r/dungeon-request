@@ -1,4 +1,3 @@
-import { Body } from './Body';
 import { Cuboid } from './Cuboid';
 import { TriMesh } from './TriMesh';
 import { Sun } from './Sun';
@@ -8,6 +7,7 @@ class WorldManager {
     this.scene = scene;
     this.world = world;
     this.bodies = [];
+    this.debug = false;
   }
 
   runDemo() {
@@ -55,25 +55,26 @@ class WorldManager {
   }
 
   updatePhysics(data) {
-      // Snapshot previous position/rotation for lerp
-      this.bodies.forEach(function(child) {
-          if (child.rigidBody) child.takeSnapshot();
-      });
+    // Snapshot previous position/rotation for lerp
+    this.bodies.forEach(function(child) {
+        if (child.rigidBody) child.takeSnapshot();
+    });
   }
 
   updateGraphics(data) {
-      this.sun.update(data.delta);
+    // Update sun orbit angle
+    this.sun.update(data.delta);
 
-      // Lerp each body model position/rotation
-      this.bodies.forEach(function(child) {
-          if (child.rigidBody) child.lerp(data.alpha);
-      });
+    // Lerp each body model position/rotation
+    this.bodies.forEach(function(child) {
+      if (child.rigidBody) child.lerp(data.alpha);
+    });
   }
 
   add(body) {
-      this.bodies.push(body);
-      body.addToWorld(this.world);
-      body.addToScene(this.scene);
+    this.bodies.push(body);
+    body.addToWorld(this.world);
+    body.addToScene(this.scene);
   }
 }
 
