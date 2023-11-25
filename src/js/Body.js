@@ -50,10 +50,10 @@ class Body {
     // Create initial snapshot
     if (this.snapshot == null) {
       this.snapshot = {
-        position_1: new Vector3(),
-        position_2: new Vector3(),
-        quaternion_1: new Quaternion(),
-        quaternion_2: new Quaternion(),
+        position_1: new Vector3().copy(this.rigidBody.translation()),
+        position_2: new Vector3().copy(this.rigidBody.translation()),
+        quaternion_1: new Quaternion().copy(this.rigidBody.rotation()),
+        quaternion_2: new Quaternion().copy(this.rigidBody.rotation()),
       }
     }
 

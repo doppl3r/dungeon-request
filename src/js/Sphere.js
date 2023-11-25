@@ -18,7 +18,7 @@ class Sphere extends Body {
 
     // Initialize default cube mesh
     var geometry = new SphereGeometry(options.radius, options.widthSegments, options.heightSegments);
-    var material = new MeshNormalMaterial({ color: options.color });
+    var material = new MeshNormalMaterial();
     var mesh = new Mesh(geometry, material);
     mesh.receiveShadow = true;
     mesh.castShadow = true;
