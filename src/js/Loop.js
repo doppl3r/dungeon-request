@@ -33,7 +33,7 @@ class Loop {
       requestAnimationFrame(function(){ loop.update(loop); });
 
       // Check if functions exist
-      if (this.functions.length > 1) {
+      if (this.functions.length > 0) {
         var delta = this.getDelta();
         var alpha = this.functions[0].sum / this.functions[0].tick; // Set alpha to first interval
 
