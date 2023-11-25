@@ -1,6 +1,6 @@
 import { Sphere } from './Sphere';
 import { TriMesh } from './TriMesh';
-import { Sun } from './Sun';
+import { Sun } from '../Sun';
 
 class WorldManager {
   constructor(scene, world) {
@@ -25,7 +25,7 @@ class WorldManager {
 
     // Create TriMeshes from dungeon
     meshes.forEach(function(mesh) {
-      var type = mesh.name.includes('-Dynamic') ? 'Dynamic' : 'Fixed';
+      var type = mesh.name.includes('-Dynamic') ? 1 : 2;
       var triMesh = new TriMesh({ mesh: mesh, type: type });
       this.add(triMesh);
     }.bind(this));
@@ -36,11 +36,9 @@ class WorldManager {
       var y = (Math.random() * 20);
       var z = (Math.random() * 20) - 10;
       var radius = (Math.random() * 0.5) + 0.5;
-      var rotation = Math.random() * Math.PI;
       var sphere = new Sphere({
         color: '#67d017',
         position: { x: x, y: y, z: z },
-        rotation: { x: rotation, y: rotation, z: rotation },
         radius: radius
       });
       this.add(sphere);
@@ -54,9 +52,7 @@ class WorldManager {
 
   updatePhysics(data) {
     // Snapshot previous position/rotation for lerp
-    this.bodies.forEach(function(child) {
-        if (child.rigidBody) child.takeSnapshot();
-    });
+    
   }
 
   updateGraphics(data) {

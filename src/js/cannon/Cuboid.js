@@ -1,5 +1,5 @@
 import { BoxGeometry, Mesh, MeshNormalMaterial } from 'three';
-import { Cuboid as CuboidShape } from '@dimforge/rapier3d';
+import { Box, Vec3 } from 'cannon-es';
 import { Body } from './Body.js';
 
 class Cuboid extends Body {
@@ -7,7 +7,8 @@ class Cuboid extends Body {
     // Assign body shape
     options = Object.assign({
       color: '#ffffff',
-      shape: new CuboidShape(options.size.x / 2, options.size.y / 2, options.size.z / 2)
+      type: 1, // 1 = DYNAMIC, 4 = KINEMATIC, 2 = STATIC
+      shape: new Box(new Vec3(options.size.x / 2, options.size.y / 2, options.size.z / 2))
     }, options);
 
     // Inherit Body class

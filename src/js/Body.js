@@ -12,9 +12,7 @@ class Body {
       scale: { x: 1, y: 1, z: 1 },
       position: { x: 0, y: 0, z: 0 },
       rotation: { x: 0, y: 0, z: 0 },
-      shape: null,
-      scene: null,
-      world: null
+      shape: null
     }, options);
 
     // Create an empty object

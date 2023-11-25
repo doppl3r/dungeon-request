@@ -1,6 +1,7 @@
 <script setup>
 	import '../scss/style.scss';
 	import { Game } from '../js/Game.js';
+	//import { Game } from '../js/cannon/Game.js';
 	import { ref, onMounted } from 'vue';
 
 	// Initialize app and expose to window scope
