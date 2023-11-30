@@ -11,8 +11,6 @@
   "devDependencies": {
     "@dimforge/rapier3d": "^0.11.2",
     "@vitejs/plugin-vue": "^4.2.3",
-    "cannon-es": "^0.20.0",
-    "cannon-es-debugger": "^1.0.0",
     "sass": "^1.63.6",
     "three": "^0.154.0",
     "vite": "^4.3.9",
