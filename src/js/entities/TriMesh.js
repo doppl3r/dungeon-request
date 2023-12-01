@@ -1,5 +1,5 @@
 import { TriMesh as TriMeshShape } from '@dimforge/rapier3d';
-import { Entity } from './entities/Entity.js';
+import { Entity } from './Entity.js';
 
 class TriMesh extends Entity {
 	constructor(options) {

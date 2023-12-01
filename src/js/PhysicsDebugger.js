@@ -1,5 +1,9 @@
 import { BufferAttribute, BufferGeometry, LineBasicMaterial, LineSegments } from 'three';
 
+/*
+  The Physics Debugger provides 3D lines to the scene from the physics world buffer.
+*/
+
 class PhysicsDebugger extends LineSegments {
   constructor(scene, world) {
     super();
@@ -8,12 +12,24 @@ class PhysicsDebugger extends LineSegments {
     this.material = new LineBasicMaterial({ color: 0xffffff, vertexColors: true });
     this.geometry =  new BufferGeometry();
     this.scene.add(this);
+    this.enabled = true;
   }
 
   update() {
-    this.buffers = this.world.debugRender();
-    this.geometry.setAttribute('position', new BufferAttribute(this.buffers.vertices, 3));
-    this.geometry.setAttribute('color', new BufferAttribute(this.buffers.colors, 4));
+    if (this.visible == true) {
+      this.visible = true;
+      this.buffers = this.world.debugRender();
+      this.geometry.setAttribute('position', new BufferAttribute(this.buffers.vertices, 3));
+      this.geometry.setAttribute('color', new BufferAttribute(this.buffers.colors, 4));
+    }
+  }
+
+  enable() {
+    this.visible = true;
+  }
+
+  disable() {
+    this.visible = false;
   }
 }
 

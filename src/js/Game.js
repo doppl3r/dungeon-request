@@ -2,8 +2,7 @@ import { Assets } from './Assets.js';
 import { Loop } from './Loop';
 import { Graphics } from './Graphics';
 import { Physics } from './Physics';
-import { PhysicsDebugger } from './PhysicsDebugger';
-import { WorldManager } from './WorldManager';
+import { EntityManager } from './EntityManager.js';
 import Stats from './Stats.js';
 
 class Game {
@@ -20,8 +19,9 @@ class Game {
     this.graphics.addOrbitControls({ x: 0, y: 0, z: 2 });
     this.physics = new Physics();
     this.physics.setFPS(30);
+    this.entityManager = new EntityManager(this.graphics.scene, this.physics.world);
 
-    this.worldManager = new WorldManager(this.graphics.scene, this.physics.world);
+    // Load game after assets have loaded
     this.assets.load(function() {
       this.load();
     }.bind(this));
@@ -29,20 +29,18 @@ class Game {
 
   load() {
     // Start demo world
-    this.worldManager.runDemo();
-    this.physicsDebugger = new PhysicsDebugger(this.graphics.scene, this.physics.world);
+    this.entityManager.runDemo();
 
     // Add physics loop
     this.loop.add(this.physics.fps, function(data) {
-      this.worldManager.updatePhysics(data);
+      this.entityManager.updatePhysics(data);
       this.physics.step();
-      //this.physicsDebugger.update()
     }.bind(this));
 
     // Add graphic loop
     this.loop.add(-1, function(data) {
       this.stats.begin();
-      this.worldManager.updateGraphics(data);
+      this.entityManager.updateGraphics(data);
       this.graphics.render();
       this.stats.end();
     }.bind(this));
