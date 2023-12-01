@@ -2,6 +2,7 @@ import { PCFSoftShadowMap, PerspectiveCamera, Scene, WebGLRenderer } from 'three
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 class Graphics {
@@ -13,6 +14,7 @@ class Graphics {
 
     // Initialize renderer components
     this.renderer = new WebGLRenderer({ alpha: true, canvas: canvas });
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = PCFSoftShadowMap;
 
@@ -20,10 +22,15 @@ class Graphics {
     this.renderPass = new RenderPass(this.scene, this.camera);
     this.outputPass = new OutputPass(); // {} = use default resolution
 
+    // Initialize (optional) effects
+    this.smaaPass = new SMAAPass(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+    this.smaaPass.enabled = false; // Default off
+
     // Add effects to composer
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(this.renderPass); // Renderer
-    this.composer.addPass(this.outputPass); // Gamma correction
+    this.composer.addPass(this.smaaPass); // Anti-aliasing
+    this.composer.addPass(this.outputPass); // Gamma/sRGB correction
 
     // Add window resize logic
     window.addEventListener('resize', function(e) { this.resize(e); }.bind(this));
