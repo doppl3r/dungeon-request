@@ -4,7 +4,7 @@ import { BufferAttribute, BufferGeometry, LineBasicMaterial, LineSegments } from
   The Physics Debugger provides 3D lines to the scene from the physics world buffer.
 */
 
-class PhysicsDebugger extends LineSegments {
+class EntityDebugger extends LineSegments {
   constructor(scene, world) {
     super();
     this.scene = scene;
@@ -33,4 +33,4 @@ class PhysicsDebugger extends LineSegments {
   }
 }
 
-export { PhysicsDebugger };
+export { EntityDebugger };

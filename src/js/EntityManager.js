@@ -1,4 +1,4 @@
-import { PhysicsDebugger } from './PhysicsDebugger';
+import { EntityDebugger } from './EntityDebugger';
 import { Sphere } from './entities/Sphere';
 import { TriMesh } from './entities/TriMesh';
 import { Sun } from './Sun';
@@ -8,7 +8,7 @@ class EntityManager {
     this.scene = scene;
     this.world = world;
     this.entities = [];
-    this.debugger = new PhysicsDebugger(scene, world);
+    this.debugger = new EntityDebugger(scene, world);
     this.debugger.disable();
   }
 
