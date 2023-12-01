@@ -16,6 +16,7 @@ class Game {
 
   init(canvas) {
     this.graphics = new Graphics(canvas);
+    this.graphics.setTick(-1);
     this.graphics.camera.position.set(0, 10, 8);
     this.graphics.addOrbitControls({ x: 0, y: 0, z: 2 });
     this.physics = new Physics();
@@ -41,8 +42,8 @@ class Game {
       this.physics.update(data);
     }.bind(this));
 
-    // Add graphic loop (unlimited)
-    this.loop.add(-1, function(data) {
+    // Add graphic loop
+    this.loop.add(this.graphics.tick, function(data) {
       this.stats.begin();
       this.entityManager.updateGraphics(data);
       this.graphics.update(data);

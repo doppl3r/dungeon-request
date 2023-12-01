@@ -35,6 +35,11 @@ class Graphics {
     // Add window resize logic
     window.addEventListener('resize', function(e) { this.resize(e); }.bind(this));
     this.resize(); // Run resize immediately
+    this.setTick(60);
+  }
+
+  setTick(tick = 60) {
+    this.tick = tick;
   }
 
   update(data) {

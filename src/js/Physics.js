@@ -4,7 +4,7 @@ class Physics {
   constructor() {
     this.gravity = { x: 0.0, y: -9.81, z: 0.0 };
     this.world = new World(this.gravity);
-    this.tick = 60;
+    this.setTick(60);
   }
 
   setTick(tick = 60) {
