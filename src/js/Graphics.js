@@ -8,7 +8,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 class Graphics {
   constructor(canvas) {
     // Initialize camera and scene
-    this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
+    this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);
     this.scene = new Scene();
     this.canvas = canvas;
 

@@ -1,8 +1,13 @@
 import { Euler, Object3D, Quaternion, Vector3 } from 'three';
 import { ColliderDesc, RigidBodyDesc, RigidBodyType } from '@dimforge/rapier3d';
 
-// A body contains a single 3D object and a single rigid body object
-class Body {
+/*
+  An entity contains a single 3D object and a single rigid body object. An entity
+  assumes that the rigid body is being updated at a lower interval, and leverages
+  the lerp() function to up the 3D object at a higher interval (smoother results)
+*/
+
+class Entity {
   constructor(options) {
     // Set options with default values
     options = Object.assign({
@@ -68,6 +73,14 @@ class Body {
     this.object.position.lerpVectors(this.snapshot.position_1, this.snapshot.position_2, alpha);
     this.object.quaternion.slerpQuaternions(this.snapshot.quaternion_1, this.snapshot.quaternion_2, alpha);
   }
+
+  update() {
+    
+  }
+
+  toJSON() {
+    
+  }
 }
 
-export { Body };
+export { Entity };

@@ -1,8 +1,8 @@
-import { SphereGeometry, Mesh, MeshNormalMaterial } from 'three';
+import { SphereGeometry, Mesh, MeshStandardMaterial } from 'three';
 import { Ball } from '@dimforge/rapier3d';
-import { Body } from './Body.js';
+import { Entity } from './Entity.js';
 
-class Sphere extends Body {
+class Sphere extends Entity {
   constructor(options) {
     // Assign body shape
     options = Object.assign({
@@ -18,7 +18,7 @@ class Sphere extends Body {
 
     // Initialize default cube mesh
     var geometry = new SphereGeometry(options.radius, options.widthSegments, options.heightSegments);
-    var material = new MeshNormalMaterial();
+    var material = new MeshStandardMaterial({ color: options.color });
     var mesh = new Mesh(geometry, material);
     mesh.receiveShadow = true;
     mesh.castShadow = true;

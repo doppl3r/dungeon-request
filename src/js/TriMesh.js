@@ -1,7 +1,7 @@
 import { TriMesh as TriMeshShape } from '@dimforge/rapier3d';
-import { Body } from './Body.js';
+import { Entity } from './entities/Entity.js';
 
-class TriMesh extends Body {
+class TriMesh extends Entity {
 	constructor(options) {
 		var vertices = options.mesh.geometry.attributes.position.array;
 		var indices = options.mesh.geometry.index.array;

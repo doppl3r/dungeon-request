@@ -1,12 +1,13 @@
-import { Sphere } from './Sphere';
+import { Sphere } from './entities/Sphere';
 import { TriMesh } from './TriMesh';
+import { EntityManager } from './EntityManager';
 import { Sun } from './Sun';
 
 class WorldManager {
   constructor(scene, world) {
     this.scene = scene;
     this.world = world;
-    this.bodies = [];
+    this.entityManager = new EntityManager();
     this.debug = false;
   }
 
@@ -54,9 +55,7 @@ class WorldManager {
 
   updatePhysics(data) {
     // Snapshot previous position/rotation for lerp
-    this.bodies.forEach(function(child) {
-        if (child.rigidBody) child.takeSnapshot();
-    });
+    this.entityManager.updatePhysics(data);
   }
 
   updateGraphics(data) {
@@ -64,15 +63,13 @@ class WorldManager {
     this.sun.update(data.delta);
 
     // Lerp each body model position/rotation
-    this.bodies.forEach(function(child) {
-      if (child.rigidBody) child.lerp(data.alpha);
-    });
+    this.entityManager.updateGraphics(data);
   }
 
-  add(body) {
-    this.bodies.push(body);
-    body.addToWorld(this.world);
-    body.addToScene(this.scene);
+  add(entity) {
+    this.entityManager.add(entity);
+    entity.addToWorld(this.world);
+    entity.addToScene(this.scene);
   }
 }
 
