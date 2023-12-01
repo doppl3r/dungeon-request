@@ -4,16 +4,20 @@ class Physics {
   constructor() {
     this.gravity = { x: 0.0, y: -9.81, z: 0.0 };
     this.world = new World(this.gravity);
-    this.fps = 60;
+    this.tick = 60;
   }
 
-  setFPS(fps = 60) {
-    this.fps = fps;
-    this.setTimestep(1 / fps);
+  setTick(tick = 60) {
+    this.tick = tick;
+    this.setTimestep(1 / tick);
   }
 
   setTimestep(timestep = 1 / 60) {
     this.world.timestep = timestep;
+  }
+
+  update(data) {
+    this.step();
   }
 
   step() {

@@ -3,6 +3,7 @@ import { Loop } from './Loop';
 import { Graphics } from './Graphics';
 import { Physics } from './Physics';
 import { EntityManager } from './EntityManager.js';
+import { Network } from './Network.js';
 import Stats from './Stats.js';
 
 class Game {
@@ -18,8 +19,10 @@ class Game {
     this.graphics.camera.position.set(0, 10, 8);
     this.graphics.addOrbitControls({ x: 0, y: 0, z: 2 });
     this.physics = new Physics();
-    this.physics.setFPS(30);
+    this.physics.setTick(30);
     this.entityManager = new EntityManager(this.graphics.scene, this.physics.world);
+    this.network = new Network('speed-looters');
+    this.network.setTick(10);
 
     // Load game after assets have loaded
     this.assets.load(function() {
@@ -30,19 +33,25 @@ class Game {
   load() {
     // Start demo world
     this.entityManager.runDemo();
+    this.network.host();
 
     // Add physics loop
-    this.loop.add(this.physics.fps, function(data) {
+    this.loop.add(this.physics.tick, function(data) {
       this.entityManager.updatePhysics(data);
-      this.physics.step();
+      this.physics.update(data);
     }.bind(this));
 
-    // Add graphic loop
+    // Add graphic loop (unlimited)
     this.loop.add(-1, function(data) {
       this.stats.begin();
       this.entityManager.updateGraphics(data);
-      this.graphics.render();
+      this.graphics.update(data);
       this.stats.end();
+    }.bind(this));
+
+    // Add network loop
+    this.loop.add(this.network.tick, function(data) {
+      this.network.update(data);
     }.bind(this));
 
     // Start loop

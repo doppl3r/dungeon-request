@@ -17,10 +17,10 @@ class Loop {
     this.functions = [];
   }
 
-  add(fps = 60, callback = function(){}) {
+  add(tick = 60, callback = function(){}) {
     // Add callback function to array of functions
     this.functions.push({
-      tick: 1 / fps,
+      rate: 1 / tick,
       sum: 0,
       alpha: 0,
       callback: callback // Execute function after each interval
@@ -35,7 +35,7 @@ class Loop {
       // Check if functions exist
       if (this.functions.length > 0) {
         var delta = this.getDelta();
-        var alpha = this.functions[0].sum / this.functions[0].tick; // Set alpha to first interval
+        var alpha = this.functions[0].sum / this.functions[0].rate; // Set alpha relative to first interval
 
         // Loop through array of functions (descending order)
         for (var i = this.functions.length - 1; i >= 0; i--) {
@@ -43,9 +43,8 @@ class Loop {
           fn.sum += delta;
 
           // Trigger fn callback
-          if (fn.sum > fn.tick || fn.tick == -1) {
-            fn.sum %= fn.tick;
-            if (fn.tick != -1) delta = fn.tick; // Set delta to target tick rate
+          if (fn.sum > fn.rate || fn.rate == -1) {
+            fn.sum %= fn.rate;
             fn.callback({ delta: delta, alpha: alpha });
           }
         }

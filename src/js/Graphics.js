@@ -37,6 +37,10 @@ class Graphics {
     this.resize(); // Run resize immediately
   }
 
+  update(data) {
+    this.render();
+  }
+
   render() {
     this.composer.render();
   }
