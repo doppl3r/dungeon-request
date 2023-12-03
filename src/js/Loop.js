@@ -85,7 +85,7 @@ class Loop {
 
   now() {
     return ( typeof performance === 'undefined' ? Date : performance ).now(); // see #10732
-	}
+  }
 }
 
 export { Loop };

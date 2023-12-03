@@ -61,7 +61,7 @@ class Graphics {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
     this.composer.setSize(width, height);
-	}
+  }
 
   addOrbitControls(position = { x: 0, y: 0, z: 0 }) {
     // Add orbit controls

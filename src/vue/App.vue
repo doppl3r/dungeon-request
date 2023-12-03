@@ -1,19 +1,18 @@
 <script setup>
-	import '../scss/style.scss';
-	import { Game } from '../js/Game.js';
-	//import { Game } from '../js/cannon/Game.js';
-	import { ref, onMounted } from 'vue';
+  import '../scss/style.scss';
+  import { Game } from '../js/Game.js';
+  import { ref, onMounted } from 'vue';
 
-	// Initialize app and expose to window scope
-	var canvas = ref();
-	var game = window.game = new Game();
+  // Initialize app and expose to window scope
+  var canvas = ref();
+  var game = window.game = new Game();
 
-	onMounted(function() {
-		game.init(canvas.value);
-	});
+  onMounted(function() {
+    game.init(canvas.value);
+  });
 </script>
 
 <template>
-	<canvas ref="canvas"></canvas>
-	<div class="ui"></div>
+  <canvas ref="canvas"></canvas>
+  <div class="ui"></div>
 </template>

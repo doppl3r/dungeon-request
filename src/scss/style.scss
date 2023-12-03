@@ -3,66 +3,66 @@
 
 /* Global styling */
 * {
-	box-sizing: border-box;
-	user-select: none;
-	font-size: 100%;
-	outline: none !important;
+  box-sizing: border-box;
+  user-select: none;
+  font-size: 100%;
+  outline: none !important;
 }
 
 html {
-	background-color: #000000;
-	cursor: url('/img/png/icon-cursor.png'), auto;
-	font-family: 'goblin', Arial;
-	font-size: clamp(16px, 4vh, 32px);
-	line-height: clamp(16px, 4vh, 32px);
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
-	min-width: 40rem; // 640px
-	min-height: 22.5rem; // 360px
+  background-color: #000000;
+  cursor: url('/img/png/icon-cursor.png'), auto;
+  font-family: 'goblin', Arial;
+  font-size: clamp(16px, 4vh, 32px);
+  line-height: clamp(16px, 4vh, 32px);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  min-width: 40rem; // 640px
+  min-height: 22.5rem; // 360px
 
-	body {
-		font-family: inherit; // Resolve Chrome override
-		width: inherit;
-		height: inherit;
-		margin: 0;
+  body {
+    font-family: inherit; // Resolve Chrome override
+    width: inherit;
+    height: inherit;
+    margin: 0;
 
-		a {
-			text-decoration: none;
-			cursor: inherit;
-			user-select: none;
-			-webkit-user-drag: none;
-		}
+    a {
+      text-decoration: none;
+      cursor: inherit;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
 
-		button {
-			cursor: inherit;
-		}
+    button {
+      cursor: inherit;
+    }
 
-		#app {
-			width: inherit;
-			height: inherit;
+    #app {
+      width: inherit;
+      height: inherit;
 
-			canvas {
-				image-rendering: pixelated;
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: inherit;
-				height: inherit;
-				z-index: 0;
-			}
+      canvas {
+        image-rendering: pixelated;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: inherit;
+        height: inherit;
+        z-index: 0;
+      }
 
-			.ui {
-				overflow: hidden;
-				position: absolute;
-				pointer-events: none;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-			}
-		}
-	}
+      .ui {
+        overflow: hidden;
+        position: absolute;
+        pointer-events: none;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+    }
+  }
 }
 
 /* Scrollbar */
@@ -76,6 +76,6 @@ html {
 
 /* Focus */
 *:focus-visible {
-	outline: 0.125rem solid #4772B3;
-	outline-offset: -0.125rem;
+  outline: 0.125rem solid #4772B3;
+  outline-offset: -0.125rem;
 }

@@ -2,11 +2,11 @@ import { Peer } from 'peerjs';
 import { MathUtils } from 'three';
 
 class Network {
-	constructor(prefix = '') {
-		this.prefix = prefix;
+  constructor(prefix = '') {
+    this.prefix = prefix;
     this.isHost = false;
     this.setTick(10);
-	}
+  }
 
   open(id, callback = function(){}) {
     // Generate new id
