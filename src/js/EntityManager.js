@@ -1,4 +1,5 @@
 import { EntityDebugger } from './EntityDebugger';
+import { Character } from './entities/Character';
 import { Sphere } from './entities/Sphere';
 import { TriMesh } from './entities/TriMesh';
 import { Sun } from './Sun';
@@ -9,10 +10,14 @@ class EntityManager {
     this.world = world;
     this.entities = [];
     this.debugger = new EntityDebugger(scene, world);
-    this.debugger.disable();
+    //this.debugger.disable();
   }
 
   runDemo() {
+    // Add player
+    var player = new Character();
+    this.add(player);
+
     // Add meshes from dungeon model
     var dungeon = game.assets.models.cache['dungeon'];
     var meshes = [];
@@ -77,6 +82,13 @@ class EntityManager {
     this.entities.push(body);
     body.addToWorld(this.world);
     body.addToScene(this.scene);
+  }
+
+  remove(body) {
+    var index = this.entities.indexOf(body);
+    this.entities.splice(index, 1);
+    body.removeFromWorld(this.world);
+    body.removeFromScene(this.scene);
   }
 }
 

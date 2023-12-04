@@ -6,13 +6,13 @@ class TriMesh extends Entity {
     var vertices = options.mesh.geometry.attributes.position.array;
     var indices = options.mesh.geometry.index.array;
 
-    // Assign body shape
-    options = Object.assign({
-      shape: new TriMeshShape(vertices, indices),
-      type: 'Fixed'
-    }, options);
+    // Resolve null option values
+    if (options.type == null) options.type = 'Fixed'
 
-    // Inherit Body class
+    // Create physical shape
+    options.shape = new TriMeshShape(vertices, indices);
+
+    // Inherit Entity class
     super(options);
 
     // Add 3D object

@@ -41,8 +41,16 @@ class Entity {
     this.lerp(1);
   }
 
+  removeFromWorld(world) {
+    world.removeRigidBody(this.rigidBody); // Includes colliders that were attached
+  }
+
   addToScene(scene) {
     scene.add(this.object);
+  }
+
+  removeFromScene(scene) {
+    scene.remove(this.object);
   }
 
   takeSnapshot() {

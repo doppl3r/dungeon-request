@@ -4,12 +4,12 @@ import { Entity } from './Entity.js';
 
 class Cuboid extends Entity {
   constructor(options) {
-    // Assign body shape
+    // Resolve null option values
     if (options.size == null) options.size = { x: 1, y: 1, z: 1 };
-    options = Object.assign({
-      color: '#ffffff',
-      shape: new CuboidShape(options.size.x / 2, options.size.y / 2, options.size.z / 2)
-    }, options);
+    if (options.color == null) options.color = '#ffffff';
+
+    // Create physical shape
+    options.shape = new CuboidShape(options.size.x / 2, options.size.y / 2, options.size.z / 2)
 
     // Inherit Entity class
     super(options);

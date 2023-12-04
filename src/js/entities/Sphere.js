@@ -3,17 +3,17 @@ import { Ball } from '@dimforge/rapier3d';
 import { Entity } from './Entity.js';
 
 class Sphere extends Entity {
-  constructor(options) {
-    // Assign body shape
-    options = Object.assign({
-      color: '#ffffff',
-      radius: 1,
-      widthSegments: 32,
-      heightSegments: 16,
-      shape: new Ball(options.radius)
-    }, options);
+  constructor(options = {}) {
+    // Resolve null option values
+    if (options.color == null) options.color = '#ffffff';
+    if (options.radius == null) options.radius = 1;
+    if (options.widthSegments == null) options.widthSegments = 32;
+    if (options.heightSegments == null) options.heightSegments = 32;
 
-    // Inherit Body class
+    // Create physical shape
+    options.shape = new Ball(options.radius);
+
+    // Inherit Entity class
     super(options);
 
     // Initialize default cube mesh
