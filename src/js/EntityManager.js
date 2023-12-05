@@ -25,7 +25,6 @@ class EntityManager {
       if (child.isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
-        child.material
         meshes.push(child);
       }
     });
