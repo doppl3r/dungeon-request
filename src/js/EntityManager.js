@@ -19,7 +19,7 @@ class EntityManager {
     this.add(player);
 
     // Add meshes from dungeon model
-    var dungeon = game.assets.models.cache['dungeon'];
+    var dungeon = game.assets.models.cache['test'];
     var meshes = [];
     dungeon.traverse(function(child) {
       if (child.isMesh) {
@@ -38,14 +38,14 @@ class EntityManager {
     }.bind(this));
 
     // Add random spheres
-    for (var i = 0; i < 200; i++) {
-      var x = (Math.random() * 16) - 8;
+    for (var i = 0; i < 100; i++) {
+      var x = (Math.random() * 12) - 6;
       var y = 4;
-      var z = (Math.random() * 16) - 8;
+      var z = (Math.random() * 12) - 6;
       var radius = (Math.random() * 0.25) + 0.25;
       var rotation = Math.random() * Math.PI;
       var sphere = new Sphere({
-        color: '#67d017',
+        color: '#ffb547',
         position: { x: x, y: y, z: z },
         rotation: { x: rotation, y: rotation, z: rotation },
         radius: radius

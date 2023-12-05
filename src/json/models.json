@@ -1,5 +1,8 @@
 {
     "dungeon": {
         "url": "./glb/dungeon.glb"
+    },
+    "test": {
+        "url": "./glb/test.glb"
     }
 }
