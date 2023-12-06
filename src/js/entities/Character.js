@@ -11,6 +11,7 @@ import { Entity } from './Entity.js';
 class Character extends Entity {
   constructor(options = {}) {
     // Resolve null option values
+    if (options.color == null) options.color = '#ffffff';
     if (options.height == null) options.height = 1;
     if (options.radius == null) options.radius = 0.5;
     if (options.type == null) options.type = 'KinematicPositionBased';
@@ -54,6 +55,9 @@ class Character extends Entity {
 
     // Add push behavior
     this.controller.setApplyImpulsesToDynamicBodies(true);
+
+    // Set character mass
+    this.controller.setCharacterMass(1);
   }
 
   removeFromWorld(world) {
