@@ -30,10 +30,10 @@ class Player extends Character {
     this.velocity.y -= delta;
 
     // Add player directional input
-    if (this.keys['KeyW'] == true) this.velocity.z -= delta * 10;
-    if (this.keys['KeyS'] == true) this.velocity.z += delta * 10;
-    if (this.keys['KeyA'] == true) this.velocity.x -= delta * 10;
-    if (this.keys['KeyD'] == true) this.velocity.x += delta * 10;
+    if (this.keys['KeyW'] == true) this.velocity.z -= delta * 5;
+    if (this.keys['KeyS'] == true) this.velocity.z += delta * 5;
+    if (this.keys['KeyA'] == true) this.velocity.x -= delta * 5;
+    if (this.keys['KeyD'] == true) this.velocity.x += delta * 5;
 
     // Simulate constant movement damping
     this.velocity.z *= 0.5;

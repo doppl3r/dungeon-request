@@ -12,6 +12,12 @@ class TriMesh extends Entity {
       options.mesh.position.set(0, 0, 0); // Reset mesh position
     }
 
+    // Assign body rotation from mesh rotation
+    if (options.rotation == null) {
+      options.rotation = options.mesh.rotation.clone();
+      options.mesh.rotation.set(0, 0, 0); // Reset mesh rotation
+    }
+
     // Resolve null option values
     if (options.type == null) options.type = 'Fixed'
 

@@ -24,7 +24,7 @@ class Graphics {
 
     // Initialize (optional) effects
     this.smaaPass = new SMAAPass(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
-    this.smaaPass.enabled = false; // Default off
+    this.smaaPass.enabled = true;
 
     // Add effects to composer
     this.composer = new EffectComposer(this.renderer);

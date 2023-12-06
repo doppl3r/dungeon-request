@@ -2,6 +2,7 @@ import { EntityDebugger } from './EntityDebugger';
 import { Player } from './entities/Player';
 import { Sphere } from './entities/Sphere';
 import { TriMesh } from './entities/TriMesh';
+import { Background } from './Background';
 import { Sun } from './Sun';
 
 class EntityManager {
@@ -16,6 +17,7 @@ class EntityManager {
   runDemo() {
     // Add player
     var player = new Player({
+      color: '#D57FFF',
       position: { x: 0, y: 2, z: 0 }
     });
     this.add(player);
@@ -42,12 +44,12 @@ class EntityManager {
     // Add random spheres
     for (var i = 0; i < 10; i++) {
       var x = (Math.random() * 12) - 6;
-      var y = 4;
+      var y = 6;
       var z = (Math.random() * 12) - 6;
       var radius = (Math.random() * 0.25) + 0.5;
       var rotation = Math.random() * Math.PI;
       var sphere = new Sphere({
-        color: '#ffb547',
+        color: '#7fc9ff',
         position: { x: x, y: y, z: z },
         rotation: { x: rotation, y: rotation, z: rotation },
         radius: radius
@@ -55,9 +57,13 @@ class EntityManager {
       this.add(sphere);
     }
 
+    // Add background
+    this.background = new Background({ radius: 50 });
+    this.scene.add(this.background);
+
     // Add sun to scene
     this.sun = new Sun();
-    this.sun.update(10);
+    this.sun.update(36);
     this.scene.add(this.sun);
   }
 
