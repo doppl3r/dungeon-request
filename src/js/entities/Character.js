@@ -49,8 +49,11 @@ class Character extends Entity {
     // Set autostep behavior (for stairs)
     this.controller.enableAutostep(0.5, 0.2, true); // maxHeight, minWidth, includeDynamicBodies
 
-    // Set snap behavior when going down a slopwe
-    this.controller.enableSnapToGround(0.5); // distance
+    // Set snap behavior when going down a slope
+    this.controller.enableSnapToGround(1); // distance
+
+    // Add push behavior
+    this.controller.setApplyImpulsesToDynamicBodies(true);
   }
 
   removeFromWorld(world) {

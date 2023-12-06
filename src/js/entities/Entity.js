@@ -32,6 +32,10 @@ class Entity {
     this.colliderDesc = new ColliderDesc(options.shape);
   }
 
+  update(delta) {
+    this.takeSnapshot();
+  }
+
   addToWorld(world) {
     // Create rigid body in the world
     this.rigidBody = world.createRigidBody(this.rigidBodyDesc);
@@ -84,10 +88,6 @@ class Entity {
     // Linear interpolation using alpha value
     this.object.position.lerpVectors(this.snapshot.position_1, this.snapshot.position_2, alpha);
     this.object.quaternion.slerpQuaternions(this.snapshot.quaternion_1, this.snapshot.quaternion_2, alpha);
-  }
-
-  update(delta) {
-    this.takeSnapshot();
   }
 
   toJSON() {

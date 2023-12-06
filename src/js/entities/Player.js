@@ -23,11 +23,11 @@ class Player extends Character {
     // Copy current position
     this.next.copy(this.rigidBody.translation());
 
-    // Apply gravity
-    this.velocity.y -= delta;
+    // Set vertical velocity to zero if grounded
+    if (this.controller.computedGrounded() == true) this.velocity.y = 0;
 
-    // Calculate collider movement
-    this.controller.computeColliderMovement(this.collider, this.velocity);
+    // Increase velocity from gravity
+    this.velocity.y -= delta;
 
     // Add player directional input
     if (this.keys['KeyW'] == true) this.velocity.z -= delta * 10;
@@ -35,14 +35,14 @@ class Player extends Character {
     if (this.keys['KeyA'] == true) this.velocity.x -= delta * 10;
     if (this.keys['KeyD'] == true) this.velocity.x += delta * 10;
 
-    // Add movement damping
+    // Simulate constant movement damping
     this.velocity.z *= 0.5;
     this.velocity.x *= 0.5;
 
-    // Set vertical velocity to zero if grounded
-    if (this.controller.computedGrounded() == true) this.velocity.y = 0;
+    // Calculate collider movement
+    this.controller.computeColliderMovement(this.collider, this.velocity);
 
-    // Calculate new movement
+    // Calculate next movement
     this.movement = this.controller.computedMovement();
     this.next.add(this.movement);
     this.rigidBody.setNextKinematicTranslation(this.next);

@@ -40,11 +40,11 @@ class EntityManager {
     }.bind(this));
 
     // Add random spheres
-    for (var i = 0; i < 1; i++) {
+    for (var i = 0; i < 10; i++) {
       var x = (Math.random() * 12) - 6;
       var y = 4;
       var z = (Math.random() * 12) - 6;
-      var radius = (Math.random() * 0.25) + 0.25;
+      var radius = (Math.random() * 0.25) + 0.5;
       var rotation = Math.random() * Math.PI;
       var sphere = new Sphere({
         color: '#ffb547',
