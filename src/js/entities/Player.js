@@ -1,4 +1,4 @@
-import { Vector3 } from 'three';
+import { PerspectiveCamera, Vector3 } from 'three';
 import { Character } from './Character.js';
 
 /*
@@ -15,6 +15,12 @@ class Player extends Character {
     this.keys = {};
     this.velocity = new Vector3();
     this.next = new Vector3();
+
+    // Add camera
+    this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);
+    this.camera.position.set(0, 5, 4);
+    this.camera.lookAt(0, 0, 0);
+    this.object.add(this.camera);
   }
 
   update(delta) {

@@ -63,6 +63,11 @@ class Graphics {
     this.composer.setSize(width, height);
   }
 
+  setCamera(camera) {
+    this.camera = camera;
+    this.renderPass.camera = camera;
+  }
+
   addOrbitControls(position = { x: 0, y: 0, z: 0 }) {
     // Add orbit controls
     this.controls = new OrbitControls(this.camera, this.canvas);

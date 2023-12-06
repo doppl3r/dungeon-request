@@ -23,6 +23,9 @@ class EntityManager {
     this.add(player);
     player.addEventListeners();
 
+    // Set camera to player camera
+    game.graphics.setCamera(player.camera);
+
     // Add meshes from dungeon model
     var dungeon = game.assets.models.cache['test'];
     var meshes = [];
