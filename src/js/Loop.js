@@ -45,7 +45,10 @@ class Loop {
           // Trigger fn callback
           if (fn.sum > fn.rate || fn.rate == -1) {
             fn.sum %= fn.rate;
-            fn.callback({ delta: delta, alpha: alpha });
+            fn.callback({
+              delta: (fn.rate == -1) ? delta : fn.rate,
+              alpha: alpha
+            });
           }
         }
       }

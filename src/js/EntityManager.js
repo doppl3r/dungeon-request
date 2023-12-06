@@ -1,5 +1,5 @@
 import { EntityDebugger } from './EntityDebugger';
-import { Character } from './entities/Character';
+import { Player } from './entities/Player';
 import { Sphere } from './entities/Sphere';
 import { TriMesh } from './entities/TriMesh';
 import { Sun } from './Sun';
@@ -15,8 +15,11 @@ class EntityManager {
 
   runDemo() {
     // Add player
-    var player = new Character();
+    var player = new Player({
+      position: { x: 0, y: 2, z: 0 }
+    });
     this.add(player);
+    player.addEventListeners();
 
     // Add meshes from dungeon model
     var dungeon = game.assets.models.cache['test'];
@@ -37,7 +40,7 @@ class EntityManager {
     }.bind(this));
 
     // Add random spheres
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 1; i++) {
       var x = (Math.random() * 12) - 6;
       var y = 4;
       var z = (Math.random() * 12) - 6;
@@ -59,11 +62,12 @@ class EntityManager {
   }
 
   updatePhysics(data) {
+    // Update debugger buffer (optional if enabled)
     this.debugger.update();
 
-    // Snapshot previous position/rotation for lerp
+    // Update all entities
     this.entities.forEach(function(child) {
-        if (child.rigidBody) child.takeSnapshot();
+        if (child.rigidBody) child.update(data.delta);
     });
   }
 

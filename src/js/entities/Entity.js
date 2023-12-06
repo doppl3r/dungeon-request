@@ -53,6 +53,10 @@ class Entity {
     scene.remove(this.object);
   }
 
+  setNextPosition(position) {
+    this.rigidBody.setNextKinematicTranslation(position, true); // Wake
+  }
+
   takeSnapshot() {
     // Store previous position for lerp
     this.snapshot.position_1.copy(this.rigidBody.translation());
@@ -82,8 +86,8 @@ class Entity {
     this.object.quaternion.slerpQuaternions(this.snapshot.quaternion_1, this.snapshot.quaternion_2, alpha);
   }
 
-  update() {
-    
+  update(delta) {
+    this.takeSnapshot();
   }
 
   toJSON() {

@@ -1,10 +1,17 @@
+import { CapsuleGeometry, Mesh, MeshStandardMaterial } from 'three';
 import { Capsule } from '@dimforge/rapier3d';
 import { Entity } from './Entity.js';
+
+/*
+  Characters have a single Kinematic Body and a single Character Controller. An
+  Enemy or Player should inherit this class for common interface behaviors that
+  interact with the world.
+*/
 
 class Character extends Entity {
   constructor(options = {}) {
     // Resolve null option values
-    if (options.height == null) options.height = 0.5;
+    if (options.height == null) options.height = 1;
     if (options.radius == null) options.radius = 0.5;
     if (options.type == null) options.type = 'KinematicPositionBased';
 
@@ -13,6 +20,18 @@ class Character extends Entity {
 
     // Inherit Entity class
     super(options);
+
+    // Initialize default capsule mesh
+    var geometry = new CapsuleGeometry(options.radius, options.height);
+    var material = new MeshStandardMaterial({ color: options.color });
+    var mesh = new Mesh(geometry, material);
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    this.object.add(mesh);
+  }
+
+  update(delta) {
+    super.update(delta); // Call Entity update function
   }
 
   addToWorld(world) {
@@ -24,13 +43,13 @@ class Character extends Entity {
     
     // Set slide behavior (up/down)
     this.controller.setSlideEnabled(true);
-    this.controller.setMaxSlopeClimbAngle(45 * Math.PI / 180); // angle
+    this.controller.setMaxSlopeClimbAngle(60 * Math.PI / 180); // angle
     this.controller.setMinSlopeSlideAngle(30 * Math.PI / 180); // angle
 
     // Set autostep behavior (for stairs)
     this.controller.enableAutostep(0.5, 0.2, true); // maxHeight, minWidth, includeDynamicBodies
 
-    // Set snap behavior when going down a slope
+    // Set snap behavior when going down a slopwe
     this.controller.enableSnapToGround(0.5); // distance
   }
 
