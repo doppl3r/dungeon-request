@@ -44,7 +44,7 @@ class Character extends Entity {
     // Set slide behavior (up/down)
     this.controller.setSlideEnabled(true);
     this.controller.setMaxSlopeClimbAngle(60 * Math.PI / 180); // angle
-    this.controller.setMinSlopeSlideAngle(30 * Math.PI / 180); // angle
+    this.controller.setMinSlopeSlideAngle(60 * Math.PI / 180); // angle (30 feels slower up 45deg incline)
 
     // Set autostep behavior (for stairs)
     this.controller.enableAutostep(0.5, 0.2, true); // maxHeight, minWidth, includeDynamicBodies
