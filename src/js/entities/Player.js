@@ -18,7 +18,7 @@ class Player extends Character {
 
     // Add camera
     this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);
-    this.camera.position.set(0, 5, 4);
+    this.camera.position.set(0, 4, 4);
     this.camera.lookAt(0, 0, 0);
     this.object.add(this.camera);
   }
@@ -28,9 +28,13 @@ class Player extends Character {
 
     // Copy current position
     this.next.copy(this.rigidBody.translation());
+    this.isGrounded = this.controller.computedGrounded();
 
     // Set vertical velocity to zero if grounded
-    if (this.controller.computedGrounded() == true) this.velocity.y = 0;
+    if (this.isGrounded == true) {
+      this.velocity.y = 0;
+      this.isJumping = false;
+    }
 
     // Increase velocity from gravity
     this.velocity.y -= delta;
@@ -40,7 +44,11 @@ class Player extends Character {
     if (this.keys['KeyS'] == true) this.velocity.z += delta * 5;
     if (this.keys['KeyA'] == true) this.velocity.x -= delta * 5;
     if (this.keys['KeyD'] == true) this.velocity.x += delta * 5;
-
+    if (this.keys['Space'] == true && this.isJumping == false) {
+      this.isJumping = true;
+      this.velocity.y += 0.3334;
+    }
+    
     // Simulate constant movement damping
     this.velocity.z *= 0.5;
     this.velocity.x *= 0.5;
