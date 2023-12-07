@@ -5,6 +5,8 @@
   Tip: Add your physics function first (ex: 30hz), then add the rendering
   function at a higher frequency (ex: -1 = unlimited). Use the alpha value
   to interpolate rendered objects between engine steps.
+
+  Clock credit: mrdoob
 */
 
 class Loop {
@@ -87,7 +89,7 @@ class Loop {
   }
 
   now() {
-    return ( typeof performance === 'undefined' ? Date : performance ).now(); // see #10732
+    return (typeof performance === 'undefined' ? Date : performance).now();
   }
 }
 

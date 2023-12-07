@@ -68,6 +68,15 @@ class Graphics {
     this.renderPass.camera = camera;
   }
 
+  showShadows(state = true) {
+    this.renderer.shadowMap.enabled = state;
+    this.scene.traverse(function (child) {
+      if (child.material) {
+        child.material.needsUpdate = true;
+      }
+    });
+  }
+
   addOrbitControls(position = { x: 0, y: 0, z: 0 }) {
     // Add orbit controls
     this.controls = new OrbitControls(this.camera, this.canvas);
