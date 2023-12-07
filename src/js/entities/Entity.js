@@ -42,9 +42,12 @@ class Entity {
     this.rigidBody = world.createRigidBody(this.rigidBodyDesc);
     this.collider = world.createCollider(this.colliderDesc, this.rigidBody); // Parent collision to rigid body
 
-    // Update 3D object position and rotation (1 = current body position/rotation)
+    // Update default 3D object position and rotation
+    this.object.position.copy(this.rigidBody.translation());
+    this.object.quaternion.copy(this.rigidBody.rotation());
+
+    // Prepare initial snapshot from rigid body
     this.takeSnapshot();
-    this.lerp(1);
   }
 
   removeFromWorld(world) {
@@ -78,24 +81,27 @@ class Entity {
         quaternion_2: new Quaternion().copy(rotation), // Current rotation
         quaternion_3: new Quaternion().copy(rotation), // Next rotation (Kinematic)
       }
-
-      // Update object position
-      this.object.position.copy(position);
-      this.object.quaternion.copy(rotation);
     }
 
     // Store previous position for lerp
-    this.snapshot.position_1.copy(position);
-    this.snapshot.quaternion_1.copy(rotation);
+    this.snapshot.position_1.copy(this.snapshot.position_2);
+    this.snapshot.quaternion_1.copy(this.snapshot.quaternion_2);
+
+    if (this.rigidBody.isKinematic()) {
+      // Store next position for lerp - requires setNextKinematicTranslation()
+      this.snapshot.position_2.copy(this.rigidBody.nextTranslation());
+      this.snapshot.quaternion_2.copy(this.rigidBody.nextRotation());
+    }
+    else {
+      // Store next position for lerp
+      this.snapshot.position_2.copy(position);
+      this.snapshot.quaternion_2.copy(rotation);
+    }
   }
 
   lerp(alpha = 0) {
     // Skip (s)lerp if body type is "Fixed"
     if (this.rigidBody.isFixed()) return false;
-    
-    // Update target position/quaternion to body values
-    this.snapshot.position_2.copy(this.rigidBody.translation());
-    this.snapshot.quaternion_2.copy(this.rigidBody.rotation());
 
     // Linear interpolation using alpha value
     this.object.position.lerpVectors(this.snapshot.position_1, this.snapshot.position_2, alpha);

@@ -36,16 +36,16 @@ class Game {
 
     // Add physics loop
     this.loop.add(this.physics.tick, function(data) {
-      this.entityManager.updatePhysics(data);
-      this.physics.update(data);
+      this.entityManager.updatePhysics(data); // Modify entity bodies before world.step()
+      this.physics.update(data); // Update all physics world bodies
     }.bind(this));
 
     // Add graphic loop
     this.loop.add(this.graphics.tick, function(data) {
-      this.stats.begin();
-      this.entityManager.updateGraphics(data);
-      this.graphics.update(data);
-      this.stats.end();
+      this.stats.begin(); // Start FPS counter
+      this.entityManager.updateGraphics(data); // Update entity 3D objects from entities
+      this.graphics.update(data); // Update 3D engine
+      this.stats.end(); // Complete FPS counter
     }.bind(this));
 
     // Add network loop
