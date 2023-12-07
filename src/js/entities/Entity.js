@@ -33,6 +33,7 @@ class Entity {
   }
 
   update(delta) {
+    // Take a snapshot every time the entity is updated
     this.takeSnapshot();
   }
 
@@ -42,6 +43,7 @@ class Entity {
     this.collider = world.createCollider(this.colliderDesc, this.rigidBody); // Parent collision to rigid body
 
     // Update 3D object position and rotation (1 = current body position/rotation)
+    this.takeSnapshot();
     this.lerp(1);
   }
 
@@ -62,22 +64,24 @@ class Entity {
   }
 
   takeSnapshot() {
+    // Create initial snapshot
+    if (this.snapshot == null) {
+      this.snapshot = {
+        position_1: new Vector3().copy(this.rigidBody.translation()), // Previous position
+        position_2: new Vector3().copy(this.rigidBody.translation()), // Current position
+        position_3: new Vector3().copy(this.rigidBody.translation()), // Next position (Kinematic)
+        quaternion_1: new Quaternion().copy(this.rigidBody.rotation()), // Previous rotation
+        quaternion_2: new Quaternion().copy(this.rigidBody.rotation()), // Current rotation
+        quaternion_3: new Quaternion().copy(this.rigidBody.rotation()), // Next rotation (Kinematic)
+      }
+    }
+
     // Store previous position for lerp
     this.snapshot.position_1.copy(this.rigidBody.translation());
     this.snapshot.quaternion_1.copy(this.rigidBody.rotation());
   }
 
   lerp(alpha = 0) {
-    // Create initial snapshot
-    if (this.snapshot == null) {
-      this.snapshot = {
-        position_1: new Vector3().copy(this.rigidBody.translation()),
-        position_2: new Vector3().copy(this.rigidBody.translation()),
-        quaternion_1: new Quaternion().copy(this.rigidBody.rotation()),
-        quaternion_2: new Quaternion().copy(this.rigidBody.rotation()),
-      }
-    }
-
     // Skip lerp if body type == 1 "Fixed"
     if (this.rigidBodyDesc.status == 1) alpha = 1;
 

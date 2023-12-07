@@ -1,4 +1,4 @@
-import { PerspectiveCamera, Vector3 } from 'three';
+import { CapsuleGeometry, Mesh, MeshStandardMaterial, PerspectiveCamera, Vector3 } from 'three';
 import { Character } from './Character.js';
 
 /*
@@ -11,10 +11,16 @@ class Player extends Character {
     // Inherit Character class
     super(options);
 
-    // Initialize default values
+    // Initialize input keys
     this.keys = {};
-    this.velocity = new Vector3();
-    this.next = new Vector3();
+
+    // Initialize default capsule mesh
+    var geometry = new CapsuleGeometry(options.radius, options.height);
+    var material = new MeshStandardMaterial({ color: options.color });
+    var mesh = new Mesh(geometry, material);
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    this.object.add(mesh);
 
     // Add camera
     this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);
@@ -26,40 +32,12 @@ class Player extends Character {
   update(delta) {
     super.update(delta); // Call Character update function
 
-    // Copy current position
-    this.next.copy(this.rigidBody.translation());
-    this.isGrounded = this.controller.computedGrounded();
-
-    // Set vertical velocity to zero if grounded
-    if (this.isGrounded == true) {
-      this.velocity.y = 0;
-      this.isJumping = false;
-    }
-
-    // Increase velocity from gravity
-    this.velocity.y -= delta;
-
-    // Add player directional input
-    if (this.keys['KeyW'] == true) this.velocity.z -= delta * 5;
-    if (this.keys['KeyS'] == true) this.velocity.z += delta * 5;
-    if (this.keys['KeyA'] == true) this.velocity.x -= delta * 5;
-    if (this.keys['KeyD'] == true) this.velocity.x += delta * 5;
-    if (this.keys['Space'] == true && this.isJumping == false) {
-      this.isJumping = true;
-      this.velocity.y += 0.3334;
-    }
-    
-    // Simulate constant movement damping
-    this.velocity.z *= 0.5;
-    this.velocity.x *= 0.5;
-
-    // Calculate collider movement
-    this.controller.computeColliderMovement(this.collider, this.velocity);
-
-    // Calculate next movement
-    this.movement = this.controller.computedMovement();
-    this.next.add(this.movement);
-    this.rigidBody.setNextKinematicTranslation(this.next);
+    // Update character actions from key input
+    this.actions['moveUp'] = (this.keys['KeyW'] == true);
+    this.actions['moveDown'] = (this.keys['KeyS'] == true);
+    this.actions['moveLeft'] = (this.keys['KeyA'] == true);
+    this.actions['moveRight'] = (this.keys['KeyD'] == true);
+    this.actions['jump'] = (this.keys['Space'] == true);
   }
 
   addEventListeners(domElement) {

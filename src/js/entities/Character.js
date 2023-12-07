@@ -1,10 +1,10 @@
-import { CapsuleGeometry, Mesh, MeshStandardMaterial } from 'three';
+import { Vector3 } from 'three';
 import { Capsule } from '@dimforge/rapier3d';
 import { Entity } from './Entity.js';
 
 /*
   Characters have a single Kinematic Body and a single Character Controller. An
-  Enemy or Player should inherit this class for common interface behaviors that
+  Enemy or Player should inherit this class for common control behaviors that
   interact with the world.
 */
 
@@ -22,17 +22,52 @@ class Character extends Entity {
     // Inherit Entity class
     super(options);
 
-    // Initialize default capsule mesh
-    var geometry = new CapsuleGeometry(options.radius, options.height);
-    var material = new MeshStandardMaterial({ color: options.color });
-    var mesh = new Mesh(geometry, material);
-    mesh.receiveShadow = true;
-    mesh.castShadow = true;
-    this.object.add(mesh);
+    // Set default values
+    this.actions = {};
+    this.isJumping = false;
+    this.isGrounded = false;
+    this.velocity = new Vector3();
   }
 
   update(delta) {
     super.update(delta); // Call Entity update function
+
+    // Copy current position into next position
+    this.snapshot.position_3.copy(this.rigidBody.translation());
+
+    // Check if the controller is grounded
+    this.isGrounded = this.controller.computedGrounded();
+
+    // Set vertical velocity to zero if grounded
+    if (this.isGrounded == true) {
+      this.velocity.y = 0;
+      this.isJumping = false;
+    }
+
+    // Increase velocity from gravity
+    this.velocity.y -= delta;
+
+    // Update velocity from actions
+    if (this.actions['moveUp'] == true) this.velocity.z -= delta * 5;
+    if (this.actions['moveDown'] == true) this.velocity.z += delta * 5;
+    if (this.actions['moveLeft'] == true) this.velocity.x -= delta * 5;
+    if (this.actions['moveRight'] == true) this.velocity.x += delta * 5;
+    if (this.actions['jump'] == true && this.isJumping == false) {
+      this.isJumping = true;
+      this.velocity.y += 0.3334;
+    }
+    
+    // Simulate constant movement damping
+    this.velocity.z *= 0.5;
+    this.velocity.x *= 0.5;
+
+    // Calculate collider movement
+    this.controller.computeColliderMovement(this.collider, this.velocity);
+
+    // Calculate next movement
+    this.movement = this.controller.computedMovement();
+    this.snapshot.position_3.add(this.movement);
+    this.rigidBody.setNextKinematicTranslation(this.snapshot.position_3);
   }
 
   addToWorld(world) {
@@ -42,22 +77,14 @@ class Character extends Entity {
     // Add character controller to the world
     this.controller = world.createCharacterController(0.01); // spacing
     
-    // Set slide behavior (up/down)
-    this.controller.setSlideEnabled(true);
-    this.controller.setMaxSlopeClimbAngle(60 * Math.PI / 180); // angle
-    this.controller.setMinSlopeSlideAngle(60 * Math.PI / 180); // angle (30 feels slower up 45deg incline)
-
-    // Set autostep behavior (for stairs)
-    this.controller.enableAutostep(0.5, 0.2, true); // maxHeight, minWidth, includeDynamicBodies
-
-    // Set snap behavior when going down a slope
-    this.controller.enableSnapToGround(0.5); // distance
-
-    // Add push behavior
-    this.controller.setApplyImpulsesToDynamicBodies(true);
-
-    // Set character mass
-    this.controller.setCharacterMass(1);
+    // Set controller behavior
+    this.controller.setSlideEnabled(true); // Allow sliding down hill
+    this.controller.setMaxSlopeClimbAngle(60 * Math.PI / 180); // (angle) Limit uphill climbing
+    this.controller.setMinSlopeSlideAngle(60 * Math.PI / 180); // (angle) 30 feels slower up 45deg incline
+    this.controller.enableAutostep(0.5, 0.2, true); // (maxHeight, minWidth, includeDynamicBodies) Stair behavior
+    this.controller.enableSnapToGround(0.5); // (distance) Set ground snap behavior
+    this.controller.setApplyImpulsesToDynamicBodies(true); // Add push behavior
+    this.controller.setCharacterMass(1); // (mass) Set character mass
   }
 
   removeFromWorld(world) {
