@@ -30,14 +30,15 @@ class Player extends Character {
   }
 
   update(delta) {
-    super.update(delta); // Call Character update function
-
     // Update character actions from key input
     this.actions['moveUp'] = (this.keys['KeyW'] == true);
     this.actions['moveDown'] = (this.keys['KeyS'] == true);
     this.actions['moveLeft'] = (this.keys['KeyA'] == true);
     this.actions['moveRight'] = (this.keys['KeyD'] == true);
     this.actions['jump'] = (this.keys['Space'] == true);
+
+    // Call Character update function
+    super.update(delta);
   }
 
   addEventListeners(domElement) {

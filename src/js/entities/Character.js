@@ -30,8 +30,6 @@ class Character extends Entity {
   }
 
   update(delta) {
-    super.update(delta); // Call Entity update function
-
     // Copy current position into next position
     this.snapshot.position_3.copy(this.rigidBody.translation());
 
@@ -68,6 +66,9 @@ class Character extends Entity {
     this.movement = this.controller.computedMovement();
     this.snapshot.position_3.add(this.movement);
     this.rigidBody.setNextKinematicTranslation(this.snapshot.position_3);
+
+    // Call Entity update function
+    super.update(delta);
   }
 
   addToWorld(world) {

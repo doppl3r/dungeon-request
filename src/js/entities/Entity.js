@@ -64,27 +64,35 @@ class Entity {
   }
 
   takeSnapshot() {
+    // Get position/rotation
+    var position = this.rigidBody.translation();
+    var rotation = this.rigidBody.rotation();
+
     // Create initial snapshot
     if (this.snapshot == null) {
       this.snapshot = {
-        position_1: new Vector3().copy(this.rigidBody.translation()), // Previous position
-        position_2: new Vector3().copy(this.rigidBody.translation()), // Current position
-        position_3: new Vector3().copy(this.rigidBody.translation()), // Next position (Kinematic)
-        quaternion_1: new Quaternion().copy(this.rigidBody.rotation()), // Previous rotation
-        quaternion_2: new Quaternion().copy(this.rigidBody.rotation()), // Current rotation
-        quaternion_3: new Quaternion().copy(this.rigidBody.rotation()), // Next rotation (Kinematic)
+        position_1: new Vector3().copy(position), // Previous position
+        position_2: new Vector3().copy(position), // Current position
+        position_3: new Vector3().copy(position), // Next position (Kinematic)
+        quaternion_1: new Quaternion().copy(rotation), // Previous rotation
+        quaternion_2: new Quaternion().copy(rotation), // Current rotation
+        quaternion_3: new Quaternion().copy(rotation), // Next rotation (Kinematic)
       }
+
+      // Update object position
+      this.object.position.copy(position);
+      this.object.quaternion.copy(rotation);
     }
 
     // Store previous position for lerp
-    this.snapshot.position_1.copy(this.rigidBody.translation());
-    this.snapshot.quaternion_1.copy(this.rigidBody.rotation());
+    this.snapshot.position_1.copy(position);
+    this.snapshot.quaternion_1.copy(rotation);
   }
 
   lerp(alpha = 0) {
-    // Skip lerp if body type == 1 "Fixed"
-    if (this.rigidBodyDesc.status == 1) alpha = 1;
-
+    // Skip (s)lerp if body type is "Fixed"
+    if (this.rigidBody.isFixed()) return false;
+    
     // Update target position/quaternion to body values
     this.snapshot.position_2.copy(this.rigidBody.translation());
     this.snapshot.quaternion_2.copy(this.rigidBody.rotation());
