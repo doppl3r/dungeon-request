@@ -23,7 +23,7 @@ class Loop {
     // Add callback function to array of functions
     this.functions.push({
       rate: 1 / tick,
-      sum: 0,
+      sum: 1 / tick,
       alpha: 0,
       callback: callback // Execute function after each interval
     });
@@ -45,7 +45,7 @@ class Loop {
           fn.sum += delta;
 
           // Trigger fn callback
-          if (fn.sum > fn.rate || fn.rate == -1) {
+          if (fn.sum >= fn.rate || fn.rate == -1) {
             fn.sum %= fn.rate;
             fn.callback({
               delta: (fn.rate == -1) ? delta : fn.rate,

@@ -68,7 +68,7 @@ class Graphics {
     this.renderPass.camera = camera;
   }
 
-  showShadows(state = true) {
+  setShadows(state = true) {
     this.renderer.shadowMap.enabled = state;
     this.scene.traverse(function (child) {
       if (child.material) {

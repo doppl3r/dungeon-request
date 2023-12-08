@@ -17,6 +17,7 @@ class Game {
   init(canvas) {
     this.graphics = new Graphics(canvas);
     this.graphics.setTick(-1);
+    this.graphics.setShadows(false);
     this.physics = new Physics();
     this.physics.setTick(30);
     this.entityManager = new EntityManager(this.graphics.scene, this.physics.world);
