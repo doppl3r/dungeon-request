@@ -27,11 +27,13 @@ class Character extends Entity {
     this.isJumping = false;
     this.isGrounded = false;
     this.velocity = new Vector3();
+    this.movement = new Vector3();
+    this.nextTranslation = new Vector3();
   }
 
   update(delta) {
     // Copy current position into next position
-    this.snapshot.position_3.copy(this.rigidBody.translation());
+    this.nextTranslation.copy(this.rigidBody.translation());
 
     // Check if the controller is grounded
     this.isGrounded = this.controller.computedGrounded();
@@ -63,9 +65,9 @@ class Character extends Entity {
     this.controller.computeColliderMovement(this.collider, this.velocity);
 
     // Calculate next movement
-    this.movement = this.controller.computedMovement();
-    this.snapshot.position_3.add(this.movement);
-    this.rigidBody.setNextKinematicTranslation(this.snapshot.position_3);
+    this.movement.copy(this.controller.computedMovement());
+    this.nextTranslation.add(this.movement);
+    this.rigidBody.setNextKinematicTranslation(this.nextTranslation);
 
     // Call Entity update function
     super.update(delta);

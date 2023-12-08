@@ -11,7 +11,7 @@ class EntityManager {
     this.world = world;
     this.entities = [];
     this.debugger = new EntityDebugger(scene, world);
-    this.debugger.disable();
+    //this.debugger.disable();
   }
 
   runDemo() {

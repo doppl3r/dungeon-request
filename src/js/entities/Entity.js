@@ -76,10 +76,8 @@ class Entity {
       this.snapshot = {
         position_1: new Vector3().copy(position), // Previous position
         position_2: new Vector3().copy(position), // Current position
-        position_3: new Vector3().copy(position), // Next position (Kinematic)
         quaternion_1: new Quaternion().copy(rotation), // Previous rotation
         quaternion_2: new Quaternion().copy(rotation), // Current rotation
-        quaternion_3: new Quaternion().copy(rotation), // Next rotation (Kinematic)
       }
     }
 
