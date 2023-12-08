@@ -16,10 +16,6 @@ class Physics {
     this.world.timestep = timestep;
   }
 
-  update(data) {
-    this.step();
-  }
-
   step() {
     this.world.step();
   }

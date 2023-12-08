@@ -24,7 +24,7 @@ class Character extends Entity {
 
     // Set default values
     this.actions = {};
-    this.isJumping = false;
+    this.isJumping = true;
     this.isGrounded = false;
     this.velocity = new Vector3();
     this.movement = new Vector3();

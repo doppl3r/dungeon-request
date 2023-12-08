@@ -42,7 +42,8 @@ class Graphics {
     this.tick = tick;
   }
 
-  update(data) {
+  update(delta) {
+    if (this.controls) this.controls.update(delta);
     this.render();
   }
 

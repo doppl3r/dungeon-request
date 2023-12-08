@@ -3,6 +3,7 @@ import { Loop } from './Loop';
 import { Graphics } from './Graphics';
 import { Physics } from './Physics';
 import { EntityManager } from './EntityManager.js';
+import { Debugger } from './Debugger.js';
 import { Network } from './Network.js';
 import Stats from './Stats.js';
 
@@ -21,6 +22,8 @@ class Game {
     this.physics = new Physics();
     this.physics.setTick(30);
     this.entityManager = new EntityManager(this.graphics.scene, this.physics.world);
+    this.debugger = new Debugger(this.graphics.scene, this.physics.world);
+    this.debugger.disable();
     this.network = new Network('speed-looters');
     this.network.setTick(10);
 
@@ -37,21 +40,22 @@ class Game {
 
     // Add physics loop
     this.loop.add(this.physics.tick, function(data) {
-      this.entityManager.updatePhysics(data); // Modify entity bodies before world.step()
-      this.physics.update(data); // Update all physics world bodies
+      this.entityManager.updateBodies(data.delta); // Modify entity bodies before world.step()
+      this.physics.step(); // Perform world calculation
+      this.debugger.update(); // Update debugger buffer
     }.bind(this));
 
     // Add graphic loop
     this.loop.add(this.graphics.tick, function(data) {
       this.stats.begin(); // Start FPS counter
-      this.entityManager.updateGraphics(data); // Update entity 3D objects from entities
-      this.graphics.update(data); // Update 3D engine
+      this.entityManager.updateObjects(data.delta, data.alpha); // Update entity 3D objects from entities
+      this.graphics.update(data.delta); // Update 3D engine
       this.stats.end(); // Complete FPS counter
     }.bind(this));
 
     // Add network loop
     this.loop.add(this.network.tick, function(data) {
-      this.network.update(data);
+      this.network.update(data.delta, data.alpha);
     }.bind(this));
 
     // Start loop

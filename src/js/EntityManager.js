@@ -1,4 +1,3 @@
-import { EntityDebugger } from './EntityDebugger';
 import { Player } from './entities/Player';
 import { Sphere } from './entities/Sphere';
 import { TriMesh } from './entities/TriMesh';
@@ -10,15 +9,15 @@ class EntityManager {
     this.scene = scene;
     this.world = world;
     this.entities = [];
-    this.debugger = new EntityDebugger(scene, world);
-    //this.debugger.disable();
   }
 
   runDemo() {
     // Add player
     var player = new Player({
       color: '#D57FFF',
-      position: { x: 0, y: 6, z: 0 }
+      position: { x: 0, y: 6, z: 0 },
+      height: 0.5,
+      radius: 0.25
     });
     this.add(player);
     player.addEventListeners();
@@ -70,23 +69,20 @@ class EntityManager {
     this.scene.add(this.sun);
   }
 
-  updatePhysics(data) {
-    // Update debugger buffer (optional if enabled)
-    this.debugger.update();
-
+  updateBodies(delta) {
     // Update all entities
     this.entities.forEach(function(child) {
-        if (child.rigidBody) child.update(data.delta);
+        if (child.rigidBody) child.update(delta);
     });
   }
 
-  updateGraphics(data) {
+  updateObjects(delta, alpha) {
     // Update sun orbit angle
-    this.sun.update(data.delta);
+    this.sun.update(delta);
 
     // Lerp each body model position/rotation
     this.entities.forEach(function(child) {
-      if (child.rigidBody) child.lerp(data.alpha);
+      if (child.rigidBody) child.lerp(alpha);
     });
   }
 
