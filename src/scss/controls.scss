@@ -9,12 +9,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 2rem;
     margin: 0.25rem;
     text-align: center;
     text-shadow: 0.125rem 0.125rem 0 rgba(0, 0, 0, 1);
-    width: 10vh;
-    height: 10vh;
+    width: 15vh;
+    height: 15vh;
 
     &.active {
       background-color: #D57FFF;
@@ -30,7 +30,7 @@
   .wasd {
     flex-wrap: wrap;
     position: absolute;
-    top: 25%;
+    top: 75%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
