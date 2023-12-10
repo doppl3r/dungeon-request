@@ -2,6 +2,7 @@
   import '../scss/style.scss';
   import { Game } from '../js/Game.js';
   import { ref, onMounted } from 'vue';
+  import Controls from './Controls.vue';
 
   // Initialize app and expose to window scope
   var canvas = ref();
@@ -14,5 +15,7 @@
 
 <template>
   <canvas ref="canvas"></canvas>
-  <div class="ui"></div>
+  <div class="ui">
+    <Controls />
+  </div>
 </template>
