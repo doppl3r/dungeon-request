@@ -26,8 +26,10 @@ class Character extends Entity {
     this.actions = {};
     this.isJumping = true;
     this.isGrounded = false;
+    this.speed = 5;
     this.velocity = new Vector3();
     this.movement = new Vector3();
+    this.direction = new Vector3();
     this.nextTranslation = new Vector3();
   }
 
@@ -48,18 +50,27 @@ class Character extends Entity {
     this.velocity.y -= delta;
 
     // Update velocity from actions
-    if (this.actions['moveUp'] == true) this.velocity.z -= delta * 5;
-    if (this.actions['moveDown'] == true) this.velocity.z += delta * 5;
-    if (this.actions['moveLeft'] == true) this.velocity.x -= delta * 5;
-    if (this.actions['moveRight'] == true) this.velocity.x += delta * 5;
+    if (this.actions['moveUp'] == true) this.velocity.z -= delta * this.speed;
+    if (this.actions['moveDown'] == true) this.velocity.z += delta * this.speed;
+    if (this.actions['moveLeft'] == true) this.velocity.x -= delta * this.speed;
+    if (this.actions['moveRight'] == true) this.velocity.x += delta * this.speed;
     if (this.actions['jump'] == true && this.isJumping == false) {
       this.isJumping = true;
       this.velocity.y += 0.3334;
     }
     
     // Simulate constant movement damping
-    this.velocity.z *= 0.5;
-    this.velocity.x *= 0.5;
+    this.velocity.z *= 0.75;
+    this.velocity.x *= 0.75;
+
+    // Clamp directional velocity
+    this.direction.x =  this.velocity.x;
+    this.direction.z =  this.velocity.z;
+    if (this.direction.length() / delta > this.speed) {
+      this.direction.clampLength(-this.speed * delta, this.speed * delta);
+      this.velocity.x = this.direction.x;
+      this.velocity.z = this.direction.z;
+    }
 
     // Calculate collider movement
     this.controller.computeColliderMovement(this.collider, this.velocity);
