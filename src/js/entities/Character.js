@@ -60,8 +60,8 @@ class Character extends Entity {
     }
     
     // Simulate constant movement damping
-    this.velocity.z *= 0.75;
-    this.velocity.x *= 0.75;
+    this.velocity.z *= 0.5;
+    this.velocity.x *= 0.5;
 
     // Clamp directional velocity
     this.direction.x =  this.velocity.x;
@@ -74,6 +74,17 @@ class Character extends Entity {
 
     // Calculate collider movement
     this.controller.computeColliderMovement(this.collider, this.velocity);
+
+    // Resolve collision issues
+    for (var i = 0; i < this.controller.numComputedCollisions(); i++) {
+      var collision = this.controller.computedCollision(i);
+
+      // Reflect velocity if hitting head on top
+      if (collision.normal1.y == -1) {
+        this.velocity.reflect(collision.normal1);
+        console.log(collision);
+      }
+    }
 
     // Calculate next movement
     this.movement.copy(this.controller.computedMovement());

@@ -16,8 +16,8 @@ class EntityManager {
     var player = new Player({
       color: '#D57FFF',
       position: { x: 0, y: 6, z: 0 },
-      height: 0.5,
-      radius: 0.25
+      height: 0.25,
+      radius: 0.125
     });
     this.add(player);
     player.addEventListeners();
@@ -44,14 +44,14 @@ class EntityManager {
     }.bind(this));
 
     // Add random spheres
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 4; i++) {
       var x = (Math.random() * 12) - 6;
       var y = 12;
       var z = (Math.random() * 12) - 6;
-      var radius = (Math.random() * 0.25) + 0.5;
+      var radius = (Math.random() * 0.25) + 0.25;
       var rotation = Math.random() * Math.PI;
       var sphere = new Sphere({
-        color: '#7fc9ff',
+        color: '#ffb547', // orange: #ffb547, blue: #7fc9ff
         position: { x: x, y: y, z: z },
         rotation: { x: rotation, y: rotation, z: rotation },
         radius: radius
