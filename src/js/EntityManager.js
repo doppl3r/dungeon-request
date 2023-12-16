@@ -14,7 +14,7 @@ class EntityManager {
   runDemo() {
     // Add player
     var player = new Player({
-      color: '#D57FFF',
+      color: '#f65510',
       position: { x: 0, y: 6, z: 0 },
       height: 0.25,
       radius: 0.125
@@ -26,7 +26,7 @@ class EntityManager {
     game.graphics.setCamera(player.camera);
 
     // Add meshes from dungeon model
-    var dungeon = game.assets.models.cache['test'];
+    var dungeon = game.assets.models.cache['dungeon-forge'];
     var meshes = [];
     dungeon.traverse(function(child) {
       if (child.isMesh) {
@@ -51,7 +51,7 @@ class EntityManager {
       var radius = (Math.random() * 0.25) + 0.25;
       var rotation = Math.random() * Math.PI;
       var sphere = new Sphere({
-        color: '#ffb547', // orange: #ffb547, blue: #7fc9ff
+        color: '#f65510', // orange: #ffb547, blue: #7fc9ff
         position: { x: x, y: y, z: z },
         rotation: { x: rotation, y: rotation, z: rotation },
         radius: radius

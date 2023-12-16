@@ -33,8 +33,8 @@ class Sun extends Group {
   }
 
   updateSamples(size, debug) {
-    this.direct.shadow.mapSize.width = Math.pow(size, 3);
-    this.direct.shadow.mapSize.height = Math.pow(size, 3);
+    this.direct.shadow.mapSize.width = Math.pow(size, 2);
+    this.direct.shadow.mapSize.height = Math.pow(size, 2);
     this.direct.shadow.camera.left = -(size / 2);
     this.direct.shadow.camera.right = (size / 2);
     this.direct.shadow.camera.top = (size / 2);

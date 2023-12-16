@@ -40,8 +40,8 @@ class Background extends Group {
     // Configure shader material gradient
     var material = new ShaderMaterial({
       uniforms: {
-        top: {  value: new Color("#7fc9ff") },
-        bottom: { value: new Color("#ffffff") },
+        top: {  value: new Color("#F65510") },
+        bottom: { value: new Color("#291013") },
         min: { value: geometry.boundingBox.min },
         max: { value: geometry.boundingBox.max },
         scale: { value: 0.125 }

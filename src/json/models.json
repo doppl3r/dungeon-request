@@ -2,6 +2,9 @@
     "dungeon": {
         "url": "./glb/dungeon.glb"
     },
+    "dungeon-forge": {
+        "url": "./glb/dungeon-forge.glb"
+    },
     "test": {
         "url": "./glb/test.glb"
     }
