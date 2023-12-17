@@ -17,6 +17,7 @@ class Entity {
       scale: { x: 1, y: 1, z: 1 },
       position: { x: 0, y: 0, z: 0 },
       rotation: { x: 0, y: 0, z: 0 },
+      isSensor: false,
       shape: null
     }, options);
 
@@ -30,6 +31,7 @@ class Entity {
     
     // Initialize collider description
     this.colliderDesc = new ColliderDesc(options.shape);
+    this.colliderDesc.setSensor(options.isSensor);
   }
 
   update(delta) {

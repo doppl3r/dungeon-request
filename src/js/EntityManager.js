@@ -38,8 +38,17 @@ class EntityManager {
 
     // Create TriMeshes from dungeon
     meshes.forEach(function(mesh) {
-      var type = mesh.name.includes('-Dynamic') ? 'Dynamic' : 'Fixed';
-      var triMesh = new TriMesh({ mesh: mesh, type: type });
+      var type = 'Fixed'; // Rapier RigidBody type
+      var name = mesh.name;
+      var isDynamic = name.includes('-Dynamic');
+      var isSensor = name.includes('-Sensor');
+      if (isDynamic == true) type = 'Dynamic';
+      var triMesh = new TriMesh({
+        isSensor: isSensor,
+        mesh: mesh,
+        group: 0,
+        type: type
+      });
       this.add(triMesh);
     }.bind(this));
 

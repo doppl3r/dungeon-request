@@ -16,6 +16,6 @@
 <template>
   <canvas ref="canvas"></canvas>
   <div class="ui">
-    <!-- <Controls /> -->
+    <Controls />
   </div>
 </template>
