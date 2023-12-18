@@ -34,9 +34,6 @@ class Character extends Entity {
   }
 
   update(delta) {
-    // Copy current position into next position
-    this.nextTranslation.copy(this.rigidBody.translation());
-
     // Check if the controller is grounded
     this.isGrounded = this.controller.computedGrounded();
 
@@ -46,9 +43,6 @@ class Character extends Entity {
       this.isJumping = false;
     }
 
-    // Increase velocity from gravity
-    this.velocity.y -= delta;
-
     // Update velocity from actions
     if (this.actions['moveUp'] == true) this.velocity.z -= delta * this.speed;
     if (this.actions['moveDown'] == true) this.velocity.z += delta * this.speed;
@@ -56,13 +50,16 @@ class Character extends Entity {
     if (this.actions['moveRight'] == true) this.velocity.x += delta * this.speed;
     if (this.actions['jump'] == true && this.isJumping == false) {
       this.isJumping = true;
-      this.velocity.y += 0.3334;
+      this.velocity.y += 0.25;
     }
-    
-    // Simulate constant movement damping
+
+    // Simulate gravity
+    this.velocity.y -= delta;
+
+    // Simulate movement damping
     this.velocity.z *= 0.5;
     this.velocity.x *= 0.5;
-
+    
     // Clamp directional velocity
     this.direction.x =  this.velocity.x;
     this.direction.z =  this.velocity.z;
@@ -86,8 +83,9 @@ class Character extends Entity {
       }
     }
 
-    // Calculate next movement
+    // Calculate next translation from computed movement
     this.movement.copy(this.controller.computedMovement());
+    this.nextTranslation.copy(this.rigidBody.translation());
     this.nextTranslation.add(this.movement);
     this.rigidBody.setNextKinematicTranslation(this.nextTranslation);
 
