@@ -13,6 +13,7 @@ class Debugger extends LineSegments {
     this.geometry =  new BufferGeometry();
     this.scene.add(this);
     this.enabled = true;
+    this.frustumCulled = false; // Force offscreen renders
   }
 
   update() {
