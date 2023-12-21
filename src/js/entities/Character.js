@@ -1,4 +1,4 @@
-import { Vector3 } from 'three';
+import { CapsuleGeometry, Mesh, MeshStandardMaterial, Vector3 } from 'three';
 import { Capsule } from '@dimforge/rapier3d';
 import { Entity } from './Entity.js';
 
@@ -21,6 +21,21 @@ class Character extends Entity {
 
     // Inherit Entity class
     super(options);
+
+    if (options.object == null) {
+      // Add capsule mesh if object is empty
+      var geometry = new CapsuleGeometry(options.radius, options.height);
+      var material = new MeshStandardMaterial({ color: options.color });
+      var mesh = new Mesh(geometry, material);
+      mesh.receiveShadow = true;
+      mesh.castShadow = true;
+      this.object.add(mesh);
+    }
+    else {
+      // Set object and adjust offset
+      this.object = options.object;
+      this.offset.set(0, -(options.radius + (options.height / 2)), 0);
+    }
 
     // Set default values
     this.actions = {};

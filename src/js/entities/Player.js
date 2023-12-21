@@ -1,4 +1,4 @@
-import { CapsuleGeometry, Mesh, MeshStandardMaterial, PerspectiveCamera, Vector3 } from 'three';
+import { PerspectiveCamera } from 'three';
 import { Character } from './Character.js';
 
 /*
@@ -13,14 +13,6 @@ class Player extends Character {
 
     // Initialize input keys
     this.keys = {};
-
-    // Initialize default capsule mesh
-    var geometry = new CapsuleGeometry(options.radius, options.height);
-    var material = new MeshStandardMaterial({ color: options.color });
-    var mesh = new Mesh(geometry, material);
-    mesh.receiveShadow = true;
-    mesh.castShadow = true;
-    this.object.add(mesh);
 
     // Add camera
     this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);

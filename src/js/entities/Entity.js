@@ -23,6 +23,7 @@ class Entity {
 
     // Create an empty object
     this.object = new Object3D();
+    this.offset = new Vector3();
 
     // Initialize rigid body description
     this.rigidBodyDesc = new RigidBodyDesc(RigidBodyType[options.type]);
@@ -105,6 +106,7 @@ class Entity {
 
     // Linear interpolation using alpha value
     this.object.position.lerpVectors(this.snapshot.position_1, this.snapshot.position_2, alpha);
+    this.object.position.add(this.offset); // Adjust offset (optional)
     this.object.quaternion.slerpQuaternions(this.snapshot.quaternion_1, this.snapshot.quaternion_2, alpha);
   }
 
