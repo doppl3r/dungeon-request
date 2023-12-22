@@ -48,7 +48,7 @@ class Character extends Entity {
     this.nextTranslation = new Vector3();
   }
 
-  update(delta) {
+  updateBody(delta) {
     // Check if the controller is grounded
     this.isGrounded = this.controller.computedGrounded();
 
@@ -105,7 +105,13 @@ class Character extends Entity {
     this.rigidBody.setNextKinematicTranslation(this.nextTranslation);
 
     // Call Entity update function
-    super.update(delta);
+    super.updateBody(delta);
+  }
+
+  updateObject(delta, alpha) {
+    
+    // Call Entity update function
+    super.updateObject(delta, alpha);
   }
 
   addToWorld(world) {

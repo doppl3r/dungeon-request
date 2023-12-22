@@ -82,7 +82,7 @@ class EntityManager {
   updateBodies(delta) {
     // Update all entities
     this.entities.forEach(function(child) {
-        if (child.rigidBody) child.update(delta);
+        if (child.rigidBody) child.updateBody(delta);
     });
   }
 
@@ -90,9 +90,9 @@ class EntityManager {
     // Update sun orbit angle
     this.sun.update(delta);
 
-    // Lerp each body model position/rotation
+    // Update each 3D object
     this.entities.forEach(function(child) {
-      if (child.rigidBody) child.lerp(alpha);
+      if (child.rigidBody) child.updateObject(delta, alpha);
     });
   }
 

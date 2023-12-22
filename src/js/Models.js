@@ -74,27 +74,27 @@ class Models {
     // Check if animations exist
     if (model.animations.length > 0) {
       // Initialize loop type
-      var loopType = (model.userData?.animation?.loop == true) ? LoopRepeat : LoopOnce;
-      model.traverse(function(obj) { obj.frustumCulled = false; }); // Disable offscreen clipping
+      var loopType = (model.userData?.animation?.loop == true) ? LoopRepeat : LoopOnce; // LoopRepeat, LoopOnce
       model.mixer = new AnimationMixer(model);
-      model.clips = [];
+      model.clips = {};
 
       // Add all animations (for nested models)
       for (var i = 0; i < model.animations.length; i++) {
-        model.clips.push(model.mixer.clipAction(model.animations[i]));
-        model.clips[i].setLoop(loopType);
-        model.clips[i].reset();
+        var animation = model.animations[i];
+        var clip = model.mixer.clipAction(animation);
+        clip.setLoop(loopType);
+        clip.reset();
+        model.clips[animation.name] = clip;
       }
 
       // Add basic functions
       model.animation = {
-        play: function() { for (var i = 0; i < model.clips.length; i++) { model.clips[i].play(); }},
-        reset: function() { for (var i = 0; i < model.clips.length; i++) { model.clips[i].reset(); }},
-        update: function(delta = 1 / 60) { model.mixer.update(delta); }
+        play: function(name) { if (model.clips[name]) model.clips[name].play() },
+        reset: function(name) { if (model.clips[name]) model.clips[name].reset() }
       }
 
       // Start animation if looping
-      if (loopType == LoopRepeat) model.animation.play();
+      if (loopType == LoopRepeat) model.animation.play(model.userData?.animation?.action);
     }
   }
 }

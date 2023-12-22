@@ -35,9 +35,19 @@ class Entity {
     this.colliderDesc.setSensor(options.isSensor);
   }
 
-  update(delta) {
+  updateBody(delta) {
     // Take a snapshot every time the entity is updated
     this.takeSnapshot();
+  }
+
+  updateObject(delta, alpha) {
+    // Animate (if mixer exists)
+    if (this.object.mixer) {
+      this.object.mixer.update(delta);
+    }
+
+    // Interpolate 3D object position
+    this.lerp(alpha)
   }
 
   addToWorld(world) {

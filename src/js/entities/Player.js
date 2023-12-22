@@ -21,7 +21,7 @@ class Player extends Character {
     this.object.add(this.camera);
   }
 
-  update(delta) {
+  updateBody(delta) {
     // Update character actions from key input
     this.actions['moveUp'] = (this.keys['KeyW'] == true);
     this.actions['moveDown'] = (this.keys['KeyS'] == true);
@@ -30,7 +30,13 @@ class Player extends Character {
     this.actions['jump'] = (this.keys['Space'] == true);
 
     // Call Character update function
-    super.update(delta);
+    super.updateBody(delta);
+  }
+
+  updateObject(delta, alpha) {
+    
+    // Call Character update function
+    super.updateObject(delta, alpha);
   }
 
   addEventListeners(domElement) {
