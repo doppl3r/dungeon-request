@@ -16,7 +16,7 @@ class Player extends Character {
 
     // Add camera
     this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);
-    this.camera.position.set(0, 3, 3);
+    this.camera.position.set(0, 2, 2);
     this.camera.lookAt(0, 0, 0);
     this.object.add(this.camera);
   }
