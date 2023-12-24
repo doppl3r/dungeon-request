@@ -18,7 +18,7 @@ class EntityManager {
       position: { x: 0, y: 6, z: 0 },
       height: 0.5,
       radius: 0.25,
-      object: game.assets.models.clone('player')
+      model: game.assets.models.clone('player')
     });
     this.add(player);
     player.addEventListeners();

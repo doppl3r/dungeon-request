@@ -22,19 +22,20 @@ class Character extends Entity {
     // Inherit Entity class
     super(options);
 
-    if (options.object == null) {
-      // Add capsule mesh if object is empty
+    if (options.model == null) {
+      // Add capsule mesh if model is empty
       var geometry = new CapsuleGeometry(options.radius, options.height);
       var material = new MeshStandardMaterial({ color: options.color });
-      var mesh = new Mesh(geometry, material);
-      mesh.receiveShadow = true;
-      mesh.castShadow = true;
-      this.object.add(mesh);
+      this.model = new Mesh(geometry, material);
+      this.model.receiveShadow = true;
+      this.model.castShadow = true;
+      this.object.add(this.model);
     }
     else {
-      // Set object and adjust offset
-      this.object = options.object;
-      this.offset.set(0, -(options.radius + (options.height / 2)), 0);
+      // Set object and adjust position
+      this.model = options.model;
+      this.model.position.y = -(options.radius + (options.height / 2));
+      this.object.add(this.model);
     }
 
     // Set default values
@@ -76,13 +77,9 @@ class Character extends Entity {
     this.velocity.x *= 0.5;
     
     // Clamp directional velocity
-    this.direction.x =  this.velocity.x;
-    this.direction.z =  this.velocity.z;
-    if (this.direction.length() / delta > this.speed) {
-      this.direction.clampLength(-this.speed * delta, this.speed * delta);
-      this.velocity.x = this.direction.x;
-      this.velocity.z = this.direction.z;
-    }
+    this.velocity._y = this.velocity.y;
+    this.velocity.clampLength(-this.speed * delta, this.speed * delta);
+    this.velocity.y = this.velocity._y;
 
     // Calculate collider movement
     this.controller.computeColliderMovement(this.collider, this.velocity);
@@ -104,12 +101,21 @@ class Character extends Entity {
     this.nextTranslation.add(this.movement);
     this.rigidBody.setNextKinematicTranslation(this.nextTranslation);
 
+    // Calculate next rotation from character direction
+    if (this.nextTranslation.distanceTo(this.rigidBody.translation()) > 0.01) {
+      this.model.lookAt(this.nextTranslation.x, (this.object.position.y + this.model.position.y), this.nextTranslation.z);
+    }
+
     // Call Entity update function
     super.updateBody(delta);
   }
 
   updateObject(delta, alpha) {
-    
+    // Animate (if mixer exists)
+    if (this.model.mixer) {
+      this.model.mixer.update(delta);
+    }
+
     // Call Entity update function
     super.updateObject(delta, alpha);
   }
