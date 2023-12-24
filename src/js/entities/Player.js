@@ -34,7 +34,6 @@ class Player extends Character {
   }
 
   updateObject(delta, alpha) {
-    
     // Call Character update function
     super.updateObject(delta, alpha);
   }

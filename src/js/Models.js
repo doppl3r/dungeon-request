@@ -76,21 +76,30 @@ class Models {
       // Initialize loop type
       var loopType = (model.userData?.animation?.loop == true) ? LoopRepeat : LoopOnce; // LoopRepeat, LoopOnce
       model.mixer = new AnimationMixer(model);
-      model.clips = {};
+      model.actions = {};
 
       // Add all animations (for nested models)
       for (var i = 0; i < model.animations.length; i++) {
         var animation = model.animations[i];
-        var clip = model.mixer.clipAction(animation);
-        clip.setLoop(loopType);
-        clip.reset();
-        model.clips[animation.name] = clip;
+        var action = model.mixer.clipAction(animation);
+        action.setLoop(loopType);
+        model.actions[animation.name] = action;
       }
 
       // Add basic functions
       model.animation = {
-        play: function(name) { if (model.clips[name]) model.clips[name].play() },
-        reset: function(name) { if (model.clips[name]) model.clips[name].reset() }
+        play: function(name = 'active') {
+          if (model.actions[name]) {
+            var action = model.actions['active'] = model.actions[name];
+            this.reset();
+            action.play();
+          }
+        },
+        reset: function(name = 'active') {
+          if (model.actions[name]) {
+            model.actions[name].reset()
+          }
+        }
       }
 
       // Start animation if looping

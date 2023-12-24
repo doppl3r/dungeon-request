@@ -1,4 +1,4 @@
-import { CapsuleGeometry, Mesh, MeshStandardMaterial, Vector3 } from 'three';
+import { CapsuleGeometry, Euler, Mesh, MeshStandardMaterial, Quaternion, Vector3 } from 'three';
 import { Capsule } from '@dimforge/rapier3d';
 import { Entity } from './Entity.js';
 
@@ -22,8 +22,8 @@ class Character extends Entity {
     // Inherit Entity class
     super(options);
 
+    // Add capsule mesh if model is empty
     if (options.model == null) {
-      // Add capsule mesh if model is empty
       var geometry = new CapsuleGeometry(options.radius, options.height);
       var material = new MeshStandardMaterial({ color: options.color });
       this.model = new Mesh(geometry, material);
@@ -43,10 +43,12 @@ class Character extends Entity {
     this.isJumping = true;
     this.isGrounded = false;
     this.speed = 5;
+    this.direction = new Euler();
     this.velocity = new Vector3();
     this.movement = new Vector3();
-    this.direction = new Vector3();
     this.nextTranslation = new Vector3();
+    this.rotation = new Quaternion();
+    this.nextRotation = new Quaternion();
   }
 
   updateBody(delta) {
@@ -103,7 +105,10 @@ class Character extends Entity {
 
     // Calculate next rotation from character direction
     if (this.nextTranslation.distanceTo(this.rigidBody.translation()) > 0.01) {
+      this.rotation.copy(this.model.quaternion);
       this.model.lookAt(this.nextTranslation.x, (this.object.position.y + this.model.position.y), this.nextTranslation.z);
+      this.nextRotation.copy(this.model.quaternion);
+      this.model.quaternion.copy(this.rotation);
     }
 
     // Call Entity update function
@@ -118,6 +123,9 @@ class Character extends Entity {
 
     // Call Entity update function
     super.updateObject(delta, alpha);
+
+    // Slerp model rotation
+    this.model.quaternion.slerpQuaternions(this.rotation, this.nextRotation, alpha);
   }
 
   addToWorld(world) {
