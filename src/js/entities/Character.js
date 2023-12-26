@@ -80,6 +80,7 @@ class Character extends Entity {
     
     // Clamp directional velocity
     this.velocity._y = this.velocity.y;
+    this.velocity.y = 0; // Ignore gravity velocity
     this.velocity.clampLength(-this.speed * delta, this.speed * delta);
     this.velocity.y = this.velocity._y;
 

@@ -3,6 +3,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 class Graphics {
@@ -23,12 +24,20 @@ class Graphics {
     this.outputPass = new OutputPass(); // {} = use default resolution
 
     // Initialize (optional) effects
+    this.outlinePass = new OutlinePass({ x: window.innerWidth, y: window.innerHeight }, this.scene, this.camera);
+    this.outlinePass.edgeStrength = 1; // Default 3
+		this.outlinePass.edgeGlow = 0; // Default 0
+		this.outlinePass.edgeThickness = 1; // Default 1
+    this.outlinePass.enabled = true;
+		this.outlinePass.visibleEdgeColor.set('#000000');
+		this.outlinePass.hiddenEdgeColor.set('#f65510');
     this.smaaPass = new SMAAPass(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
     this.smaaPass.enabled = true;
 
     // Add effects to composer
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(this.renderPass); // Renderer
+    this.composer.addPass(this.outlinePass); // Outline
     this.composer.addPass(this.smaaPass); // Anti-aliasing
     this.composer.addPass(this.outputPass); // Gamma/sRGB correction
 
@@ -67,6 +76,13 @@ class Graphics {
   setCamera(camera) {
     this.camera = camera;
     this.renderPass.camera = camera;
+    this.outlinePass.renderCamera = camera;
+  }
+
+  setScene(scene) {
+    this.scene = scene;
+    this.renderPass.scene = scene;
+    this.outlinePass.renderScene = scene;
   }
 
   setShadows(state = true) {
@@ -76,6 +92,11 @@ class Graphics {
         child.material.needsUpdate = true;
       }
     });
+  }
+
+  setSelectedObjects(objects = []) {
+    // Set outline selected objects
+		this.outlinePass.selectedObjects = objects;
   }
 
   addOrbitControls(position = { x: 0, y: 0, z: 0 }) {

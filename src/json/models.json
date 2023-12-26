@@ -10,7 +10,7 @@
         "userData": {
             "animation": {
                 "loop": true,
-                "action": "Run"
+                "action": "Idle"
             }
         }
     },

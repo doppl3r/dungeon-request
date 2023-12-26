@@ -25,6 +25,7 @@ class EntityManager {
 
     // Set camera to player camera
     game.graphics.setCamera(player.camera);
+    game.graphics.setSelectedObjects([player.model]);
 
     // Add meshes from dungeon model
     var dungeon = game.assets.models.cache['dungeon-forge'];
