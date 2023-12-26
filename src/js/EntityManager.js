@@ -13,14 +13,16 @@ class EntityManager {
 
   runDemo() {
     // Add player
+    var model = game.assets.models.duplicate('player');
     var player = new Player({
       color: '#f65510',
       position: { x: 0, y: 6, z: 0 },
       height: 0.5,
       radius: 0.25,
-      model: game.assets.models.clone('player')
+      model: model
     });
     this.add(player);
+    model.play('Run');
     player.addEventListeners();
 
     // Set camera to player camera

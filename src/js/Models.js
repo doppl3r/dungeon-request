@@ -1,6 +1,6 @@
-import { AnimationMixer, LoopOnce, LoopRepeat } from 'three';
+import { AnimationMixer } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils';
+import { clone as cloneWithSkeleton } from 'three/examples/jsm/utils/SkeletonUtils';
 import json from '../json/models.json';
 
 class Models {
@@ -17,94 +17,71 @@ class Models {
         model.name = key;
         model.animations = gltf.animations;
         model.userData = { ...value.userData };
-        this.setShadows(model);
-        this.applyUserData(model);
+        this.addMixer(model);
         this.cache[key] = model;
       }.bind(this));
     }
   }
-  
+
   get(name) {
-    return this.cache[name];
+    var model = this.cache[name];
+    return model;
   }
 
-  clone(object) {
+  duplicate(object) {
     // Initialize model as null
     var model;
 
     // Recursively clone object by string name
     if (typeof object == 'string') {
-      if (this.cache[object]) {
-        return this.clone(this.cache[object]);
-      }
+      return this.duplicate(this.get(object));
     }
     else {
-      // Object must exist for clone
-      if (object) {
-        // Utilize SkeletonUtils.js clone function
-        if (object) {
-          model = clone(object);
-          model.animations = [...object.animations]; // Clone animations object
-      
-          // Add mixer animations
-          this.applyUserData(model);
-        }
-      }
+      // Clone object using SkeletonUtil library
+      model = cloneWithSkeleton(object);
+      this.addMixer(model);
     }
 
     // Return new model object
     return model;
   }
 
-  setShadows(model) {
-    model.traverse(function (child) {
-      if (child.isMesh) {
-        child.castShadow = true
-        //child.receiveShadow = true
-      }
-    });
-  }
-
-  applyUserData(model) {
-    // Set object properties from userData
-    if (model.userData.position) { model.position.set(model.userData.position.x, model.userData.position.y, model.userData.position.z); }
-    if (model.userData.rotation) { model.rotation.set(model.userData.rotation.x, model.userData.rotation.y, model.userData.rotation.z); }
-    if (model.userData.scale) { model.scale.set(model.userData.scale.x, model.userData.scale.y, model.userData.scale.z); }
-
+  addMixer(model) {
     // Check if animations exist
     if (model.animations.length > 0) {
-      // Initialize loop type
-      var loopType = (model.userData?.animation?.loop == true) ? LoopRepeat : LoopOnce; // LoopRepeat, LoopOnce
       model.mixer = new AnimationMixer(model);
       model.actions = {};
-
+  
       // Add all animations (for nested models)
       for (var i = 0; i < model.animations.length; i++) {
         var animation = model.animations[i];
         var action = model.mixer.clipAction(animation);
-        action.setLoop(loopType);
         model.actions[animation.name] = action;
       }
-
+  
       // Add basic functions
-      model.animation = {
-        play: function(name = 'active') {
-          if (model.actions[name]) {
-            var action = model.actions['active'] = model.actions[name];
-            this.reset();
-            action.play();
-          }
-        },
-        reset: function(name = 'active') {
-          if (model.actions[name]) {
-            model.actions[name].reset()
-          }
+      model.play = function(name) {
+        if (model.actions[name]) {
+          var action = model.actions[name];
+          action.play();
         }
       }
-
-      // Start animation if looping
-      if (loopType == LoopRepeat) model.animation.play(model.userData?.animation?.action);
+      model.reset = function(name) {
+        if (model.actions[name]) {
+          var action = model.actions[name];
+          action.reset()
+        }
+      }
     }
+  }
+
+  updateShadows(model, castShadow = false, receiveShadow = false) {
+    model.traverse(function (child) {
+      if (child.isMesh) {
+        child.castShadow = castShadow;
+        child.receiveShadow = receiveShadow;
+      }
+    });
   }
 }
 

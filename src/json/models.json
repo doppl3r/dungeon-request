@@ -6,13 +6,7 @@
         "url": "./glb/dungeon-forge.glb"
     },
     "player": {
-        "url": "./glb/player.glb",
-        "userData": {
-            "animation": {
-                "loop": true,
-                "action": "Idle"
-            }
-        }
+        "url": "./glb/player.glb"
     },
     "test": {
         "url": "./glb/test.glb"
