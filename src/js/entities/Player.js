@@ -50,6 +50,10 @@ class Player extends Character {
     doc.addEventListener('keyup', function(e) { this.keyUp(e); }.bind(this), false);
   }
 
+  isMoving() {
+    return (this.keys['KeyW'] == true || this.keys['KeyS'] == true || this.keys['KeyA'] == true || this.keys['KeyD'] == true);
+  }
+
   pointerDown(e) {
     
   }
@@ -63,12 +67,24 @@ class Player extends Character {
   }
 
   keyDown(e) {
+    // Assign key inputs to true (once)
     if (e.repeat) return;
     this.keys[e.code] = true;
+
+    // Update model animations
+    if (this.isMoving() == true) {
+      this.model.play('Run', 0.25);
+    }
   }
 
   keyUp(e) {
+    // Set key values to false
     this.keys[e.code] = false;
+
+    // Update model animations
+    if (this.isMoving() == false) {
+      this.model.play('Idle', 0.25);
+    }
   }
 }
 

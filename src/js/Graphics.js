@@ -25,12 +25,12 @@ class Graphics {
 
     // Initialize (optional) effects
     this.outlinePass = new OutlinePass({ x: window.innerWidth, y: window.innerHeight }, this.scene, this.camera);
-    this.outlinePass.edgeStrength = 1; // Default 3
+    this.outlinePass.edgeStrength = 3; // Default 3
 		this.outlinePass.edgeGlow = 0; // Default 0
 		this.outlinePass.edgeThickness = 1; // Default 1
     this.outlinePass.enabled = true;
 		this.outlinePass.visibleEdgeColor.set('#000000');
-		this.outlinePass.hiddenEdgeColor.set('#f65510');
+		this.outlinePass.hiddenEdgeColor.set('#0094FF');
     this.smaaPass = new SMAAPass(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
     this.smaaPass.enabled = true;
 

@@ -22,7 +22,7 @@ class EntityManager {
       model: model
     });
     this.add(player);
-    model.play('Run', 0.25);
+    model.play('Idle', 0);
     player.addEventListeners();
 
     // Set camera to player camera
@@ -55,22 +55,6 @@ class EntityManager {
       });
       this.add(triMesh);
     }.bind(this));
-
-    // Add random spheres
-    for (var i = 0; i < 4; i++) {
-      var x = (Math.random() * 12) - 6;
-      var y = 12;
-      var z = (Math.random() * 12) - 6;
-      var radius = (Math.random() * 0.25) + 0.25;
-      var rotation = Math.random() * Math.PI;
-      var sphere = new Sphere({
-        color: '#f65510', // orange: #ffb547, blue: #7fc9ff
-        position: { x: x, y: y, z: z },
-        rotation: { x: rotation, y: rotation, z: rotation },
-        radius: radius
-      });
-      this.add(sphere);
-    }
 
     // Add background
     this.background = new Background({ radius: 50 });

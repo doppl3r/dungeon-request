@@ -67,7 +67,7 @@ class Models {
         var endAction = model.actions[name];
 
         // Check if action exists
-        if (endAction) {
+        if (endAction && endAction != startAction) {
           // Fade in from no animation
           if (startAction == null) {
             endAction.setEffectiveWeight(1);
@@ -75,11 +75,9 @@ class Models {
           }
           else {
             // Cross fade animation with duration
-            if (startAction != endAction) {
-              startAction.setEffectiveWeight(1);
-              endAction.setEffectiveWeight(1);
-              endAction.reset().crossFadeFrom(startAction, duration);
-            }
+            startAction.setEffectiveWeight(1);
+            endAction.setEffectiveWeight(1);
+            endAction.reset().crossFadeFrom(startAction, duration);
           }
 
           // Store start action for cross fade
