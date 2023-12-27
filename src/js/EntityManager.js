@@ -16,7 +16,7 @@ class EntityManager {
     var model = game.assets.models.duplicate('player');
     var player = this.player = new Player({
       color: '#f65510',
-      position: { x: 0, y: 6, z: 0 },
+      position: { x: 0, y: 0.5, z: 0 },
       height: 0.5,
       radius: 0.25,
       model: model
@@ -30,7 +30,7 @@ class EntityManager {
     game.graphics.setSelectedObjects([player.model]);
 
     // Add meshes from dungeon model
-    var dungeon = game.assets.models.cache['dungeon-forge'];
+    var dungeon = game.assets.models.cache['dungeon-desert'];
     var meshes = [];
     dungeon.traverse(function(child) {
       if (child.isMesh) {

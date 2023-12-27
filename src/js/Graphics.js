@@ -30,7 +30,7 @@ class Graphics {
 		this.outlinePass.edgeThickness = 1; // Default 1
     this.outlinePass.enabled = true;
 		this.outlinePass.visibleEdgeColor.set('#000000');
-		this.outlinePass.hiddenEdgeColor.set('#0094FF');
+		this.outlinePass.hiddenEdgeColor.set('#ffffff');
     this.smaaPass = new SMAAPass(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
     this.smaaPass.enabled = true;
 
@@ -89,6 +89,8 @@ class Graphics {
     this.renderer.shadowMap.enabled = state;
     this.scene.traverse(function (child) {
       if (child.material) {
+        child.castShadow = state;
+        child.receiveShadow = state;
         child.material.needsUpdate = true;
       }
     });

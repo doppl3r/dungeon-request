@@ -8,11 +8,11 @@ class Sun extends Group {
     options = Object.assign({}, options);
 
     // Create directional light (shadow effect)
-    this.direct = new DirectionalLight('#ffffff', 0.5 * Math.PI);
+    this.direct = new DirectionalLight('#ffffff', 0 * Math.PI);
     this.direct.castShadow = true;
 
     // Create ambient lighting (natural light)
-    this.ambient = new AmbientLight('#ffffff', 0.5 * Math.PI);
+    this.ambient = new AmbientLight('#ffffff', 1 * Math.PI);
 
     // Update position
     this.time = 0; // 12 = noon
