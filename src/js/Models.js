@@ -56,20 +56,34 @@ class Models {
       for (var i = 0; i < model.animations.length; i++) {
         var animation = model.animations[i];
         var action = model.mixer.clipAction(animation);
+        action.play(); // Activate action by default
+        action.setEffectiveWeight(0); // Clear action influence
         model.actions[animation.name] = action;
       }
   
-      // Add basic functions
-      model.play = function(name) {
-        if (model.actions[name]) {
-          var action = model.actions[name];
-          action.play();
-        }
-      }
-      model.reset = function(name) {
-        if (model.actions[name]) {
-          var action = model.actions[name];
-          action.reset()
+      // Add action helper function
+      model.play = function(name, duration = 1) {
+        var startAction = model.actions['startAction'];
+        var endAction = model.actions[name];
+
+        // Check if action exists
+        if (endAction) {
+          // Fade in from no animation
+          if (startAction == null) {
+            endAction.setEffectiveWeight(1);
+            endAction.reset().fadeIn(duration);
+          }
+          else {
+            // Cross fade animation with duration
+            if (startAction != endAction) {
+              startAction.setEffectiveWeight(1);
+              endAction.setEffectiveWeight(1);
+              endAction.reset().crossFadeFrom(startAction, duration);
+            }
+          }
+
+          // Store start action for cross fade
+          model.actions['startAction'] = endAction;
         }
       }
     }
