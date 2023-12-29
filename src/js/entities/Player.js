@@ -73,7 +73,7 @@ class Player extends Character {
 
     // Update model animations
     if (this.isMoving() == true) {
-      this.model.play('Run', 0.25);
+      this.model.play('Run', 0.125);
     }
   }
 
@@ -83,7 +83,7 @@ class Player extends Character {
 
     // Update model animations
     if (this.isMoving() == false) {
-      this.model.play('Idle', 0.25);
+      this.model.play('Idle', 0.125);
     }
   }
 }

@@ -30,7 +30,7 @@ class EntityManager {
     game.graphics.setSelectedObjects([player.model]);
 
     // Add meshes from dungeon model
-    var dungeon = game.assets.models.cache['dungeon-cemetary'];
+    var dungeon = game.assets.models.cache['dungeon-crypt'];
     var meshes = [];
     dungeon.traverse(function(child) {
       if (child.isMesh) {

@@ -5,6 +5,9 @@
     "dungeon-cemetary": {
         "url": "./glb/dungeon-cemetary.glb"
     },
+    "dungeon-crypt": {
+        "url": "./glb/dungeon-crypt.glb"
+    },
     "dungeon-desert": {
         "url": "./glb/dungeon-desert.glb"
     },
