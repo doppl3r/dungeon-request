@@ -34,11 +34,11 @@ class Player extends Character {
   }
 
   updateObject(delta, alpha) {
-    // Update camera position
-    this.camera.position.copy(this.object.position).add(this.camera.offset);
-
     // Call Character update function
     super.updateObject(delta, alpha);
+    
+    // Update camera position
+    this.camera.position.copy(this.object.position).add(this.camera.offset);
   }
 
   addEventListeners(domElement) {
