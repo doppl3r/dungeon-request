@@ -1,4 +1,4 @@
-import { PerspectiveCamera } from 'three';
+import { PerspectiveCamera, Vector3 } from 'three';
 import { Character } from './Character.js';
 
 /*
@@ -11,14 +11,14 @@ class Player extends Character {
     // Inherit Character class
     super(options);
 
-    // Initialize input keys
-    this.keys = {};
-
     // Add camera
     this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);
-    this.camera.position.set(0, 2, 2);
-    this.camera.lookAt(0, 0, 0);
-    this.object.add(this.camera);
+    this.camera.offset = new Vector3(0, 2, 2);
+    this.camera.position.add(this.camera.offset);
+    this.camera.lookAt(this.object.position);
+
+    // Initialize input keys
+    this.keys = {};
   }
 
   updateBody(delta) {
@@ -34,6 +34,9 @@ class Player extends Character {
   }
 
   updateObject(delta, alpha) {
+    // Update camera position
+    this.camera.position.copy(this.object.position).add(this.camera.offset);
+
     // Call Character update function
     super.updateObject(delta, alpha);
   }
