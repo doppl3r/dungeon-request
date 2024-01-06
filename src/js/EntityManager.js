@@ -69,7 +69,7 @@ class EntityManager {
   updateBodies(delta) {
     // Update all entities
     this.entities.forEach(function(child) {
-        if (child.rigidBody) child.updateBody(delta);
+        if (child.body) child.updateBody(delta);
     });
   }
 
@@ -79,7 +79,7 @@ class EntityManager {
 
     // Update each 3D object
     this.entities.forEach(function(child) {
-      if (child.rigidBody) child.updateObject(delta, alpha);
+      if (child.body) child.updateObject(delta, alpha);
     });
   }
 
@@ -94,6 +94,18 @@ class EntityManager {
     this.entities.splice(index, 1);
     body.removeFromWorld(this.world);
     body.removeFromScene(this.scene);
+  }
+
+  toJSON() {
+    var json = {
+      entities: []
+    };
+    for (var i = this.entities.length - 1; i > -1; i--) {
+      var entity = this.entities[i];
+      //console.log(entity);
+      json.entities.push(entity.toJSON());
+    }
+    return json;
   }
 }
 

@@ -63,7 +63,7 @@ class Models {
   
       // Add action helper function
       model.play = function(name, duration = 1) {
-        var startAction = model.actions['startAction'];
+        var startAction = model.actions['active'];
         var endAction = model.actions[name];
 
         // Check if action exists
@@ -81,7 +81,7 @@ class Models {
           }
 
           // Store start action for cross fade
-          model.actions['startAction'] = endAction;
+          model.actions['active'] = endAction;
         }
       }
     }

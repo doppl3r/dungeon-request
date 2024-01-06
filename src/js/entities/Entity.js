@@ -18,11 +18,16 @@ class Entity {
       position: { x: 0, y: 0, z: 0 },
       rotation: { x: 0, y: 0, z: 0 },
       isSensor: false,
-      shape: null
+      shape: null,
+      model: null
     }, options);
 
     // Create an empty object
     this.object = new Object3D();
+
+    // Add optional model
+    this.model = options.model;
+    if (this.model) this.object.add(this.model);
 
     // Initialize rigid body description
     this.rigidBodyDesc = new RigidBodyDesc(RigidBodyType[options.type]);
@@ -40,25 +45,30 @@ class Entity {
   }
 
   updateObject(delta, alpha) {
+    // Update model (optional)
+    if (this.model && this.model.mixer) {
+      this.model.mixer.update(delta);
+    }
+
     // Interpolate 3D object position
     this.lerp(alpha)
   }
 
   addToWorld(world) {
     // Create rigid body in the world
-    this.rigidBody = world.createRigidBody(this.rigidBodyDesc);
-    this.collider = world.createCollider(this.colliderDesc, this.rigidBody); // Parent collision to rigid body
+    this.body = world.createRigidBody(this.rigidBodyDesc);
+    this.collider = world.createCollider(this.colliderDesc, this.body); // Parent collision to rigid body
 
     // Update default 3D object position and rotation
-    this.object.position.copy(this.rigidBody.translation());
-    this.object.quaternion.copy(this.rigidBody.rotation());
+    this.object.position.copy(this.body.translation());
+    this.object.quaternion.copy(this.body.rotation());
 
     // Prepare initial snapshot from rigid body
     this.takeSnapshot();
   }
 
   removeFromWorld(world) {
-    world.removeRigidBody(this.rigidBody); // Includes colliders that were attached
+    world.removeRigidBody(this.body); // Includes colliders that were attached
   }
 
   addToScene(scene) {
@@ -70,13 +80,13 @@ class Entity {
   }
 
   setNextPosition(position) {
-    this.rigidBody.setNextKinematicTranslation(position, true); // Wake
+    this.body.setNextKinematicTranslation(position, true); // Wake
   }
 
   takeSnapshot() {
     // Get position/rotation
-    var position = this.rigidBody.translation();
-    var rotation = this.rigidBody.rotation();
+    var position = this.body.translation();
+    var rotation = this.body.rotation();
 
     // Create initial snapshot
     if (this.snapshot == null) {
@@ -92,10 +102,10 @@ class Entity {
     this.snapshot.position_1.copy(this.snapshot.position_2);
     this.snapshot.quaternion_1.copy(this.snapshot.quaternion_2);
 
-    if (this.rigidBody.isKinematic()) {
+    if (this.body.isKinematic()) {
       // Store next position for lerp - requires setNextKinematicTranslation()
-      this.snapshot.position_2.copy(this.rigidBody.nextTranslation());
-      this.snapshot.quaternion_2.copy(this.rigidBody.nextRotation());
+      this.snapshot.position_2.copy(this.body.nextTranslation());
+      this.snapshot.quaternion_2.copy(this.body.nextRotation());
     }
     else {
       // Store next position for lerp
@@ -106,7 +116,7 @@ class Entity {
 
   lerp(alpha = 0) {
     // Skip (s)lerp if body type is "Fixed"
-    if (this.rigidBody.isFixed()) return false;
+    if (this.body.isFixed()) return false;
 
     // Linear interpolation using alpha value
     this.object.position.lerpVectors(this.snapshot.position_1, this.snapshot.position_2, alpha);
@@ -114,7 +124,46 @@ class Entity {
   }
 
   toJSON() {
-    
+    var json = {
+      object: {
+        position: {
+          x: this.object.position.x,
+          y: this.object.position.y,
+          z: this.object.position.z
+        },
+        quaternion: {
+          x: this.object.quaternion.x,
+          y: this.object.quaternion.y,
+          z: this.object.quaternion.z,
+          w: this.object.quaternion.w,
+        },
+        scale: {
+          x: this.object.scale.x,
+          y: this.object.scale.y,
+          z: this.object.scale.z,
+        }
+      },
+      body: {
+        type: this.body.bodyType()
+      }
+    };
+
+    // Add model info
+    if (this.model) {
+      json.model = {
+        name: this.model.name
+      }
+
+      // Add optional actions
+      if (this.model.actions) {
+        json.model.action = {
+          name: this.model.actions.active.getClip().name,
+          time: this.model.actions.active.time,
+        }
+      }
+    }
+
+    return json;
   }
 }
 

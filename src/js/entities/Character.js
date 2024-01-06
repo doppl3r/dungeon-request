@@ -19,24 +19,22 @@ class Character extends Entity {
     // Create physical shape
     options.shape = new Capsule(options.height / 2, options.radius);
 
-    // Inherit Entity class
-    super(options);
-
     // Add capsule mesh if model is empty
     if (options.model == null) {
       var geometry = new CapsuleGeometry(options.radius, options.height);
       var material = new MeshStandardMaterial({ color: options.color });
-      this.model = new Mesh(geometry, material);
-      this.model.receiveShadow = true;
-      this.model.castShadow = true;
-      this.object.add(this.model);
+      options.model = new Mesh(geometry, material);
+      options.model.receiveShadow = true;
+      options.model.castShadow = true;
     }
     else {
       // Set object and adjust position
-      this.model = options.model;
-      this.model.position.y = -(options.radius + (options.height / 2));
-      this.object.add(this.model);
+      options.model = options.model;
+      options.model.position.y = -(options.radius + (options.height / 2));
     }
+
+    // Inherit Entity class
+    super(options);
 
     // Set default values
     this.actions = {};
@@ -98,14 +96,14 @@ class Character extends Entity {
 
     // Calculate next translation from computed movement
     this.movement.copy(this.controller.computedMovement());
-    this.nextTranslation.copy(this.rigidBody.translation());
+    this.nextTranslation.copy(this.body.translation());
     this.nextTranslation.add(this.movement);
-    this.rigidBody.setNextKinematicTranslation(this.nextTranslation);
+    this.body.setNextKinematicTranslation(this.nextTranslation);
 
     // Calculate next rotation from character direction
-    if (this.nextTranslation.distanceTo(this.rigidBody.translation()) > 0.01) {
+    if (this.nextTranslation.distanceTo(this.body.translation()) > 0.01) {
       this.object.lookAt(this.nextTranslation.x, this.object.position.y, this.nextTranslation.z);
-      this.rigidBody.setNextKinematicRotation(this.object.quaternion);
+      this.body.setNextKinematicRotation(this.object.quaternion);
     }
 
     // Call Entity update function
@@ -113,11 +111,6 @@ class Character extends Entity {
   }
 
   updateObject(delta, alpha) {
-    // Animate (if mixer exists)
-    if (this.model.mixer) {
-      this.model.mixer.update(delta);
-    }
-
     // Call Entity update function
     super.updateObject(delta, alpha);
   }
