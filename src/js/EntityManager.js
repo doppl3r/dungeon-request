@@ -100,9 +100,8 @@ class EntityManager {
     var json = {
       entities: []
     };
-    for (var i = this.entities.length - 1; i > -1; i--) {
+    for (var i = 0; i < this.entities.length; i++) {
       var entity = this.entities[i];
-      //console.log(entity);
       json.entities.push(entity.toJSON());
     }
     return json;
