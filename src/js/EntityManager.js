@@ -1,5 +1,4 @@
 import { Player } from './entities/Player';
-import { Sphere } from './entities/Sphere';
 import { TriMesh } from './entities/TriMesh';
 import { Background } from './Background';
 import { Sun } from './Sun';

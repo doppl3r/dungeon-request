@@ -4,7 +4,6 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 class Graphics {
   constructor(canvas) {
@@ -52,7 +51,6 @@ class Graphics {
   }
 
   update(delta) {
-    if (this.controls) this.controls.update(delta);
     this.render();
   }
 
@@ -99,13 +97,6 @@ class Graphics {
   setSelectedObjects(objects = []) {
     // Set outline selected objects
 		this.outlinePass.selectedObjects = objects;
-  }
-
-  addOrbitControls(position = { x: 0, y: 0, z: 0 }) {
-    // Add orbit controls
-    this.controls = new OrbitControls(this.camera, this.canvas);
-    this.controls.target.copy(position);
-    this.controls.update();
   }
 }
 
