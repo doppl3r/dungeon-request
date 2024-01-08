@@ -3,11 +3,11 @@ import { TriMesh } from './entities/TriMesh';
 import { Background } from './Background';
 import { Sun } from './Sun';
 
-class EntityManager {
+class Entities {
   constructor(scene, world) {
     this.scene = scene;
     this.world = world;
-    this.entities = [];
+    this.list = [];
   }
 
   runDemo() {
@@ -67,7 +67,7 @@ class EntityManager {
 
   updateBodies(delta) {
     // Update all entities
-    this.entities.forEach(function(child) {
+    this.list.forEach(function(child) {
         if (child.body) child.updateBody(delta);
     });
   }
@@ -77,20 +77,20 @@ class EntityManager {
     this.sun.update(delta);
 
     // Update each 3D object
-    this.entities.forEach(function(child) {
+    this.list.forEach(function(child) {
       if (child.body) child.updateObject(delta, alpha);
     });
   }
 
   add(body) {
-    this.entities.push(body);
+    this.list.push(body);
     body.addToWorld(this.world);
     body.addToScene(this.scene);
   }
 
   remove(body) {
-    var index = this.entities.indexOf(body);
-    this.entities.splice(index, 1);
+    var index = this.list.indexOf(body);
+    this.list.splice(index, 1);
     body.removeFromWorld(this.world);
     body.removeFromScene(this.scene);
   }
@@ -99,12 +99,12 @@ class EntityManager {
     var json = {
       entities: []
     };
-    for (var i = 0; i < this.entities.length; i++) {
-      var entity = this.entities[i];
+    for (var i = 0; i < this.list.length; i++) {
+      var entity = this.list[i];
       json.entities.push(entity.toJSON());
     }
     return json;
   }
 }
 
-export { EntityManager };
+export { Entities };

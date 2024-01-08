@@ -1,9 +1,10 @@
 import { Peer } from 'peerjs';
 import { MathUtils } from 'three';
+import { Session } from './Session';
 
-class Network {
-  constructor(prefix = '') {
-    this.prefix = prefix;
+class Server {
+  constructor(scene, world) {
+    this.session = new Session();
     this.isHost = false;
     this.setTick(10);
   }
@@ -16,7 +17,7 @@ class Network {
     if (this.peer) this.peer.destroy();
 
     // Initialize peer with unique id
-    this.peer = new Peer(this.prefix + id); // Generate random ID
+    this.peer = new Peer(id); // Generate random ID
     this.peer.on('open', callback);
     this.peer.on('error', function(error){ console.log(error); }.bind());
   }
@@ -60,7 +61,7 @@ class Network {
       console.log(id);
       
       // Begin connection
-      var conn = this.peer.connect(this.prefix + id_host);
+      var conn = this.peer.connect(id_host);
 
       // Add open listener
       conn.on('open', function() {
@@ -84,8 +85,8 @@ class Network {
     }.bind(this));
   }
 
-  update(data) {
-    //console.log(data);
+  update(delta) {
+    
   }
 
   setTick(tick = 10) {
@@ -93,4 +94,4 @@ class Network {
   }
 }
 
-export { Network };
+export { Server };
