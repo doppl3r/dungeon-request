@@ -3,94 +3,63 @@ import { MathUtils } from 'three';
 import { Session } from './Session';
 
 class Server {
-  constructor(scene, world) {
+  constructor() {
     this.session = new Session();
-    this.isHost = false;
-    this.setTick(10);
-  }
-
-  open(id, callback = function(){}) {
-    // Generate new id
-    if (id == null) id = MathUtils.generateUUID();
-
-    // Reset peer if already created
-    if (this.peer) this.peer.destroy();
-
-    // Initialize peer with unique id
-    this.peer = new Peer(id); // Generate random ID
-    this.peer.on('open', callback);
-    this.peer.on('error', function(error){ console.log(error); }.bind());
-  }
-
-  host(id_host) {
-    // Open connection and listen to guests
-    this.open(id_host, function(id) {
-      // Display peer id
-      console.log(id);
-
-      // Listen to guest connections
-      this.peer.on('connection', function(conn) {
-        this.isHost = true;
-
-        // Add open listener
-        conn.on('open', function() {
-          console.log('Guest has connected', conn);
-        }.bind(this));
-
-        // Add disconnection listener
-        conn.on('close', function() {
-          console.log('Guest disconnected');
-        }.bind(this));
-    
-        // Add inbound data listener
-        conn.on('data', function(data) {
-          console.log(data);
-        }.bind(this));
-
-        // Add connection error listener
-        conn.on('error', function(error) {
-          console.log(error);
-        });
-      });
-    }.bind(this));
-  }
-
-  join(id_host) {
-    // Open a connection and connect to a host
-    this.open(null, function(id) {
-      console.log(id);
-      
-      // Begin connection
-      var conn = this.peer.connect(id_host);
-
-      // Add open listener
-      conn.on('open', function() {
-        console.log('You are connected to the host', conn);
-      }.bind(this));
-
-      // Add disconnection listener
-      conn.on('close', function() {
-        console.log('Host disconnected');
-      }.bind(this));
-  
-      // Add inbound data listener
-      conn.on('data', function(data) {
-        console.log(data);
-      }.bind(this));
-
-      // Add connection error listener
-      conn.on('error', function(error) {
-        console.log(error);
-      });
-    }.bind(this));
   }
 
   update(delta) {
     
   }
 
-  setTick(tick = 10) {
-    this.tick = tick;
+  host(id_host, callback = function(){}) {
+    // Open connection and listen to guests
+    if (id_host == null) id_host = MathUtils.generateUUID();
+
+    // Reset peer if already created
+    if (this.peer) this.peer.destroy();
+
+    // Initialize peer with unique id
+    this.peer = new Peer(id_host); // Generate random ID
+    this.peer.on('open', function(id) {
+      // Confirm connection is ready
+      this.emitPeerOpen(id, callback);
+      
+      // Add event listeners from client(s)
+      this.peer.on('connection', function(conn) {
+        conn.on('open', function() { this.emitConnectionOpen(conn); }.bind(this)); // Add connection open listener
+        conn.on('close', function() { this.emitConnectionClose(conn); }.bind(this)); // Add disconnection listener
+        conn.on('data', function(data) { this.emitConnectionData(data); }.bind(this)); // Add inbound data listener
+        conn.on('error', function(error) { this.emitConnectionError(error); }.bind(this)); // Add connection error listener
+      }.bind(this));
+    }.bind(this));
+
+    // Listen to peer errors
+    this.peer.on('error', function(error){ this.emitPeerError(error); }.bind(this));
+  }
+
+  emitPeerOpen(id, callback = function(){}) {
+    console.log('Server is ready for clients to connect', id);
+    callback(id); // Perform custom callback
+  }
+
+  emitPeerError(error) {
+    console.log('Server error', error);
+  }
+
+  emitConnectionOpen(conn) {
+    console.log('Client connected to server', conn.peer);
+  }
+
+  emitConnectionClose(conn) {
+    console.log('Client disconnected from server', conn.peer);
+  }
+
+  emitConnectionData(data) {
+    console.log('Client sent data', data);
+  }
+
+  emitConnectionError(error) {
+    console.log('Client error', error);
   }
 }
 

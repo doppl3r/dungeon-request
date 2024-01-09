@@ -4,7 +4,7 @@ import { Graphics } from './Graphics';
 import { Physics } from './Physics';
 import { Entities } from './Entities.js';
 import { Debugger } from './Debugger.js';
-import { Server } from './Server.js';
+import { Network } from './Network.js';
 import Stats from './Stats.js';
 
 class Game {
@@ -24,8 +24,8 @@ class Game {
     this.entities = new Entities(this.graphics.scene, this.physics.world);
     this.debugger = new Debugger(this.graphics.scene, this.physics.world);
     this.debugger.disable();
-    this.server = new Server(this.graphics.scene, this.physics.world);
-    this.server.setTick(10);
+    this.network = new Network(this.graphics.scene, this.physics.world);
+    this.network.setTick(10);
 
     // Load game after assets have loaded
     this.assets.load(function() {
@@ -36,7 +36,12 @@ class Game {
   load() {
     // Start demo world
     this.entities.runDemo();
-    this.server.host();
+
+    // Create a server
+    this.network.host('speed-looter-local', function(id) {
+      // Join server
+      this.network.join(id);
+    }.bind(this));
 
     // Add physics loop
     this.loop.add(this.physics.tick, function(data) {
@@ -53,9 +58,9 @@ class Game {
       this.stats.end(); // Complete FPS counter
     }.bind(this));
 
-    // Add server loop
-    this.loop.add(this.server.tick, function(data) {
-      this.server.update(data.delta);
+    // Add network loop
+    this.loop.add(this.network.tick, function(data) {
+      this.network.update(data.delta);
     }.bind(this));
 
     // Start loop
