@@ -1,4 +1,4 @@
-# Speed Looter
+# Dungeon Request
 Get your loot and get out!
 
 ## Local Development

@@ -38,7 +38,7 @@ class Game {
     this.entities.runDemo();
 
     // Create a server
-    this.network.host('speed-looter-local', function(id) {
+    this.network.host('dungeon-request-local', function(id) {
       // Join server
       this.network.join(id);
     }.bind(this));
