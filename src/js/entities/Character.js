@@ -12,26 +12,12 @@ class Character extends Entity {
   constructor(options = {}) {
     // Resolve null option values
     if (options.color == null) options.color = '#ffffff';
-    if (options.height == null) options.height = 1;
-    if (options.radius == null) options.radius = 0.5;
+    if (options.height == null) options.height = 0.5;
+    if (options.radius == null) options.radius = 0.25;
     if (options.type == null) options.type = 'KinematicPositionBased';
 
     // Create physical shape
     options.shape = new Capsule(options.height / 2, options.radius);
-
-    // Add capsule mesh if model is empty
-    if (options.model == null) {
-      var geometry = new CapsuleGeometry(options.radius, options.height);
-      var material = new MeshStandardMaterial({ color: options.color });
-      options.model = new Mesh(geometry, material);
-      options.model.receiveShadow = true;
-      options.model.castShadow = true;
-    }
-    else {
-      // Set object and adjust position
-      options.model = options.model;
-      options.model.position.y = -(options.radius + (options.height / 2));
-    }
 
     // Inherit Entity class
     super(options);

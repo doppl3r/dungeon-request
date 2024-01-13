@@ -1,15 +1,31 @@
 import { Peer } from 'peerjs';
+import { Player } from './entities/Player';
+import { Session } from './Session';
 
 class Client {
   constructor(scene, world) {
-    
+    this.session = new Session(scene, world);
+    this.player = new Player({
+      position: { x: 0, y: 1, z: 0 }
+    });
   }
 
-  update(delta) {
-    
+  init(assets) {
+    this.player.addModel(assets.models.duplicate('player'));
+    this.player.model.play('Idle', 0); // Start idle animation
+    this.player.addEventListeners();
+    this.session.entities.add(this.player);
   }
 
-  join(id_host, callback = function(){}) {
+  updateBodies(delta) {
+    this.session.updateBodies(delta);
+  }
+
+  updateObjects(delta, alpha) {
+    this.session.updateObjects(delta, alpha);
+  }
+
+  join(host_id, callback = function(){}) {
     // Reset peer if already created
     if (this.peer) this.peer.destroy();
 
@@ -20,7 +36,7 @@ class Client {
       this.dispatchPeerOpen(id, callback);
 
       // Connect to host
-      var conn = this.peer.connect(id_host);
+      var conn = this.peer.connect(host_id);
 
       // Add event listeners from host
       conn.on('open', function() { this.dispatchConnectionOpen(conn); }.bind(this)); // Add open listener

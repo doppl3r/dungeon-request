@@ -26,8 +26,7 @@ class Entity {
     this.object = new Object3D();
 
     // Add optional model
-    this.model = options.model;
-    if (this.model) this.object.add(this.model);
+    this.addModel(options.model);
 
     // Initialize rigid body description
     this.rigidBodyDesc = new RigidBodyDesc(RigidBodyType[options.type]);
@@ -81,6 +80,14 @@ class Entity {
 
   setNextPosition(position) {
     this.body.setNextKinematicTranslation(position, true); // Wake
+  }
+
+  addModel(model) {
+    if (model) {
+      this.model = model;
+      this.model.position.y = -(this.colliderDesc.shape.halfHeight * 2);
+      this.object.add(model);
+    }
   }
 
   takeSnapshot() {
