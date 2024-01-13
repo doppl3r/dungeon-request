@@ -41,8 +41,8 @@ class Client {
       // Add event listeners from host
       conn.on('open', function() { this.dispatchConnectionOpen(conn); }.bind(this)); // Add open listener
       conn.on('close', function() { this.dispatchConnectionClose(conn); }.bind(this)); // Add disconnection listener
-      conn.on('data', function(data) { this.dispatchConnectionData(data); }.bind(this)); // Add inbound data listener
-      conn.on('error', function(error) { this.dispatchConnectionError(error); }); // Add connection error listener
+      conn.on('data', function(data) { this.dispatchConnectionData(conn, data); }.bind(this)); // Add inbound data listener
+      conn.on('error', function(error) { this.dispatchConnectionError(conn, error); }); // Add connection error listener
     }.bind(this));
 
     // Listen to peer errors
@@ -50,28 +50,28 @@ class Client {
   }
 
   dispatchPeerOpen(id, callback = function(){}) {
-    console.log('Client is ready to connect to a server', id);
+    console.log('Client (' + this.peer.id + ') is ready to connect to a server');
     callback(id);
   }
 
   dispatchPeerError(error) {
-    console.log('Client error', error);
+    console.log('Client (' + this.peer.id + ') error: ', error);
   }
 
   dispatchConnectionOpen(conn) {
-    console.log('Server connected to client', conn.peer);
+    console.log('Server (' + conn.peer + ') received client (' + this.peer.id + ')');
   }
 
   dispatchConnectionClose(conn) {
-    console.log('Server disconnected from client', conn.peer);
+    console.log('Server (' + conn.peer + ') disconnected from client (' + this.peer.id + ')');
   }
 
-  dispatchConnectionData(data) {
-    console.log('Server sent data', data);
+  dispatchConnectionData(conn, data) {
+    console.log('Server (' + conn.peer + ') sent data to client (' + this.peer.id + '): ', data);
   }
 
-  dispatchConnectionError(error) {
-    console.log('Server error', error);
+  dispatchConnectionError(conn, error) {
+    console.log('Server (' + conn.peer + ') error: ', error);
   }
 }
 

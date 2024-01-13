@@ -53,8 +53,8 @@ class Server {
         this.peer.on('connection', function(conn) {
           conn.on('open', function() { this.emitConnectionOpen(conn); }.bind(this)); // Add connection open listener
           conn.on('close', function() { this.emitConnectionClose(conn); }.bind(this)); // Add disconnection listener
-          conn.on('data', function(data) { this.emitConnectionData(data); }.bind(this)); // Add inbound data listener
-          conn.on('error', function(error) { this.emitConnectionError(error); }.bind(this)); // Add connection error listener
+          conn.on('data', function(data) { this.emitConnectionData(conn, data); }.bind(this)); // Add inbound data listener
+          conn.on('error', function(error) { this.emitConnectionError(conn, error); }.bind(this)); // Add connection error listener
         }.bind(this));
       }.bind(this));
   
@@ -64,30 +64,30 @@ class Server {
   }
 
   emitPeerOpen(id, callback = function(){}) {
-    console.log('Server is ready for clients to connect', id);
+    console.log('Server (' + this.peer.id + ') is ready for clients to connect');
     callback(id); // Perform custom callback
   }
 
   emitPeerError(error) {
-    console.log('Server error', error);
+    console.log('Server (' + this.peer.id + ') error: ', error);
   }
 
   emitConnectionOpen(conn) {
-    console.log('Client connected to server', conn.peer);
+    console.log('Client (' + conn.peer + ') connected to server (' + this.peer.id + ')');
     // Send all session data to client
     conn.send(this.session.toJSON())
   }
 
   emitConnectionClose(conn) {
-    console.log('Client disconnected from server', conn.peer);
+    console.log('Client (' + conn.peer + ') disconnected from server (' + this.peer.id + ')');
   }
 
-  emitConnectionData(data) {
-    console.log('Client sent data', data);
+  emitConnectionData(conn, data) {
+    console.log('Client (' + conn.peer + ') sent data to server (' + this.peer.id + '): ', data);
   }
 
-  emitConnectionError(error) {
-    console.log('Client error', error);
+  emitConnectionError(conn, error) {
+    console.log('Client (' + conn.peer + ') error: ', error);
   }
 }
 
