@@ -15,7 +15,7 @@ class Graphics {
     // Initialize renderer components
     this.renderer = new WebGLRenderer({ alpha: true, canvas: canvas });
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.enabled = false;
     this.renderer.shadowMap.type = PCFSoftShadowMap;
 
     // Assign post processing on top of renderer
@@ -43,11 +43,6 @@ class Graphics {
     // Add window resize logic
     window.addEventListener('resize', function(e) { this.resize(e); }.bind(this));
     this.resize(); // Run resize immediately
-    this.setTick(60);
-  }
-
-  setTick(tick = 60) {
-    this.tick = tick;
   }
 
   update(delta) {

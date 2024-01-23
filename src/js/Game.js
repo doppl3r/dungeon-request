@@ -3,7 +3,6 @@ import { Loop } from './Loop';
 import { Graphics } from './Graphics';
 import { Physics } from './Physics';
 import { Debugger } from './Debugger.js';
-import { Network } from './Network.js';
 import { Client } from './Client.js';
 import { Server } from './Server.js';
 import Stats from './Stats.js';
@@ -18,16 +17,38 @@ class Game {
 
   init(canvas) {
     this.graphics = new Graphics(canvas);
-    this.graphics.setTick(-1);
-    this.graphics.setShadows(false);
     this.physics = new Physics();
     this.physics.setTick(30);
     this.debugger = new Debugger(this.graphics.scene, this.physics.world);
     this.debugger.disable();
-    this.network = new Network();
-    this.network.setTick(10);
+
+    // Create network event system
     this.client = new Client(this.graphics.scene, this.physics.world);
     this.server = new Server();
+
+    // Add event listeners
+    this.server.on('peer_open', function(serverEvent) {
+      console.log(serverEvent);
+
+      // Open client connection
+      this.client.open();
+    }.bind(this));
+
+    // Add client event listeners
+    this.client.on('peer_open', function(clientEvent) {
+      console.log(clientEvent);
+
+      // Connect client to server
+      this.client.connect(this.server.peer.id);
+    }.bind(this));
+
+    // Add client connection event
+    this.client.on('connection_open', function(clientEvent) {
+      console.log(clientEvent);
+    }.bind(this));
+
+    // Open server connection
+    this.server.open();
 
     // Load game after assets have loaded
     this.assets.load(function() {
@@ -37,34 +58,27 @@ class Game {
 
   load(assets) {
     // Create a server
-    this.server.host('dungeon-request-local', function(id) {
-      // Load server session
-      this.server.session.loadWorld(assets)
-      
-      // Join server
-      this.client.join(id, function() {
-        // Initialize client environment
-        this.client.init(this.assets);
-        this.client.session.loadWorld(assets)
-        
-        // Set camera to player camera
-        this.graphics.setCamera(this.client.player.camera);
-        this.graphics.setSelectedObjects([this.client.player.model]);
-      }.bind(this));
-    }.bind(this));
+    this.server.session.loadWorld(assets)
+
+    // Initialize client environment
+    this.client.init(this.assets);
+    this.client.session.loadWorld(assets)
+    
+    // Set camera to player camera
+    this.graphics.setCamera(this.client.player.camera);
+    this.graphics.setSelectedObjects([this.client.player.model]);
 
     // Add physics loop
-    this.loop.add(this.physics.tick, function(data) {
+    this.loop.add(30, function(data) {
       this.server.updateBodies(data.delta);
       this.client.updateBodies(data.delta);
-
       
       this.physics.step(); // Perform world calculation
       this.debugger.update(); // Update debugger buffer
     }.bind(this));
 
     // Add graphic loop
-    this.loop.add(this.graphics.tick, function(data) {
+    this.loop.add(-1, function(data) {
       this.stats.begin(); // Start FPS counter
 
       this.server.updateObjects(data.delta, data.alpha);
@@ -75,7 +89,7 @@ class Game {
     }.bind(this));
 
     // Add network loop
-    this.loop.add(this.network.tick, function(data) {
+    this.loop.add(10, function(data) {
       this.server.update(data.delta);
     }.bind(this));
 
