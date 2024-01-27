@@ -2,15 +2,13 @@ import { Player } from './entities/Player';
 import { Session } from './Session';
 import { Graphics } from './Graphics';
 import { Physics } from './Physics';
-import { NetworkDispatcher } from './NetworkDispatcher.js';
+import { Network } from './Network.js';
 
-class Client extends NetworkDispatcher {
+class Client {
   constructor(scene, world) {
-    super(); // Inherit EventDispatch class
     this.session = new Session(scene, world);
-    this.player = new Player({
-      position: { x: 0, y: 1, z: 0 }
-    });
+    this.player = new Player({ position: { x: 0, y: 1, z: 0 } });
+    this.network = new Network();
   }
 
   init(assets) {

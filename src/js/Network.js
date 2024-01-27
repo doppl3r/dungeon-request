@@ -1,7 +1,7 @@
 import { EventDispatcher, MathUtils } from 'three';
 import { Peer } from 'peerjs';
 
-class NetworkDispatcher extends EventDispatcher {
+class Network extends EventDispatcher {
   constructor() {
     super(); // Inherit EventDispatcher
   }
@@ -46,4 +46,4 @@ class NetworkDispatcher extends EventDispatcher {
   }
 }
 
-export { NetworkDispatcher };
+export { Network };

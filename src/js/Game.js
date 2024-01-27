@@ -27,28 +27,28 @@ class Game {
     this.server = new Server();
 
     // Add event listeners
-    this.server.on('peer_open', function(serverEvent) {
+    this.server.network.on('peer_open', function(serverEvent) {
       console.log(serverEvent);
 
       // Open client connection
-      this.client.open();
+      this.client.network.open();
     }.bind(this));
 
     // Add client event listeners
-    this.client.on('peer_open', function(clientEvent) {
+    this.client.network.on('peer_open', function(clientEvent) {
       console.log(clientEvent);
 
       // Connect client to server
-      this.client.connect(this.server.peer.id);
+      this.client.network.connect(this.server.network.peer.id);
     }.bind(this));
 
     // Add client connection event
-    this.client.on('connection_open', function(clientEvent) {
+    this.client.network.on('connection_open', function(clientEvent) {
       console.log(clientEvent);
     }.bind(this));
 
     // Open server connection
-    this.server.open();
+    this.server.network.open();
 
     // Load game after assets have loaded
     this.assets.load(function() {

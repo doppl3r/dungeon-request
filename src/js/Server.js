@@ -1,19 +1,19 @@
 import { Session } from './Session';
 import { Graphics } from './Graphics';
 import { Physics } from './Physics';
-import { NetworkDispatcher } from './NetworkDispatcher.js';
+import { Network } from './Network.js';
 
 /*
   The server contains a separate graphic and physics library for
   creating unique entities for clients.
 */
 
-class Server extends NetworkDispatcher {
+class Server {
   constructor() {
-    super(); // Inherit EventDispatch class
     this.graphics = new Graphics();
     this.physics = new Physics();
     this.session = new Session(this.graphics.scene, this.physics.world);
+    this.network = new Network();
   }
 
   init(assets) {
