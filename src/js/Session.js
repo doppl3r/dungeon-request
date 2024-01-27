@@ -20,7 +20,6 @@ class Session {
   loadWorld(assets) {
     // Add meshes from dungeon model
     var model = assets.models.duplicate(this.map);
-
     var meshes = [];
     model.traverse(function(child) {
       if (child.isMesh) {

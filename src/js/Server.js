@@ -1,6 +1,4 @@
 import { Session } from './Session';
-import { Graphics } from './Graphics';
-import { Physics } from './Physics';
 import { Network } from './Network.js';
 
 /*
@@ -9,10 +7,8 @@ import { Network } from './Network.js';
 */
 
 class Server {
-  constructor() {
-    this.graphics = new Graphics();
-    this.physics = new Physics();
-    this.session = new Session(this.graphics.scene, this.physics.world);
+  constructor(scene, world) {
+    this.session = new Session(scene, world);
     this.network = new Network();
   }
 
