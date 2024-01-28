@@ -1,30 +1,14 @@
+import { Background } from './entities/Background';
 import { TriMesh } from './entities/TriMesh';
 
 class Entities {
-  constructor(scene, world) {
-    this.scene = scene;
-    this.world = world;
+  constructor() {
     this.list = [];
   }
 
-  updateBodies(delta) {
-    // Update all entities
-    this.list.forEach(function(child) {
-        if (child.body) child.updateBody(delta);
-    });
-  }
-
-  updateObjects(delta, alpha) {
-    // Update each 3D object
-    this.list.forEach(function(child) {
-      if (child.body) child.updateObject(delta, alpha);
-    });
-  }
-
-  add(body) {
-    this.list.push(body);
-    body.addToWorld(this.world);
-    body.addToScene(this.scene);
+  addBackground(options) {
+    var background = new Background(options);
+    this.add(background);
   }
 
   addTriMesh(mesh) {
@@ -43,11 +27,27 @@ class Entities {
     this.add(triMesh);
   }
 
+  updateBodies(delta) {
+    // Update all entities
+    this.list.forEach(function(child) {
+        if (child.body) child.updateBody(delta);
+    });
+  }
+
+  updateObjects(delta, alpha) {
+    // Update each 3D object
+    this.list.forEach(function(child) {
+      if (child.body) child.updateObject(delta, alpha);
+    });
+  }
+
+  add(entity) {
+    this.list.push(entity);
+  }
+
   remove(body) {
     var index = this.list.indexOf(body);
     this.list.splice(index, 1);
-    body.removeFromWorld(this.world);
-    body.removeFromScene(this.scene);
   }
 
   toJSON() {

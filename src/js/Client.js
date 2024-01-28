@@ -1,27 +1,24 @@
-import { Player } from './entities/Player';
 import { Graphics } from './Graphics';
-import { Physics } from './Physics';
-import { Debugger } from './Debugger.js';
-import { Session } from './Session';
+import { Entities } from './Entities.js';
 import { Network } from './Network.js';
+import { Physics } from './Physics';
+import { Player } from './entities/Player';
 
 class Client {
   constructor(canvas) {
+    this.entities = new Entities();
     this.graphics = new Graphics(canvas);
+    this.network = new Network();
     this.physics = new Physics();
     this.physics.setTick(30);
-    this.debugger = new Debugger(this.graphics.scene, this.physics.world);
-    this.debugger.disable();
-    this.session = new Session(this.graphics.scene, this.physics.world);
     this.player = new Player({ position: { x: 0, y: 1, z: 0 } });
-    this.network = new Network();
   }
 
   init(assets) {
+    // Initialize player entity
     this.player.addModel(assets.models.duplicate('player'));
     this.player.model.play('Idle', 0); // Start idle animation
     this.player.addEventListeners();
-    this.session.entities.add(this.player);
 
     // Set camera to player camera
     this.graphics.setCamera(this.player.camera);
@@ -29,12 +26,12 @@ class Client {
   }
 
   updateBodies(delta) {
-    this.session.updateBodies(delta);
-    this.debugger.update(); // Update debugger buffer
+    this.entities.updateBodies(delta)
+    this.physics.step();
   }
 
   updateObjects(delta, alpha) {
-    this.session.updateObjects(delta, alpha);
+    this.entities.updateObjects(delta, alpha);
     this.graphics.update(delta); // Update 3D engine
   }
 }

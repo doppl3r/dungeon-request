@@ -29,16 +29,16 @@ class Network extends EventDispatcher {
 
   connect(host_id) {
     // Connect to host
-    var conn = this.peer.connect(host_id);
-    this.listen(conn);
+    var connection = this.peer.connect(host_id);
+    this.listen(connection);
   }
 
-  listen(conn) {
+  listen(connection) {
     // Add event listers to connection
-    conn.on('open', function() { this.dispatchEvent({ type: 'connection_open', connection: conn }); }.bind(this));
-    conn.on('close', function() { this.dispatchEvent({ type: 'connection_close', connection: conn }); }.bind(this));
-    conn.on('data', function(data) { this.dispatchEvent({ type: 'connection_data', connection: conn, data: data }); }.bind(this));
-    conn.on('error', function(error) { this.dispatchEvent({ type: 'connection_error', connection: conn, error: error }.bind(this)); });
+    connection.on('open', function() { this.dispatchEvent({ type: 'connection_open', connection: connection }); }.bind(this));
+    connection.on('close', function() { this.dispatchEvent({ type: 'connection_close', connection: connection }); }.bind(this));
+    connection.on('data', function(data) { this.dispatchEvent({ type: 'connection_data', connection: connection, data: data }); }.bind(this));
+    connection.on('error', function(error) { this.dispatchEvent({ type: 'connection_error', connection: connection, error: error }.bind(this)); });
   }
 
   on(type, callback) {

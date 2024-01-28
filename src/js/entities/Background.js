@@ -1,38 +1,24 @@
-import { BackSide, Color, Group, Mesh, ShaderMaterial, SphereGeometry } from 'three';
+import { AmbientLight, BackSide, Color, DirectionalLight, Mesh, ShaderMaterial, SphereGeometry } from 'three';
+import { Ball } from '@dimforge/rapier3d';
+import { Entity } from './Entity.js';
 
-class Background extends Group {
+class Background extends Entity {
   constructor(options) {
-    super();
+    // Resolve null option values
+    if (options.color == null) options.color = '#ffffff';
+    if (options.radius == null) options.radius = 10;
+    if (options.widthSegments == null) options.widthSegments = 16;
+    if (options.heightSegments == null) options.heightSegments = 16;
+    if (options.type == null) options.type = 'KinematicPositionBased';
 
-    // Merge options
-    options = Object.assign({
-      name: 'background',
-      position: { x: 0, y: 0, z: 0 },
-      radius: 1
-    }, options);
+    // Create physical shape
+    options.shape = new Ball(options.radius);
+
+    // Inherit Entity class
+    super(options);
     
     // Initialize with options
-    this.options = options; // Store for getOptions for pre-mesh transformations
-    this.init(options);
-  }
-
-  init(options) {
-    // Empty existing meshes
-    this.clear();
-
-    // Assign default values
-    this.name = options.name;
-
-    // Add sphereMesh
-    this.addSphereMesh();
-  }
-
-  update(delta, alpha) {
-    this.rotation.y += delta * 0.01;
-  }
-
-  addSphereMesh() {
-    var geometry = new SphereGeometry(this.options.radius, 16, 16);
+    var geometry = new SphereGeometry(options.radius, 16, 16);
 
     // Update bounding box for shader material
     geometry.computeBoundingBox();
@@ -67,15 +53,21 @@ class Background extends Group {
       side: BackSide
     });
     
-    // Copy options position and return mesh
+    // Add background mesh
     var mesh = new Mesh(geometry, material);
-    mesh.position.set(this.options.position.x, this.options.position.y, this.options.position.z);
-    mesh.name = 'background-mesh';
-    this.add(mesh);
+    this.object.add(mesh);
+
+    // Add light
+    var ambientLight = new AmbientLight(options.color, 1 * Math.PI);
+    this.object.add(ambientLight);
   }
 
-  setTarget(target) {
-    this.target = target;
+  updateBody(delta) {
+    
+  }
+
+  updateObject(delta, alpha) {
+    this.object.rotation.y += delta * 0.01;
   }
 }
 

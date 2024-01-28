@@ -1,4 +1,4 @@
-import { CapsuleGeometry, Euler, Mesh, MeshStandardMaterial, Vector3 } from 'three';
+import { Euler, Vector3 } from 'three';
 import { Capsule } from '@dimforge/rapier3d';
 import { Entity } from './Entity.js';
 
