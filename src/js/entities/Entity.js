@@ -36,6 +36,18 @@ class Entity {
     // Initialize collider description
     this.colliderDesc = new ColliderDesc(options.shape);
     this.colliderDesc.setSensor(options.isSensor);
+
+    // These properties are created by the world
+    this.body = null;
+    this.collider = null;
+
+    // Initialize default snapshot for object position/rotation (s)lerp
+    this.snapshot = {
+      position_1: new Vector3().copy(this.rigidBodyDesc.translation), // Previous position
+      position_2: new Vector3().copy(this.rigidBodyDesc.translation), // Current position
+      quaternion_1: new Quaternion().copy(this.rigidBodyDesc.rotation), // Previous rotation
+      quaternion_2: new Quaternion().copy(this.rigidBodyDesc.rotation), // Current rotation
+    }
   }
 
   updateBody(delta) {
@@ -62,7 +74,7 @@ class Entity {
     this.object.position.copy(this.body.translation());
     this.object.quaternion.copy(this.body.rotation());
 
-    // Prepare initial snapshot from rigid body
+    // Take snapshot from rigid body
     this.takeSnapshot();
   }
 
@@ -79,7 +91,13 @@ class Entity {
   }
 
   setNextPosition(position) {
-    this.body.setNextKinematicTranslation(position, true); // Wake
+    if (this.body) this.body.setNextKinematicTranslation(position, true); // true = wake from sleep
+    this.snapshot.position_2.copy(position);
+  }
+
+  setNextRotation(rotation) { // Type "quaternion"
+    if (this.body) this.body.setNextKinematicRotation(rotation, true); // true = wake from sleep
+    this.snapshot.quaternion_2.copy(rotation);
   }
 
   addModel(model) {
@@ -91,39 +109,28 @@ class Entity {
   }
 
   takeSnapshot() {
-    // Get position/rotation
-    var position = this.body.translation();
-    var rotation = this.body.rotation();
+    // A snapshot requires a physical rigid body
+    if (this.body) {
+      // Store previous snapshot position for lerp
+      this.snapshot.position_1.copy(this.snapshot.position_2);
+      this.snapshot.quaternion_1.copy(this.snapshot.quaternion_2);
 
-    // Create initial snapshot
-    if (this.snapshot == null) {
-      this.snapshot = {
-        position_1: new Vector3().copy(position), // Previous position
-        position_2: new Vector3().copy(position), // Current position
-        quaternion_1: new Quaternion().copy(rotation), // Previous rotation
-        quaternion_2: new Quaternion().copy(rotation), // Current rotation
+      // Store next position for lerp if the rigid body is a kinematic type
+      if (this.body.isKinematic()) {
+        this.snapshot.position_2.copy(this.body.nextTranslation());
+        this.snapshot.quaternion_2.copy(this.body.nextRotation());
       }
-    }
-
-    // Store previous position for lerp
-    this.snapshot.position_1.copy(this.snapshot.position_2);
-    this.snapshot.quaternion_1.copy(this.snapshot.quaternion_2);
-
-    if (this.body.isKinematic()) {
-      // Store next position for lerp - requires setNextKinematicTranslation()
-      this.snapshot.position_2.copy(this.body.nextTranslation());
-      this.snapshot.quaternion_2.copy(this.body.nextRotation());
-    }
-    else {
-      // Store next position for lerp
-      this.snapshot.position_2.copy(position);
-      this.snapshot.quaternion_2.copy(rotation);
+      else {
+        // Store next position for lerp for all other rigid body types
+        this.snapshot.position_2.copy(this.body.translation());
+        this.snapshot.quaternion_2.copy(this.body.rotation());
+      }
     }
   }
 
   lerp(alpha = 0) {
-    // Skip (s)lerp if body type is "Fixed"
-    if (this.body.isFixed()) return false;
+    // Skip (s)lerp if body type is null or "Fixed"
+    if (this.body && this.body.isFixed()) return false;
 
     // Linear interpolation using alpha value
     this.object.position.lerpVectors(this.snapshot.position_1, this.snapshot.position_2, alpha);
@@ -149,11 +156,15 @@ class Entity {
           y: this.object.scale.y,
           z: this.object.scale.z,
         }
-      },
-      body: {
-        type: this.body.bodyType()
       }
     };
+
+    // Add body info
+    if (this.body) {
+      json.body = {
+        type: this.body.bodyType()
+      }
+    }
 
     // Add model info
     if (this.model) {
