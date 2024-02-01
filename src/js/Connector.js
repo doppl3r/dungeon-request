@@ -9,6 +9,7 @@ import { Peer } from 'peerjs';
 class Connector extends EventDispatcher {
   constructor() {
     super(); // Inherit EventDispatcher
+    this.connections = [];
   }
 
   open(id) {
@@ -20,30 +21,64 @@ class Connector extends EventDispatcher {
 
     // Initialize peer with unique id
     this.peer = new Peer(id); // Generate random ID
-    this.peer.on('open', function(id) {
-      // Confirm connection is ready
-      this.dispatchEvent({ type: 'peer_open', id: id });
-      
-      // Add event listeners to host from client(s)
-      this.peer.on('connection', function(conn) { this.listen(conn); }.bind(this));
-    }.bind(this));
-
-    // Listen to peer errors
-    this.peer.on('error', function(error){ this.dispatchEvent({ type: 'peer_error', error: error }); }.bind(this));
+    this.addPeerListeners(this.peer);
   }
 
   connect(host_id) {
     // Connect to host
     var connection = this.peer.connect(host_id);
-    this.listen(connection);
+    this.addConnectionListeners(connection);
   }
 
-  listen(connection) {
-    // Add event listers to connection
-    connection.on('open', function() { this.dispatchEvent({ type: 'connection_open', connection: connection }); }.bind(this));
-    connection.on('close', function() { this.dispatchEvent({ type: 'connection_close', connection: connection }); }.bind(this));
-    connection.on('data', function(data) { this.dispatchEvent({ type: 'connection_data', connection: connection, data: data }); }.bind(this));
-    connection.on('error', function(error) { this.dispatchEvent({ type: 'connection_error', connection: connection, error: error }.bind(this)); });
+  addPeerListeners(peer) {
+    peer.on('open', function(id) {
+      // Confirm connection is ready
+      this.dispatchEvent({ type: 'peer_open', id: id });
+      
+      // Add event listeners to host from client(s)
+      peer.on('connection', function(conn) { this.addConnectionListeners(conn); }.bind(this));
+    }.bind(this));
+
+    // Listen to peer close (use peer.destroy to clean up connections)
+    peer.on('close', function() {
+      this.connections = []; // Empty connections
+      this.dispatchEvent({ type: 'peer_close', peer: peer });
+    }.bind(this))
+
+    // Listen to peer disconnection
+    peer.on('disconnected', function() {
+      this.dispatchEvent({ type: 'peer_disconnected', peer: peer });
+    }.bind(this));
+
+    // Listen to peer errors
+    peer.on('error', function(error){
+      this.dispatchEvent({ type: 'peer_error', error: error });
+    }.bind(this));
+  }
+
+  addConnectionListeners(connection) {
+    // Dispatch connection open
+    connection.on('open', function() {
+      this.connections.push(connection); // Add to connections array
+      this.dispatchEvent({ type: 'connection_open', connection: connection });
+    }.bind(this));
+
+    // Dispatch connection close
+    connection.on('close', function() {
+      var index = this.connections.indexOf(connection);
+      this.connections.splice(index, 1); // Remove from connections array
+      this.dispatchEvent({ type: 'connection_close', connection: connection });
+    }.bind(this));
+
+    // Dispatch connection data
+    connection.on('data', function(data) {
+      this.dispatchEvent({ type: 'connection_data', connection: connection, data: data });
+    }.bind(this));
+
+    // Dispatch connection error
+    connection.on('error', function(error) {
+      this.dispatchEvent({ type: 'connection_error', connection: connection, error: error });
+    });
   }
 
   on(type, callback) {

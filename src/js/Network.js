@@ -18,30 +18,54 @@ class Network {
     this.client.load(assets);
 
     // Add server event listeners
-    this.server.on('peer_open', function(e) {
+    this.server.connector.on('peer_open', function(e) {
       console.log(e);
     }.bind(this));
 
-    this.server.on('connection_open', function(e) {
+    this.server.connector.on('connection_open', function(e) {
+      console.log(e);
+    }.bind(this));
 
-    });
+    this.server.connector.on('connection_close', function(e) {
+      console.log(e);
+    }.bind(this));
+
+    this.server.connector.on('connection_data', function(e) {
+      console.log(e);
+    }.bind(this));
+
+    
+
+
+
 
     // Add client event listeners
-    this.client.on('peer_open', function(e) {
+    this.client.connector.on('peer_open', function(e) {
       console.log(e);
     }.bind(this));
 
-    this.client.on('connection_open', function(e) {
+    this.client.connector.on('connection_open', function(e) {
       console.log(e);
-    })
+    }.bind(this));
+
+    this.client.connector.on('connection_close', function(e) {
+      console.log(e);
+    }.bind(this));
+
+    this.client.connector.on('connection_data', function(e) {
+      console.log(e);
+    }.bind(this));
+
+
+    
     
     // Open server to start local connection
-    this.server.open();
-    this.client.open();
+    this.server.connector.open();
+    this.client.connector.open();
   }
 
   update(delta) {
-    
+    this.server.updateConnections();
   }
 }
 

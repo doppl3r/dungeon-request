@@ -7,12 +7,12 @@ import { Physics } from './Physics';
   creating unique entities for clients.
 */
 
-class Server extends Connector {
+class Server {
   constructor() {
-    super(); // Inherit Connector
     this.entities = new Entities();
     this.physics = new Physics();
     this.physics.setTick(30);
+    this.connector = new Connector();
   }
 
   load(assets) {
@@ -47,6 +47,14 @@ class Server extends Connector {
 
   updateObjects(delta, alpha) {
     this.entities.updateObjects(delta, alpha)
+  }
+
+  updateConnections() {
+    // Loop through all connection on server
+    for (var i = 0; i < this.connector.connections.length; i++) {
+      var connection = this.connector.connections[i];
+      connection.send({ entities: 'test' });
+    }
   }
 }
 

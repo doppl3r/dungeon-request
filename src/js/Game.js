@@ -56,7 +56,7 @@ class Game {
     }.bind(this));
 
     // Add network loop
-    this.loop.add(10, function(data) {
+    this.loop.add(1, function(data) {
       this.network.update(data.delta);
     }.bind(this));
 

@@ -4,14 +4,14 @@ import { Connector } from './Connector.js';
 import { Physics } from './Physics';
 import { Player } from './entities/Player';
 
-class Client extends Connector {
+class Client {
   constructor(canvas) {
-    super(); // Inherit Connector
     this.entities = new Entities();
     this.graphics = new Graphics(canvas);
     this.physics = new Physics();
     this.physics.setTick(30);
     this.player = new Player({ position: { x: 0, y: 1, z: 0 } });
+    this.connector = new Connector();
   }
 
   load(assets) {
