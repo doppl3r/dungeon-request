@@ -1,5 +1,5 @@
-import { Entities } from './Entities.js';
-import { Network } from './Network.js';
+import { Entities } from './entities/Entities.js';
+import { Connector } from './Connector.js';
 import { Physics } from './Physics';
 
 /*
@@ -7,15 +7,15 @@ import { Physics } from './Physics';
   creating unique entities for clients.
 */
 
-class Server {
+class Server extends Connector {
   constructor() {
+    super(); // Inherit Connector
     this.entities = new Entities();
-    this.network = new Network();
     this.physics = new Physics();
     this.physics.setTick(30);
   }
 
-  init(assets) {
+  load(assets) {
     // Add background entity
     this.entities.addBackground({ radius: 50 });
 

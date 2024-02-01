@@ -1,8 +1,7 @@
 import { Assets } from './Assets.js';
-import { Client } from './Client.js';
 import { Debugger } from './Debugger.js';
 import { Loop } from './Loop';
-import { Server } from './Server.js';
+import { Network } from './Network.js';
 import Stats from './Stats.js';
 
 class Game {
@@ -10,35 +9,34 @@ class Game {
     this.assets = new Assets();
     this.loop = new Loop();
     this.stats = new Stats();
+    this.debugger;
+    this.network;
+
+    // For testing: Attach stats to dom
     document.body.appendChild(this.stats.dom);
   }
 
   init(canvas) {
     // Create network event system
-    this.client = new Client(canvas);
-    this.server = new Server();
+    this.network = new Network(canvas);
 
     // Load game after assets have loaded
     this.assets.load(function() { this.load(this.assets); }.bind(this));
   }
 
   load(assets) {
-    // Initialize server and client
-    this.server.init(assets);
-    this.client.init(assets);
-
-    // Start server
-    this.server.network.open();
+    // Load network with assets
+    this.network.load(assets);
 
     // Add game debugger
-    this.debugger = new Debugger(this.client.graphics.scene, this.server.physics.world);
+    this.debugger = new Debugger(this.network.client.graphics.scene, this.network.server.physics.world);
     this.debugger.disable();
 
     // Add physics loop
     this.loop.add(30, function(data) {
       // Update server and client bodies
-      this.server.updateBodies(data.delta);
-      this.client.updateBodies(data.delta);
+      this.network.server.updateBodies(data.delta);
+      this.network.client.updateBodies(data.delta);
 
       // Update debugger buffer
       this.debugger.update();
@@ -50,8 +48,8 @@ class Game {
       this.stats.begin();
 
       // Update server and client instances
-      this.server.updateObjects(data.delta, data.alpha);
-      this.client.updateObjects(data.delta, data.alpha);
+      this.network.server.updateObjects(data.delta, data.alpha);
+      this.network.client.updateObjects(data.delta, data.alpha);
 
       // Complete FPS counter
       this.stats.end();
@@ -59,7 +57,7 @@ class Game {
 
     // Add network loop
     this.loop.add(10, function(data) {
-      // TODO: Send server data to clients
+      this.network.update(data.delta);
     }.bind(this));
 
     // Start loop

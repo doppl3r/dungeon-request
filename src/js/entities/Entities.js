@@ -1,5 +1,5 @@
-import { Background } from './entities/Background';
-import { TriMesh } from './entities/TriMesh';
+import { Background } from './Background';
+import { TriMesh } from './TriMesh';
 
 class Entities {
   constructor() {
