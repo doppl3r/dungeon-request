@@ -10,13 +10,16 @@ class Client {
     this.physics = new Physics();
     this.entities = new Entities(this.graphics.scene, this.physics.world);
     this.physics.setTick(30);
-    this.player = new Player({ position: { x: 0, y: 1, z: 0 } });
     this.connector = new Connector();
+    this.player;
   }
 
   load(assets) {
     // Initialize player entity
-    this.player.addModel(assets.models.duplicate('player'));
+    this.player = new Player({
+      position: { x: 0, y: 2.5, z: 0 },
+      model: assets.models.duplicate('player')
+    });
     this.player.model.play('Idle', 0); // Start idle animation
     this.player.addEventListeners();
     this.entities.add(this.player);
@@ -29,8 +32,7 @@ class Client {
     this.entities.addBackground({ radius: 50 });
 
     // Add meshes from dungeon model
-    var model = assets.models.duplicate('dungeon-crypt');
-    this.entities.addTriMeshesFromModel(model);
+    this.entities.addDungeon(assets.models.duplicate('dungeon-forge'));
   }
 
   updateBodies(delta) {

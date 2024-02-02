@@ -1,3 +1,4 @@
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { Background } from './Background';
 import { TriMesh } from './TriMesh';
 
@@ -6,43 +7,6 @@ class Entities {
     this.scene = scene;
     this.world = world;
     this.list = [];
-  }
-
-  addBackground(options) {
-    var background = new Background(options);
-    this.add(background);
-  }
-
-  addTriMeshesFromModel(model) {
-    var meshes = [];
-    model.traverse(function(child) {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-        meshes.push(child);
-      }
-    });
-
-    // Create TriMeshes from dungeon
-    meshes.forEach(function(mesh) {
-      this.addTriMesh(mesh);
-    }.bind(this));
-  }
-
-  addTriMesh(mesh) {
-    // Create TriMeshes from dungeon
-    var type = 'Fixed'; // Rapier RigidBody type
-    var name = mesh.name;
-    var isDynamic = name.includes('-Dynamic');
-    var isSensor = name.includes('-Sensor');
-    if (isDynamic == true) type = 'Dynamic';
-    var triMesh = new TriMesh({
-      isSensor: isSensor,
-      mesh: mesh,
-      group: 0,
-      type: type
-    });
-    this.add(triMesh);
   }
 
   updateBodies(delta) {
@@ -63,6 +27,42 @@ class Entities {
     this.list.push(entity);
     if (this.scene) entity.addToScene(this.scene);
     if (this.world) entity.addToWorld(this.world);
+  }
+
+  addBackground(options) {
+    var background = new Background(options);
+    this.add(background);
+  }
+
+  addDungeon(model) {
+    // Merge geometries from all meshes
+    var geometry;
+    var geometries = [];
+    model.traverse(function(child) {
+      if (child.isMesh) {
+        geometry = child.geometry.clone();
+        geometry.rotateX(child.rotation.x);
+        geometry.rotateY(child.rotation.y);
+        geometry.rotateZ(child.rotation.z);
+        geometry.scale(child.scale.x, child.scale.y, child.scale.z);
+        geometry.translate(child.position.x, child.position.y, child.position.z);
+        geometries.push(geometry);
+      }
+    });
+    geometry = mergeGeometries(geometries);
+
+    // Create TriMesh from merged geometry
+    var vertices = geometry.attributes.position.array;
+    var indices = geometry.index.array;
+    var triMesh = new TriMesh({
+      indices: indices,
+      model: model,
+      name: model.name,
+      vertices: vertices
+    });
+
+    // Add TriMesh entity
+    this.add(triMesh);
   }
 
   remove(entity) {

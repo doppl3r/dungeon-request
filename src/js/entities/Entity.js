@@ -12,9 +12,9 @@ class Entity {
     // Set options with default values
     options = Object.assign({
       mass: 1,
-      size: { x: 1, y: 1, z: 1 },
-      type: 'Dynamic', // 0: Dynamic, 1: Fixed, 2: KinematicPositionBased, 3: KinematicVelocityBased
+      name: 'entity',
       scale: { x: 1, y: 1, z: 1 },
+      type: 'Dynamic', // 0: Dynamic, 1: Fixed, 2: KinematicPositionBased, 3: KinematicVelocityBased
       position: { x: 0, y: 0, z: 0 },
       rotation: { x: 0, y: 0, z: 0 },
       isSensor: false,
@@ -22,11 +22,8 @@ class Entity {
       model: null
     }, options);
 
-    // Create an empty object
-    this.object = new Object3D();
-
-    // Add optional model
-    this.addModel(options.model);
+    // Apply name
+    this.name = options.name;
 
     // Initialize rigid body description
     this.rigidBodyDesc = new RigidBodyDesc(RigidBodyType[options.type]);
@@ -40,6 +37,12 @@ class Entity {
     // These properties are created by the world
     this.body = null;
     this.collider = null;
+
+    // Create an empty object
+    this.object = new Object3D();
+
+    // Add optional model
+    this.addModel(options.model);
 
     // Initialize default snapshot for object position/rotation (s)lerp
     this.snapshot = {
@@ -107,9 +110,13 @@ class Entity {
 
   addModel(model) {
     if (model) {
-      this.model = model;
-      this.model.position.y = -(this.colliderDesc.shape.halfHeight * 2);
       this.object.add(model);
+      this.model = model;
+      
+      // Offset model position from shape halfHeight value
+      if (this.colliderDesc.shape && this.colliderDesc.shape.halfHeight) {
+        this.model.position.y = -(this.colliderDesc.shape.halfHeight * 2);
+      }
     }
   }
 
@@ -144,6 +151,7 @@ class Entity {
 
   toJSON() {
     var json = {
+      name: this.name,
       object: {
         position: {
           x: this.object.position.x,

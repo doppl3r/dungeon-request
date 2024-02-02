@@ -21,7 +21,7 @@ class Server {
 
     // Add meshes from dungeon model
     var model = assets.models.duplicate('dungeon-crypt');
-    this.entities.addTriMeshesFromModel(model);
+    this.entities.addDungeon(model);
   }
 
   update(delta) {

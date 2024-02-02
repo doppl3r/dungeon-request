@@ -1,10 +1,10 @@
-import { AmbientLight, BackSide, Color, DirectionalLight, Mesh, ShaderMaterial, SphereGeometry } from 'three';
-import { Ball } from '@dimforge/rapier3d';
+import { AmbientLight, BackSide, Color, Mesh, ShaderMaterial, SphereGeometry } from 'three';
 import { Entity } from './Entity.js';
 
 class Background extends Entity {
   constructor(options) {
     // Resolve null option values
+    if (options.name == null) options.name = 'background';
     if (options.color == null) options.color = '#ffffff';
     if (options.radius == null) options.radius = 10;
     if (options.widthSegments == null) options.widthSegments = 16;
@@ -13,9 +13,6 @@ class Background extends Entity {
 
     // Inherit Entity class
     super(options);
-
-    // Set object name
-    this.object.name = 'Background';
     
     // Initialize with options
     var geometry = new SphereGeometry(options.radius, 16, 16);
@@ -53,13 +50,10 @@ class Background extends Entity {
       side: BackSide
     });
     
-    // Add background mesh
+    // Add mesh and light to object
     var mesh = new Mesh(geometry, material);
-    this.object.add(mesh);
-
-    // Add light
     var ambientLight = new AmbientLight(options.color, 1 * Math.PI);
-    this.object.add(ambientLight);
+    this.object.add(mesh, ambientLight);
   }
 
   updateObject(delta, alpha) {
