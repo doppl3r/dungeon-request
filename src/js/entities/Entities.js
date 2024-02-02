@@ -2,13 +2,31 @@ import { Background } from './Background';
 import { TriMesh } from './TriMesh';
 
 class Entities {
-  constructor() {
+  constructor(scene, world) {
+    this.scene = scene;
+    this.world = world;
     this.list = [];
   }
 
   addBackground(options) {
     var background = new Background(options);
     this.add(background);
+  }
+
+  addTriMeshesFromModel(model) {
+    var meshes = [];
+    model.traverse(function(child) {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+        meshes.push(child);
+      }
+    });
+
+    // Create TriMeshes from dungeon
+    meshes.forEach(function(mesh) {
+      this.addTriMesh(mesh);
+    }.bind(this));
   }
 
   addTriMesh(mesh) {
@@ -37,17 +55,21 @@ class Entities {
   updateObjects(delta, alpha) {
     // Update each 3D object
     this.list.forEach(function(child) {
-      if (child.body) child.updateObject(delta, alpha);
+      child.updateObject(delta, alpha);
     });
   }
 
   add(entity) {
     this.list.push(entity);
+    if (this.scene) entity.addToScene(this.scene);
+    if (this.world) entity.addToWorld(this.world);
   }
 
-  remove(body) {
-    var index = this.list.indexOf(body);
+  remove(entity) {
+    var index = this.list.indexOf(entity);
     this.list.splice(index, 1);
+    if (this.scene) entity.removeFromScene(this.scene);
+    if (this.world) entity.removeFromWorld(this.world);
   }
 
   toJSON() {

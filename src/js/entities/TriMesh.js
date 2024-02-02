@@ -19,7 +19,7 @@ class TriMesh extends Entity {
     }
 
     // Resolve null option values
-    if (options.type == null) options.type = 'Fixed'
+    if (options.type == null) options.type = 'Fixed';
 
     // Create physical shape
     options.shape = new TriMeshShape(vertices, indices);

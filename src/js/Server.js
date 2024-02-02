@@ -21,19 +21,7 @@ class Server {
 
     // Add meshes from dungeon model
     var model = assets.models.duplicate('dungeon-crypt');
-    var meshes = [];
-    model.traverse(function(child) {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-        meshes.push(child);
-      }
-    });
-
-    // Create TriMeshes from dungeon
-    meshes.forEach(function(mesh) {
-      this.entities.addTriMesh(mesh);
-    }.bind(this));
+    this.entities.addTriMeshesFromModel(model);
   }
 
   update(delta) {
@@ -53,7 +41,7 @@ class Server {
     // Loop through all connection on server
     for (var i = 0; i < this.connector.connections.length; i++) {
       var connection = this.connector.connections[i];
-      connection.send({ entities: 'test' });
+      connection.send({ entities: this.entities.toJSON() });
     }
   }
 }

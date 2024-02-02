@@ -29,13 +29,13 @@ class Game {
     this.network.load(assets);
 
     // Add game debugger
-    this.debugger = new Debugger(this.network.client.graphics.scene, this.network.server.physics.world);
+    this.debugger = new Debugger(this.network.client.graphics.scene, this.network.client.physics.world);
     this.debugger.disable();
 
     // Add physics loop
     this.loop.add(30, function(data) {
       // Update server and client bodies
-      this.network.server.updateBodies(data.delta);
+      //this.network.server.updateBodies(data.delta);
       this.network.client.updateBodies(data.delta);
 
       // Update debugger buffer
@@ -48,7 +48,7 @@ class Game {
       this.stats.begin();
 
       // Update server and client instances
-      this.network.server.updateObjects(data.delta, data.alpha);
+      //this.network.server.updateObjects(data.delta, data.alpha);
       this.network.client.updateObjects(data.delta, data.alpha);
 
       // Complete FPS counter

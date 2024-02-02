@@ -11,11 +11,11 @@ class Background extends Entity {
     if (options.heightSegments == null) options.heightSegments = 16;
     if (options.type == null) options.type = 'KinematicPositionBased';
 
-    // Create physical shape
-    options.shape = new Ball(options.radius);
-
     // Inherit Entity class
     super(options);
+
+    // Set object name
+    this.object.name = 'Background';
     
     // Initialize with options
     var geometry = new SphereGeometry(options.radius, 16, 16);
@@ -62,12 +62,9 @@ class Background extends Entity {
     this.object.add(ambientLight);
   }
 
-  updateBody(delta) {
-    
-  }
-
   updateObject(delta, alpha) {
-    this.object.rotation.y += delta * 0.01;
+    // Call Character update function
+    super.updateObject(delta, alpha);
   }
 }
 

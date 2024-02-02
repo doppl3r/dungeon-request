@@ -52,7 +52,7 @@ class Entity {
 
   updateBody(delta) {
     // Take a snapshot every time the entity is updated
-    this.takeSnapshot();
+    if (this.body) this.takeSnapshot();
   }
 
   updateObject(delta, alpha) {
@@ -62,24 +62,29 @@ class Entity {
     }
 
     // Interpolate 3D object position
-    this.lerp(alpha)
+    this.lerp(alpha);
   }
 
   addToWorld(world) {
-    // Create rigid body in the world
-    this.body = world.createRigidBody(this.rigidBodyDesc);
-    this.collider = world.createCollider(this.colliderDesc, this.body); // Parent collision to rigid body
-
-    // Update default 3D object position and rotation
-    this.object.position.copy(this.body.translation());
-    this.object.quaternion.copy(this.body.rotation());
-
-    // Take snapshot from rigid body
-    this.takeSnapshot();
+    // Check if collider description shape exists
+    if (this.colliderDesc.shape) {
+      // Create rigid body in the world
+      this.body = world.createRigidBody(this.rigidBodyDesc);
+      this.collider = world.createCollider(this.colliderDesc, this.body); // Parent collision to rigid body
+  
+      // Update default 3D object position and rotation
+      this.object.position.copy(this.body.translation());
+      this.object.quaternion.copy(this.body.rotation());
+  
+      // Take snapshot from rigid body
+      this.takeSnapshot();
+    }
   }
 
   removeFromWorld(world) {
-    world.removeRigidBody(this.body); // Includes colliders that were attached
+    if (this.body) {
+      world.removeRigidBody(this.body); // Includes colliders that were attached
+    }
   }
 
   addToScene(scene) {
