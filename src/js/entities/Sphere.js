@@ -5,7 +5,6 @@ import { Entity } from './Entity.js';
 class Sphere extends Entity {
   constructor(options = {}) {
     // Resolve null option values
-    if (options.name == null) options.name = 'sphere';
     if (options.color == null) options.color = '#ffffff';
     if (options.radius == null) options.radius = 1;
     if (options.widthSegments == null) options.widthSegments = 32;
@@ -16,6 +15,7 @@ class Sphere extends Entity {
 
     // Inherit Entity class
     super(options);
+    this.name = 'Sphere';
 
     // Initialize default cube mesh
     var geometry = new SphereGeometry(options.radius, options.widthSegments, options.heightSegments);

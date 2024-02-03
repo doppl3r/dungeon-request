@@ -3,15 +3,14 @@ import { Capsule } from '@dimforge/rapier3d';
 import { Entity } from './Entity.js';
 
 /*
-  Characters have a single Kinematic Body and a single Character Controller. An
-  Enemy or Player should inherit this class for common control behaviors that
-  interact with the world.
+  Characters are abstract classes that have a single Kinematic Body
+  and a single Character Controller. An Enemy or Player should inherit
+  this class for common control behaviors that interact with the world.
 */
 
 class Character extends Entity {
   constructor(options = {}) {
     // Resolve null option values
-    if (options.name == null) options.name = 'character';
     if (options.color == null) options.color = '#ffffff';
     if (options.height == null) options.height = 0.5;
     if (options.radius == null) options.radius = 0.25;
@@ -22,6 +21,7 @@ class Character extends Entity {
 
     // Inherit Entity class
     super(options);
+    this.name = 'Character';
 
     // Set default values
     this.actions = {};

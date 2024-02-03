@@ -2,9 +2,10 @@ import { Euler, Object3D, Quaternion, Vector3 } from 'three';
 import { ColliderDesc, RigidBodyDesc, RigidBodyType } from '@dimforge/rapier3d';
 
 /*
-  An entity contains a single 3D object and a single rigid body object. An entity
-  assumes that the rigid body is being updated at a lower interval, and leverages
-  the lerp() function to up the 3D object at a higher interval (smoother results)
+  An entity is an abstract class that contains a single 3D object and a
+  single rigid body object. An entity assumes that the rigid body is being
+  updated at a lower interval, and leverages   the lerp() function to up the
+  3D object at a higher interval (smoother results)
 */
 
 class Entity {
@@ -12,7 +13,6 @@ class Entity {
     // Set options with default values
     options = Object.assign({
       mass: 1,
-      name: 'entity',
       scale: { x: 1, y: 1, z: 1 },
       type: 'Dynamic', // 0: Dynamic, 1: Fixed, 2: KinematicPositionBased, 3: KinematicVelocityBased
       position: { x: 0, y: 0, z: 0 },
@@ -23,7 +23,7 @@ class Entity {
     }, options);
 
     // Apply name
-    this.name = options.name;
+    this.name = 'Entity';
 
     // Initialize rigid body description
     this.rigidBodyDesc = new RigidBodyDesc(RigidBodyType[options.type]);
@@ -34,9 +34,11 @@ class Entity {
     this.colliderDesc = new ColliderDesc(options.shape);
     this.colliderDesc.setSensor(options.isSensor);
 
-    // These properties are created by the world
-    this.body = null;
-    this.collider = null;
+    // These properties are created when added to scene/world
+    this.scene;
+    this.world;
+    this.body;
+    this.collider;
 
     // Create an empty object
     this.object = new Object3D();
@@ -72,6 +74,7 @@ class Entity {
     // Check if collider description shape exists
     if (this.colliderDesc.shape) {
       // Create rigid body in the world
+      this.world = world;
       this.body = world.createRigidBody(this.rigidBodyDesc);
       this.collider = world.createCollider(this.colliderDesc, this.body); // Parent collision to rigid body
   
@@ -87,15 +90,18 @@ class Entity {
   removeFromWorld(world) {
     if (this.body) {
       world.removeRigidBody(this.body); // Includes colliders that were attached
+      this.world = null;
     }
   }
 
   addToScene(scene) {
+    this.scene = scene;
     scene.add(this.object);
   }
 
   removeFromScene(scene) {
     scene.remove(this.object);
+    this.scene = null;
   }
 
   setNextPosition(position) {

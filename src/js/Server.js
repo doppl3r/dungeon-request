@@ -17,11 +17,7 @@ class Server {
 
   load(assets) {
     // Add background entity
-    this.entities.addBackground({ radius: 50 });
-
-    // Add meshes from dungeon model
-    var model = assets.models.duplicate('dungeon-crypt');
-    this.entities.addDungeon(model);
+    
   }
 
   update(delta) {

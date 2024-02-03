@@ -1,6 +1,7 @@
-import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { Background } from './Background';
-import { TriMesh } from './TriMesh';
+/*
+  This class manages a list of entities and their relationships
+  with scenes (Three.js) and worlds (Rapier.js)
+*/
 
 class Entities {
   constructor(scene, world) {
@@ -27,42 +28,6 @@ class Entities {
     this.list.push(entity);
     if (this.scene) entity.addToScene(this.scene);
     if (this.world) entity.addToWorld(this.world);
-  }
-
-  addBackground(options) {
-    var background = new Background(options);
-    this.add(background);
-  }
-
-  addDungeon(model) {
-    // Merge geometries from all meshes
-    var geometry;
-    var geometries = [];
-    model.traverse(function(child) {
-      if (child.isMesh) {
-        geometry = child.geometry.clone();
-        geometry.rotateX(child.rotation.x);
-        geometry.rotateY(child.rotation.y);
-        geometry.rotateZ(child.rotation.z);
-        geometry.scale(child.scale.x, child.scale.y, child.scale.z);
-        geometry.translate(child.position.x, child.position.y, child.position.z);
-        geometries.push(geometry);
-      }
-    });
-    geometry = mergeGeometries(geometries);
-
-    // Create TriMesh from merged geometry
-    var vertices = geometry.attributes.position.array;
-    var indices = geometry.index.array;
-    var triMesh = new TriMesh({
-      indices: indices,
-      model: model,
-      name: model.name,
-      vertices: vertices
-    });
-
-    // Add TriMesh entity
-    this.add(triMesh);
   }
 
   remove(entity) {

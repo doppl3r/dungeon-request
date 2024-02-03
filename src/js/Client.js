@@ -1,14 +1,15 @@
 import { Graphics } from './Graphics';
 import { Entities } from './entities/Entities.js';
+import { EntityFactory } from './entities/EntityFactory.js';
 import { Connector } from './Connector.js';
 import { Physics } from './Physics';
-import { Player } from './entities/Player';
 
 class Client {
   constructor(canvas) {
     this.graphics = new Graphics(canvas);
     this.physics = new Physics();
     this.entities = new Entities(this.graphics.scene, this.physics.world);
+    this.entityFactory = new EntityFactory();
     this.physics.setTick(30);
     this.connector = new Connector();
     this.player;
@@ -16,7 +17,7 @@ class Client {
 
   load(assets) {
     // Initialize player entity
-    this.player = new Player({
+    this.player = this.entityFactory.createPlayer({
       position: { x: 0, y: 2.5, z: 0 },
       model: assets.models.duplicate('player')
     });
@@ -29,10 +30,13 @@ class Client {
     this.graphics.setSelectedObjects([this.player.model]);
 
     // Add background entity
-    this.entities.addBackground({ radius: 50 });
+    var background = this.entityFactory.createBackground({ radius: 50 });
+    this.entities.add(background);
 
-    // Add meshes from dungeon model
-    this.entities.addDungeon(assets.models.duplicate('dungeon-forge'));
+    // Create array of meshes from model
+    var dungeonModel = assets.models.duplicate('dungeon-forge');
+    var triMesh = this.entityFactory.createTriMeshFromModel(dungeonModel);
+    this.entities.add(triMesh);
   }
 
   updateBodies(delta) {

@@ -8,11 +8,9 @@ import { Character } from './Character.js';
 
 class Player extends Character {
   constructor(options = {}) {
-    // Resolve null option values
-    if (options.name == null) options.name = 'player';
-
     // Inherit Character class
     super(options);
+    this.name = 'Player';
 
     // Add camera
     this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);

@@ -4,7 +4,6 @@ import { Entity } from './Entity.js';
 class Background extends Entity {
   constructor(options) {
     // Resolve null option values
-    if (options.name == null) options.name = 'background';
     if (options.color == null) options.color = '#ffffff';
     if (options.radius == null) options.radius = 10;
     if (options.widthSegments == null) options.widthSegments = 16;
@@ -13,6 +12,7 @@ class Background extends Entity {
 
     // Inherit Entity class
     super(options);
+    this.name = 'Background';
     
     // Initialize with options
     var geometry = new SphereGeometry(options.radius, 16, 16);

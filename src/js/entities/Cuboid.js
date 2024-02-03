@@ -5,7 +5,6 @@ import { Entity } from './Entity.js';
 class Cuboid extends Entity {
   constructor(options) {
     // Resolve null option values
-    if (options.name == null) options.name = 'cuboid';
     if (options.color == null) options.color = '#ffffff';
 
     // Create physical shape
@@ -13,6 +12,7 @@ class Cuboid extends Entity {
 
     // Inherit Entity class
     super(options);
+    this.name = 'Background';
 
     // Initialize default cube mesh
     var geometry = new BoxGeometry(options.scale.x, options.scale.y, options.scale.z);

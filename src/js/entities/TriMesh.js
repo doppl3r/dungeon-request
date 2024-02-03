@@ -8,7 +8,6 @@ import { Entity } from './Entity.js';
 class TriMesh extends Entity {
   constructor(options) {
     // Resolve null option values
-    if (options.name == null) options.name = 'trimesh';
     if (options.vertices == null) options.vertices = new Float32Array();
     if (options.indices == null) options.indices = new Uint16Array();
     if (options.type == null) options.type = 'Fixed';
@@ -18,6 +17,7 @@ class TriMesh extends Entity {
 
     // Inherit Entity class
     super(options);
+    this.name = 'TriMesh';
   }
 }
 
