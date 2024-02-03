@@ -40,13 +40,17 @@ class EntityFactory {
     var geometries = [];
     model.traverse(function(child) {
       if (child.isMesh) {
-        geometry = child.geometry.clone();
+        // Translate geometry attributes to world origin
+        geometry = child.geometry;
         geometry.rotateX(child.rotation.x);
         geometry.rotateY(child.rotation.y);
         geometry.rotateZ(child.rotation.z);
         geometry.scale(child.scale.x, child.scale.y, child.scale.z);
         geometry.translate(child.position.x, child.position.y, child.position.z);
         geometries.push(geometry);
+        child.position.set(0, 0, 0);
+        child.rotation.set(0, 0, 0);
+        child.scale.set(1, 1, 1);
       }
     });
     geometry = mergeGeometries(geometries);
@@ -76,10 +80,11 @@ class EntityFactory {
       var indices = geometry.index.array;
 
       // Translate geometry from mesh data and set mesh data to world origin
-      geometry.translate(mesh.position.x, mesh.position.y, mesh.position.z);
       geometry.rotateX(mesh.rotation.x);
       geometry.rotateY(mesh.rotation.y);
       geometry.rotateZ(mesh.rotation.z);
+      geometry.scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
+      geometry.translate(mesh.position.x, mesh.position.y, mesh.position.z);
       mesh.position.set(0, 0, 0);
       mesh.rotation.set(0, 0, 0);
 
