@@ -2,8 +2,8 @@ import { PerspectiveCamera, Vector3 } from 'three';
 import { Character } from './Character.js';
 
 /*
-  A Player is a singleton class that allows players to control a character
-  entity. The controls include keyboard and mouse (pointer) input.
+  A Player class allows players to control a character entity.
+  The controls include keyboard and mouse (pointer) input.
 */
 
 class Player extends Character {
@@ -12,7 +12,7 @@ class Player extends Character {
     super(options);
     this.name = 'Player';
 
-    // Add camera
+    // Initialize a camera for the graphic library to reference
     this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);
     this.camera.offset = new Vector3(0, 2, 2);
     this.camera.position.add(this.camera.offset);

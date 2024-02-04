@@ -2,6 +2,11 @@ import { BoxGeometry, Mesh, MeshStandardMaterial } from 'three';
 import { Cuboid as CuboidShape } from '@dimforge/rapier3d';
 import { Entity } from './Entity.js';
 
+/*
+  A cuboid is a 6-sided shape that provides a 3D object (Three.js) and
+  a 3D rigid body shape (Rapier.js)
+*/
+
 class Cuboid extends Entity {
   constructor(options) {
     // Resolve null option values

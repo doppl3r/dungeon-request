@@ -3,48 +3,54 @@
   with scenes (Three.js) and worlds (Rapier.js)
 */
 
-class Entities {
+class EntityManager {
   constructor(scene, world) {
     this.scene = scene;
     this.world = world;
-    this.list = [];
+    this.entities = [];
   }
 
   updateBodies(delta) {
     // Update all entities
-    this.list.forEach(function(child) {
+    this.entities.forEach(function(child) {
         if (child.body) child.updateBody(delta);
     });
   }
 
   updateObjects(delta, alpha) {
     // Update each 3D object
-    this.list.forEach(function(child) {
+    this.entities.forEach(function(child) {
       child.updateObject(delta, alpha);
     });
   }
 
   add(entity) {
-    this.list.push(entity);
+    this.entities.push(entity);
     if (this.scene) entity.addToScene(this.scene);
     if (this.world) entity.addToWorld(this.world);
   }
 
   remove(entity) {
-    var index = this.list.indexOf(entity);
-    this.list.splice(index, 1);
+    var index = this.entities.indexOf(entity);
+    this.entities.splice(index, 1);
     if (this.scene) entity.removeFromScene(this.scene);
     if (this.world) entity.removeFromWorld(this.world);
   }
 
+  empty() {
+    for (var i = this.entities.length - 1; i >= 0; i--) {
+      this.remove(this.entities[i]);
+    }
+  }
+
   toJSON() {
     var json = [];
-    for (var i = 0; i < this.list.length; i++) {
-      var entity = this.list[i];
+    for (var i = 0; i < this.entities.length; i++) {
+      var entity = this.entities[i];
       json.push(entity.toJSON());
     }
     return json;
   }
 }
 
-export { Entities };
+export { EntityManager };

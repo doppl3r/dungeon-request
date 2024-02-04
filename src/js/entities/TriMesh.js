@@ -2,7 +2,9 @@ import { TriMesh as TriMeshShape } from '@dimforge/rapier3d';
 import { Entity } from './Entity.js';
 
 /*
-  A TriMesh expects a single set of vertices and indices
+  A TriMesh creates a rigid body from a set of vertices and
+  indices. TriMeshes have no interior and should only be used
+  for terrain or other fixed object types.
 */
 
 class TriMesh extends Entity {

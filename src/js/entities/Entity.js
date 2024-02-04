@@ -4,8 +4,8 @@ import { ColliderDesc, RigidBodyDesc, RigidBodyType } from '@dimforge/rapier3d';
 /*
   An entity is an abstract class that contains a single 3D object and a
   single rigid body object. An entity assumes that the rigid body is being
-  updated at a lower interval, and leverages   the lerp() function to up the
-  3D object at a higher interval (smoother results)
+  updated at a lower interval, and leverages the lerp() function to
+  interpolate the 3D object at a higher interval (smoother results)
 */
 
 class Entity {

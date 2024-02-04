@@ -1,6 +1,13 @@
 import { AmbientLight, BackSide, Color, Mesh, ShaderMaterial, SphereGeometry } from 'three';
 import { Entity } from './Entity.js';
 
+/*
+  The background class provides a basic skybox shader and an
+  ambient light to illuminate the scene. It does not include
+  a rigid body since Character Controllers cannot filter them
+  out at this time (existing bug).
+*/
+
 class Background extends Entity {
   constructor(options) {
     // Resolve null option values
@@ -10,7 +17,7 @@ class Background extends Entity {
     if (options.heightSegments == null) options.heightSegments = 16;
     if (options.type == null) options.type = 'KinematicPositionBased';
 
-    // Inherit Entity class
+    // Inherit Entity class (without a physical body/shape)
     super(options);
     this.name = 'Background';
     
