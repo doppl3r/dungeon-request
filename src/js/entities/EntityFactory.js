@@ -41,17 +41,21 @@ class EntityFactory {
     var geometries = [];
     model.traverse(function(child) {
       if (child.isMesh) {
-        // Translate geometry attributes to world origin
+        // Translate geometry from mesh origin 
         geometry = child.geometry;
         geometry.rotateX(child.rotation.x);
         geometry.rotateY(child.rotation.y);
         geometry.rotateZ(child.rotation.z);
         geometry.scale(child.scale.x, child.scale.y, child.scale.z);
         geometry.translate(child.position.x, child.position.y, child.position.z);
-        geometries.push(geometry);
+
+        // Reset mesh attributes to zero
         child.position.set(0, 0, 0);
         child.rotation.set(0, 0, 0);
         child.scale.set(1, 1, 1);
+
+        // Push geometry to array for merge
+        geometries.push(geometry);
       }
     });
     geometry = mergeGeometries(geometries);
@@ -59,7 +63,12 @@ class EntityFactory {
     // Create TriMesh from merged geometry
     var vertices = geometry.attributes.position.array;
     var indices = geometry.index.array;
-    return this.createTriMesh({ indices: indices, model: model, name: model.name, vertices: vertices })
+    return this.createTriMesh({
+      indices: indices,
+      model: model,
+      name: model.name,
+      vertices: vertices
+    });
   }
 }
 
