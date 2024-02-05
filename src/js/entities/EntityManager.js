@@ -7,7 +7,7 @@ class EntityManager {
   constructor(scene, world) {
     this.scene = scene;
     this.world = world;
-    this.entities = [];
+    this.entities = new Map();
   }
 
   updateBodies(delta) {
@@ -21,34 +21,36 @@ class EntityManager {
     // Update each 3D object
     this.entities.forEach(function(child) {
       child.updateObject(delta, alpha);
-    });
+    }.bind(this));
   }
 
   add(entity) {
-    this.entities.push(entity);
+    this.entities.set(entity.uuid, entity);
     if (this.scene) entity.addToScene(this.scene);
     if (this.world) entity.addToWorld(this.world);
   }
 
   remove(entity) {
-    var index = this.entities.indexOf(entity);
-    this.entities.splice(index, 1);
+    this.entities.delete(entity.uuid);
     if (this.scene) entity.removeFromScene(this.scene);
     if (this.world) entity.removeFromWorld(this.world);
   }
 
+  get(key) {
+    return this.entities.get(key);
+  }
+
   empty() {
-    for (var i = this.entities.length - 1; i >= 0; i--) {
-      this.remove(this.entities[i]);
-    }
+    this.entities.forEach(function(entity){
+      this.remove(entity);
+    }.bind(this));
   }
 
   toJSON() {
     var json = [];
-    for (var i = 0; i < this.entities.length; i++) {
-      var entity = this.entities[i];
+    this.entities.forEach(function(entity){
       json.push(entity.toJSON());
-    }
+    }.bind(this));
     return json;
   }
 }

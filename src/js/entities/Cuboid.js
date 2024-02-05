@@ -10,6 +10,7 @@ import { Entity } from './Entity.js';
 class Cuboid extends Entity {
   constructor(options) {
     // Resolve null option values
+    if (options == null) options = {};
     if (options.color == null) options.color = '#ffffff';
     if (options.scale == null) options.scale = { x: 1, y: 1, z: 1 };
 

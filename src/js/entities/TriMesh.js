@@ -1,3 +1,4 @@
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { TriMesh as TriMeshShape } from '@dimforge/rapier3d';
 import { Entity } from './Entity.js';
 
@@ -10,9 +11,39 @@ import { Entity } from './Entity.js';
 class TriMesh extends Entity {
   constructor(options) {
     // Resolve null option values
+    if (options == null) options = {};
     if (options.vertices == null) options.vertices = new Float32Array();
     if (options.indices == null) options.indices = new Uint16Array();
     if (options.type == null) options.type = 'Fixed';
+    if (options.model) {
+      // Merge geometries from all meshes
+      var geometry;
+      var geometries = [];
+      options.model.traverse(function(child) {
+        if (child.isMesh) {
+          // Translate geometry from mesh origin 
+          geometry = child.geometry;
+          geometry.rotateX(child.rotation.x);
+          geometry.rotateY(child.rotation.y);
+          geometry.rotateZ(child.rotation.z);
+          geometry.scale(child.scale.x, child.scale.y, child.scale.z);
+          geometry.translate(child.position.x, child.position.y, child.position.z);
+  
+          // Reset mesh attributes to zero
+          child.position.set(0, 0, 0);
+          child.rotation.set(0, 0, 0);
+          child.scale.set(1, 1, 1);
+  
+          // Push geometry to array for merge
+          geometries.push(geometry);
+        }
+      });
+      geometry = mergeGeometries(geometries);
+  
+      // Create TriMesh from merged geometry
+      options.vertices = geometry.attributes.position.array;
+      options.indices = geometry.index.array;
+    }
 
     // Create physical shape
     options.shape = new TriMeshShape(options.vertices, options.indices);

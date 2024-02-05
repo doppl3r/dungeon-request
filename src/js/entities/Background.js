@@ -11,6 +11,7 @@ import { Entity } from './Entity.js';
 class Background extends Entity {
   constructor(options) {
     // Resolve null option values
+    if (options == null) options = {};
     if (options.color == null) options.color = '#ffffff';
     if (options.radius == null) options.radius = 10;
     if (options.widthSegments == null) options.widthSegments = 16;
@@ -20,6 +21,7 @@ class Background extends Entity {
     // Inherit Entity class (without a physical body/shape)
     super(options);
     this.name = 'Background';
+    this.radius = options.radius;
     
     // Initialize with options
     var geometry = new SphereGeometry(options.radius, 16, 16);
@@ -66,6 +68,13 @@ class Background extends Entity {
   updateObject(delta, alpha) {
     // Call Character update function
     super.updateObject(delta, alpha);
+  }
+
+  toJSON() {
+    // Extend json data with extra data
+    var json = super.toJSON();
+    json.radius = this.radius;
+    return json;
   }
 }
 

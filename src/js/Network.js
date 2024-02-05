@@ -17,55 +17,24 @@ class Network {
     this.server.load(assets);
     this.client.load(assets);
 
-    // Add server event listeners
-    this.server.connector.on('peer_open', function(e) {
-      console.log(e);
+    // Add server open listener
+    this.server.connector.on('peer_open', function(se) {
+      // Open client connection
+      this.client.connector.open();
+      
+      // Add client open listener
+      this.client.connector.on('peer_open', function(ce) {
+        // Immediately connect client to server
+        this.client.connector.connect(se.id);
+      }.bind(this));
     }.bind(this));
-
-    this.server.connector.on('connection_open', function(e) {
-      console.log(e);
-    }.bind(this));
-
-    this.server.connector.on('connection_close', function(e) {
-      console.log(e);
-    }.bind(this));
-
-    this.server.connector.on('connection_data', function(e) {
-      console.log(e);
-    }.bind(this));
-
     
-
-
-
-
-    // Add client event listeners
-    this.client.connector.on('peer_open', function(e) {
-      console.log(e);
-    }.bind(this));
-
-    this.client.connector.on('connection_open', function(e) {
-      console.log(e);
-    }.bind(this));
-
-    this.client.connector.on('connection_close', function(e) {
-      console.log(e);
-    }.bind(this));
-
-    this.client.connector.on('connection_data', function(e) {
-      console.log(e);
-    }.bind(this));
-
-
-    
-    
-    // Open server to start local connection
+    // Open server connection
     this.server.connector.open();
-    this.client.connector.open();
   }
 
   update(delta) {
-    this.server.updateConnections();
+    this.server.update(delta);
   }
 }
 

@@ -84,6 +84,12 @@ class Connector extends EventDispatcher {
   on(type, callback) {
     this.addEventListener(type, callback);
   }
+
+  send(data) {
+    if (this.peer && this.peer.open) {
+      this.peer.send(data);
+    }
+  }
 }
 
 export { Connector };

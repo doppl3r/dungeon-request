@@ -1,4 +1,4 @@
-import { Euler, Object3D, Quaternion, Vector3 } from 'three';
+import { Euler, MathUtils, Object3D, Quaternion, Vector3 } from 'three';
 import { ColliderDesc, RigidBodyDesc, RigidBodyType } from '@dimforge/rapier3d';
 
 /*
@@ -12,18 +12,19 @@ class Entity {
   constructor(options) {
     // Set options with default values
     options = Object.assign({
-      mass: 1,
-      scale: { x: 1, y: 1, z: 1 },
-      type: 'Dynamic', // 0: Dynamic, 1: Fixed, 2: KinematicPositionBased, 3: KinematicVelocityBased
+      uuid: MathUtils.generateUUID(),
       position: { x: 0, y: 0, z: 0 },
       rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
+      type: 'Dynamic', // 0: Dynamic, 1: Fixed, 2: KinematicPositionBased, 3: KinematicVelocityBased
       isSensor: false,
       shape: null,
       model: null
     }, options);
 
-    // Apply name
+    // Apply defaults
     this.name = 'Entity';
+    this.uuid = options.uuid;
 
     // Initialize rigid body description
     this.rigidBodyDesc = new RigidBodyDesc(RigidBodyType[options.type]);
@@ -158,6 +159,7 @@ class Entity {
   toJSON() {
     var json = {
       name: this.name,
+      uuid: this.uuid,
       object: {
         position: {
           x: this.object.position.x,

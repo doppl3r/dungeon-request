@@ -11,6 +11,7 @@ import { Entity } from './Entity.js';
 class Character extends Entity {
   constructor(options = {}) {
     // Resolve null option values
+    if (options == null) options = {};
     if (options.color == null) options.color = '#ffffff';
     if (options.height == null) options.height = 0.5;
     if (options.radius == null) options.radius = 0.25;

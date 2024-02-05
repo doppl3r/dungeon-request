@@ -10,6 +10,7 @@ import { Entity } from './Entity.js';
 class Sphere extends Entity {
   constructor(options = {}) {
     // Resolve null option values
+    if (options == null) options = {};
     if (options.color == null) options.color = '#ffffff';
     if (options.radius == null) options.radius = 1;
     if (options.widthSegments == null) options.widthSegments = 32;
