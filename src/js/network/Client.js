@@ -1,8 +1,8 @@
-import { Graphics } from './Graphics';
-import { EntityManager } from './entities/EntityManager.js';
-import { EntityFactory } from './entities/EntityFactory.js';
+import { Graphics } from '../Graphics.js';
+import { EntityManager } from '../entities/EntityManager.js';
+import { EntityFactory } from '../entities/EntityFactory.js';
 import { Connector } from './Connector.js';
-import { Physics } from './Physics';
+import { Physics } from '../Physics.js';
 
 class Client extends Connector {
   constructor(canvas) {
@@ -33,14 +33,11 @@ class Client extends Connector {
 
     // Add connection data event listener
     this.on('connection_data', function(e) {
-      if (e.data.type == 'server_request_player_data') {
-        // Send the server the client player data
-        this.sendPlayerDataToServer();
-      }
-      else {
-        // Update client entities from the server
-        this.updateEntitiesFromServer(e.data.entities);
-      }
+      // Digest server entities
+      if (e.data.entities) this.updateEntitiesFromServer(e.data.entities);
+
+      // Send player data back to the server
+      this.sendPlayerDataToServer();
     }.bind(this));
   }
 
@@ -91,11 +88,18 @@ class Client extends Connector {
   sendPlayerDataToServer() {
     // Access server connection via map loop
     this.connections.forEach(function(connection) {
-      // Send the server the client player data
-      connection.send({
+      var data = {
         type: 'client_send_player_data',
         entity: this.player.toJSON()
-      });
+      };
+
+      // Send connection data
+      if (connection.peer) {
+        connection.dispatchEvent({ type: 'connection_data', connection: this, data: data });
+      }
+      else {
+        connection.send(data);
+      }
     }.bind(this));
   }
 }

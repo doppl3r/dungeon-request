@@ -1,7 +1,7 @@
-import { EntityFactory } from './entities/EntityFactory.js';
-import { EntityManager } from './entities/EntityManager.js';
+import { EntityFactory } from '../entities/EntityFactory.js';
+import { EntityManager } from '../entities/EntityManager.js';
 import { Connector } from './Connector.js';
-import { Physics } from './Physics';
+import { Physics } from '../Physics.js';
 
 /*
   The server contains a physics library for creating unique
@@ -83,7 +83,12 @@ class Server extends Connector {
       }
 
       // Send connection data
-      connection.send(data);
+      if (connection.peer) {
+        connection.dispatchEvent({ type: 'connection_data', data: data });
+      }
+      else {
+        connection.send(data);
+      }
     }.bind(this));
   }
 }

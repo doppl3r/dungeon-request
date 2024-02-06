@@ -2,11 +2,11 @@ import { Client } from './Client.js';
 import { Server } from './Server.js';
 
 /*
-  A network has both a client and server. Game logic is handled by the
-  server and is synchronized to the local client.
+  A network manager has both a client and server. Game logic is
+  handled by the server and is synchronized to the local client.
 */
 
-class Network {
+class NetworkManager {
   constructor(canvas) {
     this.client = new Client(canvas);
     this.server = new Server();
@@ -17,8 +17,15 @@ class Network {
     this.server.load(assets);
     this.client.load(assets);
 
+    // Open local connections
+    this.server.open();
+    this.client.open();
+
+    // Connect local client to local server
+    this.client.connect(this.server.peer.id);
+
     // Add server open listener
-    this.server.on('peer_open', function(se) {
+    /* this.server.on('peer_open', function(se) {
       // Open client connection
       this.client.open();
       
@@ -30,7 +37,7 @@ class Network {
     }.bind(this));
     
     // Open server connection
-    this.server.open();
+    this.server.open(); */
   }
 
   update(delta) {
@@ -38,4 +45,4 @@ class Network {
   }
 }
 
-export { Network };
+export { NetworkManager };

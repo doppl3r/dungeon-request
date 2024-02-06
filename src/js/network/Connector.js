@@ -19,24 +19,45 @@ class Connector extends EventDispatcher {
     // Reset peer if already created
     if (this.peer) this.peer.destroy();
 
+    // Assign global reference to this connector
+    window[id] = this;
+
     // Initialize peer with unique id
     this.peer = new Peer(id); // Generate random ID
     this.addPeerListeners(this.peer);
   }
 
   connect(host_id) {
-    // Connect to host
-    var connection = this.peer.connect(host_id);
-    this.addConnectionListeners(connection);
+    if (window[host_id]) {
+      // Access local server & local client from global references
+      var server = window[host_id];
+      var client = window[this.peer.id];
+
+      // Add listeners for local server & local client  connections
+      server.addConnectionListeners(client);
+      client.addConnectionListeners(server)
+
+      // Trigger open event immediately
+      server.dispatchEvent({ type: 'open' });
+      client.dispatchEvent({ type: 'open' });
+    }
+    else {
+      // Connect to remote host
+      var connection = this.peer.connect(host_id);
+      this.addConnectionListeners(connection);
+    }
   }
 
   addPeerListeners(peer) {
     peer.on('open', function(id) {
       // Confirm connection is ready
       this.dispatchEvent({ type: 'peer_open', id: id });
-      
-      // Add event listeners to host from client(s)
-      peer.on('connection', function(conn) { this.addConnectionListeners(conn); }.bind(this));
+    }.bind(this));
+
+    // Add event listeners to host from client(s)
+    peer.on('connection', function(connection) {
+      this.addConnectionListeners(connection);
+      this.dispatchEvent({ type: 'peer_connection', connection: connection })
     }.bind(this));
 
     // Listen to peer close (use peer.destroy to clean up connections)
@@ -82,10 +103,6 @@ class Connector extends EventDispatcher {
 
   on(type, callback) {
     this.addEventListener(type, callback);
-  }
-
-  send(data) {
-    
   }
 }
 

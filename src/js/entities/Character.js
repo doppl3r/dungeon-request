@@ -78,7 +78,6 @@ class Character extends Entity {
       // Reflect velocity if hitting head on top
       if (collision.normal1.y == -1) {
         this.velocity.reflect(collision.normal1);
-        //console.log(collision);
       }
     }
 
