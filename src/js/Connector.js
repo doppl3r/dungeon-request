@@ -9,7 +9,7 @@ import { Peer } from 'peerjs';
 class Connector extends EventDispatcher {
   constructor() {
     super(); // Inherit EventDispatcher
-    this.connections = [];
+    this.connections = new Map();
   }
 
   open(id) {
@@ -41,7 +41,7 @@ class Connector extends EventDispatcher {
 
     // Listen to peer close (use peer.destroy to clean up connections)
     peer.on('close', function() {
-      this.connections = []; // Empty connections
+      this.connections.clear(); // Clear connections map
       this.dispatchEvent({ type: 'peer_close', peer: peer });
     }.bind(this))
 
@@ -59,14 +59,13 @@ class Connector extends EventDispatcher {
   addConnectionListeners(connection) {
     // Dispatch connection open
     connection.on('open', function() {
-      this.connections.push(connection); // Add to connections array
+      this.connections.set(connection.peer, connection); // Add to connections map using peer id
       this.dispatchEvent({ type: 'connection_open', connection: connection });
     }.bind(this));
 
     // Dispatch connection close
     connection.on('close', function() {
-      var index = this.connections.indexOf(connection);
-      this.connections.splice(index, 1); // Remove from connections array
+      this.connections.delete(connection.peer); // Remove from connections map using peer id
       this.dispatchEvent({ type: 'connection_close', connection: connection });
     }.bind(this));
 
@@ -86,9 +85,7 @@ class Connector extends EventDispatcher {
   }
 
   send(data) {
-    if (this.peer && this.peer.open) {
-      this.peer.send(data);
-    }
+    
   }
 }
 

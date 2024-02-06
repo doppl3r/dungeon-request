@@ -4,14 +4,14 @@ import { EntityFactory } from './entities/EntityFactory.js';
 import { Connector } from './Connector.js';
 import { Physics } from './Physics';
 
-class Client {
+class Client extends Connector {
   constructor(canvas) {
+    super(); // Inherit Connector
     this.graphics = new Graphics(canvas);
     this.physics = new Physics();
     this.entityManager = new EntityManager(this.graphics.scene, this.physics.world);
     this.entityFactory = new EntityFactory();
     this.physics.setTick(30);
-    this.connector = new Connector();
     this.player;
   }
 
@@ -32,7 +32,7 @@ class Client {
     this.graphics.setSelectedObjects([this.player.model]);
 
     // Add connection data event listener
-    this.connector.on('connection_data', function(e) {
+    this.on('connection_data', function(e) {
       if (e.data.type == 'server_request_player_data') {
         // Send the server the client player data
         this.sendPlayerDataToServer();
@@ -89,10 +89,14 @@ class Client {
   }
 
   sendPlayerDataToServer() {
-    this.connector.connections[0].send({
-      type: 'client_send_player_data',
-      entity: this.player.toJSON()
-    });
+    // Access server connection via map loop
+    this.connections.forEach(function(connection) {
+      // Send the server the client player data
+      connection.send({
+        type: 'client_send_player_data',
+        entity: this.player.toJSON()
+      });
+    }.bind(this));
   }
 }
 

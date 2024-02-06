@@ -18,19 +18,19 @@ class Network {
     this.client.load(assets);
 
     // Add server open listener
-    this.server.connector.on('peer_open', function(se) {
+    this.server.on('peer_open', function(se) {
       // Open client connection
-      this.client.connector.open();
+      this.client.open();
       
       // Add client open listener
-      this.client.connector.on('peer_open', function(ce) {
+      this.client.on('peer_open', function(ce) {
         // Immediately connect client to server
-        this.client.connector.connect(se.id);
+        this.client.connect(se.id);
       }.bind(this));
     }.bind(this));
     
     // Open server connection
-    this.server.connector.open();
+    this.server.open();
   }
 
   update(delta) {

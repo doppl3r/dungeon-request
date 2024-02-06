@@ -11,13 +11,13 @@ import { Physics } from './Physics';
   and manage all data from each clients.
 */
 
-class Server {
+class Server extends Connector {
   constructor() {
+    super(); // Inherit Connector
     this.entityManager = new EntityManager();
     this.entityFactory = new EntityFactory();
     this.physics = new Physics();
     this.physics.setTick(30);
-    this.connector = new Connector();
   }
 
   load(assets) {
@@ -34,14 +34,10 @@ class Server {
     this.entityManager.add(triMesh);
 
     // Add connection data event listener from client(s)
-    this.connector.on('connection_data', function(e) {
+    this.on('connection_data', function(e) {
       // Receive client player data
       if (e.data.type == 'client_send_player_data') {
-        if (e.connection.status == 'ready') {
-          // TODO: Update player entity from client
-
-        }
-        else {
+        if (e.connection.status == null) {
           // Update client status
           e.connection.status = 'ready';
   
@@ -51,6 +47,9 @@ class Server {
             position: { x: 0, y: 4, z: 0 }
           });
           this.entityManager.add(player);
+        }
+        else if (e.connection.status == 'ready') {
+          // TODO: Update player entity from client
         }
       }
     }.bind(this));
@@ -71,9 +70,8 @@ class Server {
 
   updateConnections() {
     // Loop through all connection on server
-    for (var i = 0; i < this.connector.connections.length; i++) {
+    this.connections.forEach(function(connection) {
       var data = {};
-      var connection = this.connector.connections[i];
 
       // Check if player has been added to the server
       if (connection.status == null) {
@@ -86,11 +84,7 @@ class Server {
 
       // Send connection data
       connection.send(data);
-    }
-  }
-
-  addPlayerData(data) {
-    console.log(data);
+    }.bind(this));
   }
 }
 
