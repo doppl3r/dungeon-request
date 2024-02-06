@@ -40,7 +40,7 @@ class EntityManager {
     return this.entities.get(key);
   }
 
-  empty() {
+  clear() {
     this.entities.forEach(function(entity){
       this.remove(entity);
     }.bind(this));

@@ -1,5 +1,5 @@
 import { EventDispatcher, MathUtils } from 'three';
-import { Peer } from 'peerjs';
+import { Peer } from './Peer.js';
 
 /*
   This class acts as a container for the PeerJS library. It
@@ -13,14 +13,8 @@ class Connector extends EventDispatcher {
   }
 
   open(id) {
-    // Generate new id
-    if (id == null) id = MathUtils.generateUUID();
-
     // Reset peer if already created
     if (this.peer) this.peer.destroy();
-
-    // Assign global reference to this connector
-    window[id] = this;
 
     // Initialize peer with unique id
     this.peer = new Peer(id); // Generate random ID
@@ -28,24 +22,9 @@ class Connector extends EventDispatcher {
   }
 
   connect(host_id) {
-    if (window[host_id]) {
-      // Access local server & local client from global references
-      var server = window[host_id];
-      var client = window[this.peer.id];
-
-      // Add listeners for local server & local client  connections
-      server.addConnectionListeners(client);
-      client.addConnectionListeners(server)
-
-      // Trigger open event immediately
-      server.dispatchEvent({ type: 'open' });
-      client.dispatchEvent({ type: 'open' });
-    }
-    else {
-      // Connect to remote host
-      var connection = this.peer.connect(host_id);
-      this.addConnectionListeners(connection);
-    }
+    // Connect to remote host
+    var connection = this.peer.connect(host_id);
+    this.addConnectionListeners(connection);
   }
 
   addPeerListeners(peer) {

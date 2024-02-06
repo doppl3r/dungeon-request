@@ -17,15 +17,8 @@ class NetworkManager {
     this.server.load(assets);
     this.client.load(assets);
 
-    // Open local connections
-    this.server.open();
-    this.client.open();
-
-    // Connect local client to local server
-    this.client.connect(this.server.peer.id);
-
     // Add server open listener
-    /* this.server.on('peer_open', function(se) {
+    this.server.on('peer_open', function(se) {
       // Open client connection
       this.client.open();
       
@@ -37,7 +30,11 @@ class NetworkManager {
     }.bind(this));
     
     // Open server connection
-    this.server.open(); */
+    this.server.open();
+  }
+
+  connect(id) {
+    this.client.connect(id);
   }
 
   update(delta) {

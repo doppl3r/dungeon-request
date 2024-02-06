@@ -94,12 +94,7 @@ class Client extends Connector {
       };
 
       // Send connection data
-      if (connection.peer) {
-        connection.dispatchEvent({ type: 'connection_data', connection: this, data: data });
-      }
-      else {
-        connection.send(data);
-      }
+      connection.send(data);
     }.bind(this));
   }
 }
