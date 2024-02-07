@@ -10,20 +10,17 @@ class Client extends Connector {
     this.graphics = new Graphics(canvas);
     this.physics = new Physics();
     this.entityManager = new EntityManager(this.graphics.scene, this.physics.world);
-    this.entityFactory = new EntityFactory();
+    this.entityFactory; // Wait to initialize when assets are loaded
     this.physics.setTick(30);
     this.player;
   }
-
+  
   load(assets) {
     // Assign assets for later
-    this.assets = assets;
+    this.entityFactory = new EntityFactory(assets);
 
     // Initialize player entity
-    this.player = this.entityFactory.createPlayer({
-      position: { x: 0, y: 2.5, z: 0 },
-      model: assets.models.duplicate('player')
-    });
+    this.player = this.entityFactory.create({ class: 'Player', model: { name: 'player' }, position: { x: 0, y: 2.5, z: 0 }});
     this.player.model.play('Idle', 0); // Start idle animation
     this.player.addEventListeners();
 
@@ -53,14 +50,8 @@ class Client extends Connector {
 
   updateEntitiesFromServer(entitiesJSON) {
     entitiesJSON.forEach(function(entityJSON) {
-      // Add entity if it does not exist on client
+      // Create entity if it does not exist on client
       if (this.entityManager.get(entityJSON.uuid) == null) {
-        // Duplicate model if it exists
-        if (entityJSON.model) {
-          var model = this.assets.models.duplicate(entityJSON.model.name);
-          entityJSON.model = model;
-        }
-        
         // Create new entity or assign to the client player
         var entity;
         if (entityJSON.uuid == this.player.uuid) entity = this.player;

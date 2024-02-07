@@ -10,7 +10,6 @@ class Player extends Character {
   constructor(options = {}) {
     // Inherit Character class
     super(options);
-    this.name = 'Player';
 
     // Initialize a camera for the graphic library to reference
     this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);

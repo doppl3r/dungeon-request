@@ -1,5 +1,5 @@
 import { EventDispatcher, MathUtils } from 'three';
-import { Peer } from './Peer.js';
+import { Peer } from 'peerjs';
 
 /*
   This class acts as a container for the PeerJS library. It

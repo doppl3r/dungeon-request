@@ -19,7 +19,6 @@ class Cuboid extends Entity {
 
     // Inherit Entity class
     super(options);
-    this.name = 'Cuboid';
 
     // Initialize default cube mesh
     var geometry = new BoxGeometry(options.scale.x, options.scale.y, options.scale.z);

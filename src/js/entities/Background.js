@@ -20,7 +20,6 @@ class Background extends Entity {
 
     // Inherit Entity class (without a physical body/shape)
     super(options);
-    this.name = 'Background';
     this.radius = options.radius;
     
     // Initialize with options

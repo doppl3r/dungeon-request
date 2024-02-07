@@ -21,7 +21,6 @@ class Sphere extends Entity {
 
     // Inherit Entity class
     super(options);
-    this.name = 'Sphere';
 
     // Initialize default cube mesh
     var geometry = new SphereGeometry(options.radius, options.widthSegments, options.heightSegments);

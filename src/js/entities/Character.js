@@ -22,7 +22,6 @@ class Character extends Entity {
 
     // Inherit Entity class
     super(options);
-    this.name = 'Character';
 
     // Set default values
     this.actions = {};

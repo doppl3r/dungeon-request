@@ -46,7 +46,6 @@ class TriMesh extends Entity {
 
     // Inherit Entity class
     super(options);
-    this.name = 'TriMesh';
   }
 }
 

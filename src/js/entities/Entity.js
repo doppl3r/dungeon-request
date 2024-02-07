@@ -14,7 +14,7 @@ class Entity {
     options = Object.assign({
       uuid: MathUtils.generateUUID(),
       position: { x: 0, y: 0, z: 0 },
-      rotation: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0, order: 'XYZ' }, // Euler
       scale: { x: 1, y: 1, z: 1 },
       type: 'Dynamic', // 0: Dynamic, 1: Fixed, 2: KinematicPositionBased, 3: KinematicVelocityBased
       isSensor: false,
@@ -23,7 +23,6 @@ class Entity {
     }, options);
 
     // Apply defaults
-    this.name = 'Entity';
     this.uuid = options.uuid;
 
     // Initialize rigid body description
@@ -122,7 +121,9 @@ class Entity {
       
       // Offset model position from shape halfHeight value
       if (this.colliderDesc.shape && this.colliderDesc.shape.halfHeight) {
-        this.model.position.y = -(this.colliderDesc.shape.halfHeight * 2);
+        if (this.model.position) {
+          this.model.position.y = -(this.colliderDesc.shape.halfHeight * 2);
+        }
       }
     }
   }
@@ -158,26 +159,29 @@ class Entity {
 
   toJSON() {
     var json = {
-      name: this.name,
+      class: this.constructor.name,
+      position: {
+        x: this.object.position.x,
+        y: this.object.position.y,
+        z: this.object.position.z
+      },
+      quaternion: {
+        x: this.object.quaternion.x,
+        y: this.object.quaternion.y,
+        z: this.object.quaternion.z,
+        w: this.object.quaternion.w,
+      },
+      rotation: {
+        x: this.object.rotation.x,
+        y: this.object.rotation.y,
+        z: this.object.rotation.z
+      },
+      scale: {
+        x: this.object.scale.x,
+        y: this.object.scale.y,
+        z: this.object.scale.z,
+      },
       uuid: this.uuid,
-      object: {
-        position: {
-          x: this.object.position.x,
-          y: this.object.position.y,
-          z: this.object.position.z
-        },
-        quaternion: {
-          x: this.object.quaternion.x,
-          y: this.object.quaternion.y,
-          z: this.object.quaternion.z,
-          w: this.object.quaternion.w,
-        },
-        scale: {
-          x: this.object.scale.x,
-          y: this.object.scale.y,
-          z: this.object.scale.z,
-        }
-      }
     };
 
     // Add body info
@@ -194,7 +198,7 @@ class Entity {
       }
 
       // Add optional actions
-      if (this.model.actions) {
+      if (this.model.actions && this.model.actions.active) {
         json.model.action = {
           name: this.model.actions.active.getClip().name,
           time: this.model.actions.active.time,

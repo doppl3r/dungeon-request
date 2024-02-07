@@ -15,22 +15,22 @@ class Server extends Connector {
   constructor() {
     super(); // Inherit Connector
     this.entityManager = new EntityManager();
-    this.entityFactory = new EntityFactory();
+    this.entityFactory; // Wait to initialize when assets are loaded
     this.physics = new Physics();
     this.physics.setTick(30);
   }
 
   load(assets) {
-    // Assign assets for later
-    this.assets = assets;
+    // Assign assets to a new entity factory instance
+    this.entityFactory = new EntityFactory(assets);
 
     // Add background entity
-    var background = this.entityFactory.createBackground({ radius: 50 });
+    var background = this.entityFactory.create({ class: 'Background', radius: 50 });
     this.entityManager.add(background);
 
     // Create array of meshes from model
     var dungeonModel = assets.models.duplicate('dungeon-forge');
-    var triMesh = this.entityFactory.createTriMesh({ model: dungeonModel });
+    var triMesh = this.entityFactory.create({ class: 'TriMesh', model: dungeonModel });
     this.entityManager.add(triMesh);
 
     // Add connection data event listener from client(s)
@@ -42,10 +42,7 @@ class Server extends Connector {
           e.connection.status = 'ready';
   
           // Add unique player entity to the server entity manager
-          var player = this.entityFactory.createPlayer({
-            uuid: e.data.entity.uuid,
-            position: { x: 0, y: 4, z: 0 }
-          });
+          var player = this.entityFactory.create(e.data.entity);
           this.entityManager.add(player);
         }
         else if (e.connection.status == 'ready') {
