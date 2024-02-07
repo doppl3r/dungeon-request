@@ -32,9 +32,6 @@ class Client extends Connector {
     this.on('connection_data', function(e) {
       // Digest server entities
       this.processData(e);
-
-      // Send player data back to the server
-      this.sendData();
     }.bind(this));
   }
 
@@ -55,7 +52,11 @@ class Client extends Connector {
   }
 
   processData(event) {
-    if (event.data.entities) {
+    if (event.data.type == 'server_request_player_data') {
+      // Send player data back to the server
+      this.sendData();
+    }
+    else if (event.data.type == 'session') {
       // Loop through all entities
       event.data.entities.forEach(function(entityJSON) {
         // Create entity if it does not exist on client
@@ -93,8 +94,8 @@ class Client extends Connector {
         entity: this.player.toJSON()
       };
 
-      // Send connection data
-      if (connection == this.server) this.server.processData(data)
+      // Send (or process) connection data
+      if (connection == this.server) this.server.processData({ type: 'connection_data', data: data, connection: this })
       else connection.send(data);
     }.bind(this));
   }

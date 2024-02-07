@@ -16,25 +16,14 @@ class NetworkManager {
     // Load server and client assets
     this.server.load(assets);
     this.client.load(assets);
-
-    // TODO (option 1): Set references between local client and local server
-
-    // TODO (option 2): Assign server physics to client physics and skip this junk
-
-    // Add server open listener
-    this.server.on('peer_open', function(se) {
-      // Open client connection
-      this.client.open();
-      
-      // Add client open listener
-      this.client.on('peer_open', function(ce) {
-        // Immediately connect client to server
-        this.client.connect(se.id);
-      }.bind(this));
-    }.bind(this));
     
     // Open server connection
+    this.client.open();
     this.server.open();
+
+    // Assign local connections
+    this.client.assignServer(this.server);
+    this.server.assignClient(this.client);
   }
 
   connect(id) {

@@ -88,8 +88,8 @@ class Server extends Connector {
         data = { type: 'session', entities: this.entityManager.toJSON() };
       }
 
-      // Send connection data
-      if (connection == this.client) this.client.processData(data)
+      // Send (or process) connection data
+      if (connection == this.client) this.client.processData({ type: 'connection_data', data: data, connection: this });
       else connection.send(data);
     }.bind(this));
   }
