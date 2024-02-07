@@ -13,6 +13,9 @@ class Connector extends EventDispatcher {
   }
 
   open(id) {
+    // Generate new id
+    if (id == null) id = MathUtils.generateUUID();
+
     // Reset peer if already created
     if (this.peer) this.peer.destroy();
 

@@ -165,12 +165,6 @@ class Entity {
         y: this.object.position.y,
         z: this.object.position.z
       },
-      quaternion: {
-        x: this.object.quaternion.x,
-        y: this.object.quaternion.y,
-        z: this.object.quaternion.z,
-        w: this.object.quaternion.w,
-      },
       rotation: {
         x: this.object.rotation.x,
         y: this.object.rotation.y,

@@ -25,35 +25,20 @@ class Server extends Connector {
     this.entityFactory = new EntityFactory(assets);
 
     // Add background entity
-    var background = this.entityFactory.create({ class: 'Background', radius: 50 });
+    var background = this.entityFactory.createBackground({ radius: 50 });
     this.entityManager.add(background);
 
     // Create array of meshes from model
     var dungeonModel = assets.models.duplicate('dungeon-forge');
-    var triMesh = this.entityFactory.create({ class: 'TriMesh', model: dungeonModel });
+    var triMesh = this.entityFactory.createTriMesh({ model: dungeonModel });
     this.entityManager.add(triMesh);
 
     // Add connection data event listener from client(s)
-    this.on('connection_data', function(e) {
-      // Receive client player data
-      if (e.data.type == 'client_send_player_data') {
-        if (e.connection.status == null) {
-          // Update client status
-          e.connection.status = 'ready';
-  
-          // Add unique player entity to the server entity manager
-          var player = this.entityFactory.create(e.data.entity);
-          this.entityManager.add(player);
-        }
-        else if (e.connection.status == 'ready') {
-          // TODO: Update player entity from client
-        }
-      }
-    }.bind(this));
+    this.on('connection_data', function(event) { this.processData(event); }.bind(this));
   }
 
   update(delta) {
-    this.updateConnections();
+    this.sendData();
   }
 
   updateBodies(delta) {
@@ -65,11 +50,35 @@ class Server extends Connector {
     this.entityManager.updateObjects(delta, alpha)
   }
 
-  updateConnections() {
+  assignClient(client) {
+    // Assign client connection directly
+    this.client = client;
+    this.connections.set(this.client.peer.id, this.client);
+  }
+
+  processData(event) {
+    // Receive client player data
+    if (event.data.type == 'client_send_player_data') {
+      if (event.connection.status == null) {
+        // Update client status
+        event.connection.status = 'ready';
+
+        // Add unique player entity to the server entity manager
+        var player = this.entityFactory.create(event.data.entity);
+        this.entityManager.add(player);
+      }
+      else if (event.connection.status == 'ready') {
+        // TODO: Update player entity from client
+      }
+    }
+  }
+
+  sendData() {
+    // Create empty data
+    var data = {};
+
     // Loop through all connection on server
     this.connections.forEach(function(connection) {
-      var data = {};
-
       // Check if player has been added to the server
       if (connection.status == null) {
         data = { type: 'server_request_player_data' };
@@ -80,7 +89,8 @@ class Server extends Connector {
       }
 
       // Send connection data
-      connection.send(data);
+      if (connection == this.client) this.client.processData(data)
+      else connection.send(data);
     }.bind(this));
   }
 }

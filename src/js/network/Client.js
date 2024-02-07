@@ -20,7 +20,7 @@ class Client extends Connector {
     this.entityFactory = new EntityFactory(assets);
 
     // Initialize player entity
-    this.player = this.entityFactory.create({ class: 'Player', model: { name: 'player' }, position: { x: 0, y: 2.5, z: 0 }});
+    this.player = this.entityFactory.createPlayer({ model: { name: 'player' }, position: { x: 0, y: 2.5, z: 0 }});
     this.player.model.play('Idle', 0); // Start idle animation
     this.player.addEventListeners();
 
@@ -31,10 +31,10 @@ class Client extends Connector {
     // Add connection data event listener
     this.on('connection_data', function(e) {
       // Digest server entities
-      if (e.data.entities) this.updateEntitiesFromServer(e.data.entities);
+      this.processData(e);
 
       // Send player data back to the server
-      this.sendPlayerDataToServer();
+      this.sendData();
     }.bind(this));
   }
 
@@ -48,35 +48,44 @@ class Client extends Connector {
     this.graphics.update(delta); // Update 3D engine
   }
 
-  updateEntitiesFromServer(entitiesJSON) {
-    entitiesJSON.forEach(function(entityJSON) {
-      // Create entity if it does not exist on client
-      if (this.entityManager.get(entityJSON.uuid) == null) {
-        // Create new entity or assign to the client player
-        var entity;
-        if (entityJSON.uuid == this.player.uuid) entity = this.player;
-        else entity = this.entityFactory.create(entityJSON);
-
-        // Add entity to the current entity map
-        this.entityManager.add(entity);
-      }
-      else {
-        // Get client entity by uuid
-        var entity = this.entityManager.get(entityJSON.uuid);
-
-        // Update non-player entities
-        if (entity.uuid != this.player.uuid) {
-          // TODO: Update client entities from server entity info (ex: position)
-         
-        }
-        else {
-          // TODO: Send client player data back to the server (ex: position)
-        }
-      }
-    }.bind(this));
+  assignServer(server) {
+    // Assign server directly
+    this.server = server;
+    this.connections.set(this.server.peer.id, this.server);
   }
 
-  sendPlayerDataToServer() {
+  processData(event) {
+    if (event.data.entities) {
+      // Loop through all entities
+      event.data.entities.forEach(function(entityJSON) {
+        // Create entity if it does not exist on client
+        if (this.entityManager.get(entityJSON.uuid) == null) {
+          // Create new entity or assign to the client player
+          var entity;
+          if (entityJSON.uuid == this.player.uuid) entity = this.player;
+          else entity = this.entityFactory.create(entityJSON);
+  
+          // Add entity to the current entity map
+          this.entityManager.add(entity);
+        }
+        else {
+          // Get client entity by uuid
+          var entity = this.entityManager.get(entityJSON.uuid);
+  
+          // Update non-player entities
+          if (entity.uuid != this.player.uuid) {
+            // TODO: Update client entities from server entity info (ex: position)
+           
+          }
+          else {
+            // TODO: Send client player data back to the server (ex: position)
+          }
+        }
+      }.bind(this));
+    }
+  }
+
+  sendData() {
     // Access server connection via map loop
     this.connections.forEach(function(connection) {
       var data = {
@@ -85,7 +94,8 @@ class Client extends Connector {
       };
 
       // Send connection data
-      connection.send(data);
+      if (connection == this.server) this.server.processData(data)
+      else connection.send(data);
     }.bind(this));
   }
 }
