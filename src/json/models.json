@@ -11,6 +11,9 @@
     "dungeon-desert": {
         "url": "./glb/dungeon-desert.glb"
     },
+    "dungeon-demo": {
+        "url": "./glb/dungeon-demo.glb"
+    },
     "dungeon-forge": {
         "url": "./glb/dungeon-forge.glb"
     },

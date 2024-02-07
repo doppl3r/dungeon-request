@@ -29,8 +29,7 @@ class Server extends Connector {
     this.entityManager.add(background);
 
     // Create array of meshes from model
-    var dungeonModel = assets.models.duplicate('dungeon-forge');
-    var triMesh = this.entityFactory.createTriMesh({ model: dungeonModel });
+    var triMesh = this.entityFactory.createTriMesh({ model: { name: 'dungeon-demo' }});
     this.entityManager.add(triMesh);
 
     // Add connection data event listener from client(s)
