@@ -22,11 +22,15 @@ class NetworkManager {
     this.server.open();
 
     // Assign local connections
-    this.client.assignServer(this.server);
-    this.server.assignClient(this.client);
+    this.client.connect(this.server);
+    this.server.connect(this.client);
   }
 
   connect(id) {
+    // Clear local server before connecting client to remove peer
+    this.server.connections.clear();
+    this.server.link = null;
+    this.client.link = null;
     this.client.connect(id);
   }
 

@@ -24,10 +24,20 @@ class Connector extends EventDispatcher {
     this.addPeerListeners(this.peer);
   }
 
-  connect(host_id) {
-    // Connect to remote host
-    var connection = this.peer.connect(host_id);
-    this.addConnectionListeners(connection);
+  connect(peer) {
+    // Add connection using PeerJS
+    if (typeof peer == 'string') {
+      // Connect to remote peer
+      var connection = this.peer.connect(peer);
+      this.connections.clear();
+      this.addConnectionListeners(connection);
+    }
+    else {
+      // Add direct link connection
+      this.link = peer;
+      this.connections.clear();
+      this.connections.set(this.link.peer.id, this.link);
+    }
   }
 
   addPeerListeners(peer) {

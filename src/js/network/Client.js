@@ -45,15 +45,10 @@ class Client extends Connector {
     this.graphics.update(delta); // Update 3D engine
   }
 
-  assignServer(server) {
-    // Assign server directly
-    this.server = server;
-    this.connections.set(this.server.peer.id, this.server);
-  }
-
   processData(event) {
     if (event.data.type == 'server_request_player_data') {
       // Send player data back to the server
+      this.entityManager.drain(); // Drain entities before receiving server entities
       this.sendData();
     }
     else if (event.data.type == 'session') {
@@ -95,7 +90,7 @@ class Client extends Connector {
       };
 
       // Send (or process) connection data
-      if (connection == this.server) this.server.processData({ type: 'connection_data', data: data, connection: this })
+      if (connection == this.link) this.link.processData({ type: 'connection_data', data: data, connection: this })
       else connection.send(data);
     }.bind(this));
   }

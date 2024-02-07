@@ -11,9 +11,15 @@ class EntityManager {
   }
 
   updateBodies(delta) {
-    // Update all entities
+    // Safely drain all entities synchronously
+    if (this.isDraining == true) {
+      this.isDraining = false;
+      this.clear();
+    }
+
+    // Loop through all entities
     this.entities.forEach(function(child) {
-        if (child.body) child.updateBody(delta);
+      if (child.body) child.updateBody(delta);
     });
   }
 
@@ -38,6 +44,10 @@ class EntityManager {
 
   get(key) {
     return this.entities.get(key);
+  }
+
+  drain() {
+    this.isDraining = true;
   }
 
   clear() {

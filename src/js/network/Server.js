@@ -50,12 +50,6 @@ class Server extends Connector {
     this.entityManager.updateObjects(delta, alpha)
   }
 
-  assignClient(client) {
-    // Assign client connection directly
-    this.client = client;
-    this.connections.set(this.client.peer.id, this.client);
-  }
-
   processData(event) {
     // Receive client player data
     if (event.data.type == 'client_send_player_data') {
@@ -89,7 +83,7 @@ class Server extends Connector {
       }
 
       // Send (or process) connection data
-      if (connection == this.client) this.client.processData({ type: 'connection_data', data: data, connection: this });
+      if (connection == this.link) this.link.processData({ type: 'connection_data', data: data, connection: this });
       else connection.send(data);
     }.bind(this));
   }
