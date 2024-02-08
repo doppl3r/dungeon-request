@@ -35,7 +35,7 @@ class Game {
     // Add physics loop
     this.loop.add(30, function(data) {
       // Update server and client bodies
-      //this.networkManager.server.updateBodies(data.delta);
+      this.networkManager.server.updateBodies(data.delta);
       this.networkManager.client.updateBodies(data.delta);
 
       // Update debugger buffer
@@ -48,7 +48,7 @@ class Game {
       this.stats.begin();
 
       // Update server and client instances
-      //this.networkManager.server.updateObjects(data.delta, data.alpha);
+      this.networkManager.server.updateObjects(data.delta, data.alpha);
       this.networkManager.client.updateObjects(data.delta, data.alpha);
 
       // Complete FPS counter
@@ -56,7 +56,7 @@ class Game {
     }.bind(this));
 
     // Add network loop
-    this.loop.add(1, function(data) {
+    this.loop.add(10, function(data) {
       this.networkManager.update(data.delta);
     }.bind(this));
 

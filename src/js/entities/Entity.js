@@ -215,6 +215,7 @@ class Entity {
       // Add optional actions
       if (this.model.actions && this.model.actions.active) {
         json.model.action = {
+          duration: this.model.actions.active.duration,
           name: this.model.actions.active.getClip().name,
           time: this.model.actions.active.time,
         }
@@ -222,6 +223,28 @@ class Entity {
     }
 
     return json;
+  }
+
+  updateFromJSON(json) {
+    // Set position
+    if (json.position) {
+      if (this.body) this.setPosition(json.position);
+      this.snapshot.position_2.copy(json.position);
+    }
+
+    // Set rotation
+    if (json.quaternion) {
+      if (this.body) this.setRotation(json.quaternion);
+      this.snapshot.quaternion_2.copy(json.quaternion);
+    }
+
+    if (json.model) {
+      if (json.model.action) {
+        // Update animation
+        this.model.play(json.model.action.name, json.model.action.duration);
+        this.model.actions[json.model.action.name].time = json.model.action.time;
+      }
+    }
   }
 }
 

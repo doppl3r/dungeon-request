@@ -49,7 +49,6 @@ class Client extends Connector {
     if (data.type == 'server_request_player_data') {
       // Send player data back to the server
       this.entityManager.drain(); // Drain entities before receiving server entities
-      this.sendData();
     }
     else if (data.type == 'session') {
       // Loop through all entities
@@ -69,16 +68,16 @@ class Client extends Connector {
           var entity = this.entityManager.get(entityJSON.uuid);
   
           // Update non-player entities
-          if (entity.uuid != this.player.uuid) {
-            // TODO: Update client entities from server entity info (ex: position)
-           
-          }
-          else {
-            // TODO: Send client player data back to the server (ex: position)
+          if (entity != this.player) {
+            // Update client entities from server entity info (ex: position)
+            entity.updateFromJSON(entityJSON);
           }
         }
       }.bind(this));
     }
+
+    // Send player data after processing
+    this.sendData();
   }
 
   sendData() {

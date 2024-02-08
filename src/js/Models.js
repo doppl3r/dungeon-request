@@ -59,6 +59,12 @@ class Models {
         action.play(); // Activate action by default
         action.setEffectiveWeight(0); // Clear action influence
         model.actions[animation.name] = action;
+
+        // Set active action to first action
+        if (i == 0) {
+          model.actions['active'] = action;
+          action.setEffectiveWeight(1);
+        }
       }
   
       // Add action helper function
@@ -80,7 +86,8 @@ class Models {
             endAction.reset().crossFadeFrom(startAction, duration);
           }
 
-          // Store start action for cross fade
+          // Store action data for cross fade
+          endAction['duration'] = duration;
           model.actions['active'] = endAction;
         }
       }

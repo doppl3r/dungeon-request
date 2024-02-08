@@ -14,10 +14,10 @@ import { Physics } from '../Physics.js';
 class Server extends Connector {
   constructor() {
     super(); // Inherit Connector
-    this.entityManager = new EntityManager();
-    this.entityFactory; // Wait to initialize when assets are loaded
     this.physics = new Physics();
     this.physics.setTick(30);
+    this.entityManager = new EntityManager(null, this.physics.world); // scene = null
+    this.entityFactory; // Wait to initialize when assets are loaded
   }
 
   load(assets) {
@@ -29,7 +29,7 @@ class Server extends Connector {
     this.entityManager.add(background);
 
     // Create array of meshes from model
-    var triMesh = this.entityFactory.createTriMesh({ model: { name: 'dungeon-demo' }});
+    var triMesh = this.entityFactory.createTriMesh({ model: { name: 'dungeon-forge' }});
     this.entityManager.add(triMesh);
 
     // Add connection data event listener from client(s)
@@ -52,14 +52,15 @@ class Server extends Connector {
   processData(data) {
     // Receive client player data
     if (data.type == 'client_send_player_data') {
-      if (this.entityManager.get(data.entity.uuid) == null) {
+      var entity = this.entityManager.get(data.entity.uuid);
+      if (entity == null) {
         // Add unique player entity to the server entity manager
         var player = this.entityFactory.create(data.entity);
         this.entityManager.add(player);
       }
       else {
-        // TODO: Update player entity from client
-
+        // Update player entity from client
+        entity.updateFromJSON(data.entity);
       }
     }
   }
