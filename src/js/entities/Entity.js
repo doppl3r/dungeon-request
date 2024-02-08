@@ -14,7 +14,7 @@ class Entity {
     options = Object.assign({
       uuid: MathUtils.generateUUID(),
       position: { x: 0, y: 0, z: 0 },
-      rotation: { x: 0, y: 0, z: 0, order: 'XYZ' }, // Euler
+      quaternion: { x: 0, y: 0, z: 0, w: 1 },
       scale: { x: 1, y: 1, z: 1 },
       type: 'Dynamic', // 0: Dynamic, 1: Fixed, 2: KinematicPositionBased, 3: KinematicVelocityBased
       isSensor: false,
@@ -28,7 +28,7 @@ class Entity {
     // Initialize rigid body description
     this.rigidBodyDesc = new RigidBodyDesc(RigidBodyType[options.type]);
     this.rigidBodyDesc.setTranslation(options.position.x, options.position.y, options.position.z);
-    this.rigidBodyDesc.setRotation(new Quaternion().setFromEuler(new Euler().setFromVector3(options.rotation)));
+    this.rigidBodyDesc.setRotation(options.quaternion);
     
     // Initialize collider description
     this.colliderDesc = new ColliderDesc(options.shape);
@@ -52,7 +52,12 @@ class Entity {
       position_2: new Vector3().copy(this.rigidBodyDesc.translation), // Current position
       quaternion_1: new Quaternion().copy(this.rigidBodyDesc.rotation), // Previous rotation
       quaternion_2: new Quaternion().copy(this.rigidBodyDesc.rotation), // Current rotation
+      scale_1: new Vector3().copy(options.scale), // Previous scale
+      scale_2: new Vector3().copy(options.scale) // Current scale
     }
+
+    // Set initial object position/rotation from snapshot
+    this.lerp(1);
   }
 
   updateBody(delta) {
@@ -104,14 +109,28 @@ class Entity {
     this.scene = null;
   }
 
-  setNextPosition(position) {
-    if (this.body) this.body.setNextKinematicTranslation(position, true); // true = wake from sleep
-    this.snapshot.position_2.copy(position);
+  setPosition(position) {
+    if (this.body) this.body.setTranslation(position);
   }
 
-  setNextRotation(rotation) { // Type "quaternion"
-    if (this.body) this.body.setNextKinematicRotation(rotation, true); // true = wake from sleep
-    this.snapshot.quaternion_2.copy(rotation);
+  setNextPosition(position) {
+    if (this.body) this.body.setNextKinematicTranslation(position);
+  }
+
+  setRotation(quaternion) {
+    if (this.body) this.body.setRotation(quaternion);
+  }
+
+  setNextRotation(quaternion) {
+    if (this.body) this.body.setNextKinematicRotation(quaternion);
+  }
+
+  setScale(scale) {
+    this.snapshot.scale_1.copy(scale);
+  }
+
+  setNextScale(scale) {
+    this.snapshot.scale_2.copy(scale);
   }
 
   addModel(model) {
@@ -153,29 +172,31 @@ class Entity {
     if (this.body && this.body.isFixed()) return false;
 
     // Linear interpolation using alpha value
+    this.object.scale.lerpVectors(this.snapshot.scale_1, this.snapshot.scale_2, alpha);
     this.object.position.lerpVectors(this.snapshot.position_1, this.snapshot.position_2, alpha);
     this.object.quaternion.slerpQuaternions(this.snapshot.quaternion_1, this.snapshot.quaternion_2, alpha);
   }
 
   toJSON() {
     var json = {
+      uuid: this.uuid,
       class: this.constructor.name,
       position: {
-        x: this.object.position.x,
-        y: this.object.position.y,
-        z: this.object.position.z
+        x: this.snapshot.position_2.x,
+        y: this.snapshot.position_2.y,
+        z: this.snapshot.position_2.z
       },
-      rotation: {
-        x: this.object.rotation.x,
-        y: this.object.rotation.y,
-        z: this.object.rotation.z
+      quaternion: {
+        x: this.snapshot.quaternion_2.x,
+        y: this.snapshot.quaternion_2.y,
+        z: this.snapshot.quaternion_2.z,
+        w: this.snapshot.quaternion_2.w,
       },
       scale: {
-        x: this.object.scale.x,
-        y: this.object.scale.y,
-        z: this.object.scale.z,
-      },
-      uuid: this.uuid,
+        x: this.snapshot.scale_2.x,
+        y: this.snapshot.scale_2.y,
+        z: this.snapshot.scale_2.z,
+      }
     };
 
     // Add body info

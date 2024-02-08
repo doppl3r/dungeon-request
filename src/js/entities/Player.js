@@ -15,7 +15,7 @@ class Player extends Character {
     this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);
     this.camera.offset = new Vector3(0, 2, 2);
     this.camera.position.add(this.camera.offset);
-    this.camera.lookAt(this.object.position);
+    this.camera.lookAt(new Vector3()); // Look at world origin
 
     // Initialize input keys
     this.keys = {};

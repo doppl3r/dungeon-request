@@ -84,12 +84,12 @@ class Character extends Entity {
     this.movement.copy(this.controller.computedMovement());
     this.nextTranslation.copy(this.body.translation());
     this.nextTranslation.add(this.movement);
-    this.body.setNextKinematicTranslation(this.nextTranslation);
+    this.setNextPosition(this.nextTranslation);
 
     // Calculate next rotation from character direction
     if (this.nextTranslation.distanceTo(this.body.translation()) > 0.01) {
       this.object.lookAt(this.nextTranslation.x, this.object.position.y, this.nextTranslation.z);
-      this.body.setNextKinematicRotation(this.object.quaternion);
+      this.setNextRotation(this.object.quaternion);
     }
 
     // Call Entity update function

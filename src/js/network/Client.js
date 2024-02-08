@@ -58,8 +58,8 @@ class Client extends Connector {
         if (this.entityManager.get(entityJSON.uuid) == null) {
           // Create new entity or assign to the client player
           var entity;
-          if (entityJSON.uuid == this.player.uuid) entity = this.player;
-          else entity = this.entityFactory.create(entityJSON);
+          if (entityJSON.uuid != this.player.uuid) entity = this.entityFactory.create(entityJSON);
+          else entity = this.player;
   
           // Add entity to the current entity map
           this.entityManager.add(entity);
