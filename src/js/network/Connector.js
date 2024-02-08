@@ -55,12 +55,12 @@ class Connector extends EventDispatcher {
     // Listen to peer close (use peer.destroy to clean up connections)
     peer.on('close', function() {
       this.connections.clear(); // Clear connections map
-      this.dispatchEvent({ type: 'peer_close', peer: peer });
+      this.dispatchEvent({ type: 'peer_close' });
     }.bind(this))
 
     // Listen to peer disconnection
     peer.on('disconnected', function() {
-      this.dispatchEvent({ type: 'peer_disconnected', peer: peer });
+      this.dispatchEvent({ type: 'peer_disconnected' });
     }.bind(this));
 
     // Listen to peer errors
@@ -73,23 +73,23 @@ class Connector extends EventDispatcher {
     // Dispatch connection open
     connection.on('open', function() {
       this.connections.set(connection.peer, connection); // Add to connections map using peer id
-      this.dispatchEvent({ type: 'connection_open', connection: connection });
+      this.dispatchEvent({ type: 'connection_open' });
     }.bind(this));
 
     // Dispatch connection close
     connection.on('close', function() {
       this.connections.delete(connection.peer); // Remove from connections map using peer id
-      this.dispatchEvent({ type: 'connection_close', connection: connection });
+      this.dispatchEvent({ type: 'connection_close' });
     }.bind(this));
 
     // Dispatch connection data
     connection.on('data', function(data) {
-      this.dispatchEvent({ type: 'connection_data', connection: connection, data: data });
+      this.dispatchEvent({ type: 'connection_data', data: data });
     }.bind(this));
 
     // Dispatch connection error
     connection.on('error', function(error) {
-      this.dispatchEvent({ type: 'connection_error', connection: connection, error: error });
+      this.dispatchEvent({ type: 'connection_error', error: error });
     });
   }
 

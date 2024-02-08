@@ -33,7 +33,7 @@ class Server extends Connector {
     this.entityManager.add(triMesh);
 
     // Add connection data event listener from client(s)
-    this.on('connection_data', function(event) { this.processData(event); }.bind(this));
+    this.on('connection_data', function(e) { this.processData(e.data); }.bind(this));
   }
 
   update(delta) {
@@ -49,19 +49,17 @@ class Server extends Connector {
     this.entityManager.updateObjects(delta, alpha)
   }
 
-  processData(event) {
+  processData(data) {
     // Receive client player data
-    if (event.data.type == 'client_send_player_data') {
-      if (event.connection.status == null) {
-        // Update client status
-        event.connection.status = 'ready';
-
+    if (data.type == 'client_send_player_data') {
+      if (this.entityManager.get(data.entity.uuid) == null) {
         // Add unique player entity to the server entity manager
-        var player = this.entityFactory.create(event.data.entity);
+        var player = this.entityFactory.create(data.entity);
         this.entityManager.add(player);
       }
-      else if (event.connection.status == 'ready') {
+      else {
         // TODO: Update player entity from client
+
       }
     }
   }
@@ -75,6 +73,7 @@ class Server extends Connector {
       // Check if player has been added to the server
       if (connection.status == null) {
         data = { type: 'server_request_player_data' };
+        connection.status = 'ready';
       }
       else if (connection.status == 'ready') {
         // Send current server session to each player
@@ -82,7 +81,7 @@ class Server extends Connector {
       }
 
       // Send (or process) connection data
-      if (connection == this.link) this.link.processData({ type: 'connection_data', data: data, connection: this });
+      if (connection == this.link) this.link.processData(data);
       else connection.send(data);
     }.bind(this));
   }

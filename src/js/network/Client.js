@@ -31,7 +31,7 @@ class Client extends Connector {
     // Add connection data event listener
     this.on('connection_data', function(e) {
       // Digest server entities
-      this.processData(e);
+      this.processData(e.data);
     }.bind(this));
   }
 
@@ -45,15 +45,15 @@ class Client extends Connector {
     this.graphics.update(delta); // Update 3D engine
   }
 
-  processData(event) {
-    if (event.data.type == 'server_request_player_data') {
+  processData(data) {
+    if (data.type == 'server_request_player_data') {
       // Send player data back to the server
       this.entityManager.drain(); // Drain entities before receiving server entities
       this.sendData();
     }
-    else if (event.data.type == 'session') {
+    else if (data.type == 'session') {
       // Loop through all entities
-      event.data.entities.forEach(function(entityJSON) {
+      data.entities.forEach(function(entityJSON) {
         // Create entity if it does not exist on client
         if (this.entityManager.get(entityJSON.uuid) == null) {
           // Create new entity or assign to the client player
@@ -90,7 +90,7 @@ class Client extends Connector {
       };
 
       // Send (or process) connection data
-      if (connection == this.link) this.link.processData({ type: 'connection_data', data: data, connection: this })
+      if (connection == this.link) this.link.processData(data);
       else connection.send(data);
     }.bind(this));
   }
