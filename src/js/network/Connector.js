@@ -2,8 +2,7 @@ import { EventDispatcher, MathUtils } from 'three';
 import { Peer } from 'peerjs';
 
 /*
-  This class acts as a container for the PeerJS library. It
-  provides an event dispatcher for local and remote connections.
+  This class acts as a peer connector for the PeerJS library.
 */
 
 class Connector extends EventDispatcher {
@@ -33,10 +32,10 @@ class Connector extends EventDispatcher {
       this.addConnectionListeners(connection);
     }
     else {
-      // Add direct link connection
-      this.link = peer;
+      // Add local connection
+      this.localConnection = peer;
       this.connections.clear();
-      this.connections.set(this.link.peer.id, this.link);
+      this.connections.set(this.localConnection.peer.id, this.localConnection);
     }
   }
 
@@ -95,6 +94,10 @@ class Connector extends EventDispatcher {
 
   on(type, callback) {
     this.addEventListener(type, callback);
+  }
+
+  hasConnections() {
+    return this.connections.size > 0;
   }
 }
 

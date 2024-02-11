@@ -36,17 +36,23 @@ class Server extends Connector {
     this.on('connection_data', function(e) { this.processData(e.data); }.bind(this));
   }
 
-  update(delta) {
+  updateConnections(delta) {
     this.sendData();
   }
 
   updateBodies(delta) {
-    this.entityManager.updateBodies(delta)
-    this.physics.step();
+    // Only update physics if connections exist
+    if (this.connections.size > 0) {
+      this.entityManager.updateBodies(delta)
+      this.physics.step();
+    }
   }
 
   updateObjects(delta, alpha) {
-    this.entityManager.updateObjects(delta, alpha)
+    // Only update 3D objects if connections exist
+    if (this.connections.size > 0) {
+      this.entityManager.updateObjects(delta, alpha)
+    }
   }
 
   processData(data) {
@@ -66,11 +72,11 @@ class Server extends Connector {
   }
 
   sendData() {
-    // Create empty data
-    var data = {};
-
     // Loop through all connection on server
     this.connections.forEach(function(connection) {
+      // Create empty data
+      var data = {};
+
       // Check if player has been added to the server
       if (connection.status == null) {
         data = { type: 'server_request_player_data' };
@@ -81,8 +87,8 @@ class Server extends Connector {
         data = { type: 'session', entities: this.entityManager.toJSON() };
       }
 
-      // Send (or process) connection data
-      if (connection == this.link) this.link.processData(data);
+      // Send data for processing
+      if (connection == this.localConnection) this.localConnection.processData(data);
       else connection.send(data);
     }.bind(this));
   }

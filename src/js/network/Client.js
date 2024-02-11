@@ -89,7 +89,7 @@ class Client extends Connector {
       };
 
       // Send (or process) connection data
-      if (connection == this.link) this.link.processData(data);
+      if (connection == this.localConnection) this.localConnection.processData(data);
       else connection.send(data);
     }.bind(this));
   }

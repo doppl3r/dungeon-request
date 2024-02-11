@@ -17,6 +17,7 @@ class Entity {
       quaternion: { x: 0, y: 0, z: 0, w: 1 },
       scale: { x: 1, y: 1, z: 1 },
       type: 'Dynamic', // 0: Dynamic, 1: Fixed, 2: KinematicPositionBased, 3: KinematicVelocityBased
+      isEnabled: true,
       isSensor: false,
       shape: null,
       model: null
@@ -29,6 +30,7 @@ class Entity {
     this.rigidBodyDesc = new RigidBodyDesc(RigidBodyType[options.type]);
     this.rigidBodyDesc.setTranslation(options.position.x, options.position.y, options.position.z);
     this.rigidBodyDesc.setRotation(options.quaternion);
+    this.rigidBodyDesc.setEnabled(options.isEnabled);
     
     // Initialize collider description
     this.colliderDesc = new ColliderDesc(options.shape);
