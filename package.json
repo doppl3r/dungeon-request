@@ -9,14 +9,14 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@dimforge/rapier3d": "^0.12.0",
+    "@dimforge/rapier3d": "^0.13.0",
     "@vitejs/plugin-vue": "^5.0.4",
     "peerjs": "^1.5.2",
-    "sass": "^1.75.0",
+    "sass": "^1.76.0",
     "three": "^0.164.1",
-    "vite": "^5.2.10",
+    "vite": "^5.2.11",
     "vite-plugin-top-level-await": "^1.4.1",
     "vite-plugin-wasm": "^3.3.0",
-    "vue": "^3.4.25"
+    "vue": "^3.4.26"
   }
 }
