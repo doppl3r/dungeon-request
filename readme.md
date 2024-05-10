@@ -1,5 +1,5 @@
-# Dungeon Request
-Get your loot and get out!
+# Dungeon Request - Rapier
+Get your loot and get out! Prototype game using Rapier.js
 
 ## Local Development
 

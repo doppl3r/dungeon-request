@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Dungeon Request",
+  "name": "Dungeon Request - Rapier",
   "description": "Get your loot and get out!",
   "version": "0.0.1",
   "action": {
